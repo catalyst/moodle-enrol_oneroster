@@ -75,3 +75,6 @@ This is also used to fetch the list of available schools that should be synchron
 $string['settings_testconnection_link'] = 'Test connection';
 $string['test_oneroster_connection'] = 'Test One Roster Connection';
 $string['fullsync'] = 'Full sync of One Roster';
+$string['csv_upload'] = 'CSV Upload';
+$string['csv_upload_process'] = 'Process CSV Upload';
+$string['options'] = 'You can import OneRoster information by either uploading a zip file containing OneRoster spec CSV files or by connecting a REST API server.';
