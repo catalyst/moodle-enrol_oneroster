@@ -10,6 +10,10 @@ $PAGE->set_heading('Process OneRoster CSV');
 // Include form definition
 require_once('oneroster_csv_form.php');
 
+// Include expected csv headers
+require_once('expected_csv_headers.php');
+
+
 // Setup a new form instance
 $mform = new oneroster_csv_form();
 
@@ -31,11 +35,41 @@ function delete_directory($dir) {
     }
     return rmdir($dir);
 }
+
+// Function to validate CSV headers
+function validate_csv_headers($file_path) {
+
+    // Clean file path to avoid directory traversal
+    $clean_file_path = clean_param($file_path, PARAM_PATH);
+
+    // Extract the base file name without the directory path
+    $file_name = basename($clean_file_path);
+
+    // Get the required headers for the file name
+    $expected_headers = expected_csv_headers::getHeader($file_name);
+
+    // Read and compare csv headers
+    if (($handle = fopen($clean_file_path, "r")) !== false) {
+
+        $headers = fgetcsv($handle, 1000, ",");
+        fclose($handle);
+
+        // Compare the headers
+        return $headers === $expected_headers;
+        
+    } else {
+        throw new Exception("Unable to open file: $clean_file_path");
+    }
+}
+
+
 // Function to check the manifest.csv file and validate required files
 function check_manifest_and_files($manifest_path, $tempdir) {
+    $invalid_headers = [];
     $required_files = [];
-    if (($handle = fopen($manifest_path, "r")) !== FALSE) {
-        while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+
+    if (($handle = fopen($manifest_path, "r")) !== false) {
+        while (($data = fgetcsv($handle, 1000, ",")) !== false) {
             if (in_array($data[1], ['bulk', 'delta'])) {
                 $required_files[] = str_replace('file.', '', $data[0]) . '.csv';
             }
@@ -47,7 +81,22 @@ function check_manifest_and_files($manifest_path, $tempdir) {
     $extracted_files = array_diff(scandir($tempdir), array('.', '..', 'uploadedzip.zip'));
     $missing_files = array_diff($required_files, $extracted_files);
 
-    return $missing_files;
+    
+
+    // Validate headers for each required file
+    foreach ($required_files as $file) {
+        if (in_array($file, $extracted_files)) {
+            $file_path = $tempdir . '/' . $file;
+            if (!validate_csv_headers($file_path)) {
+                $invalid_headers[] = $file;
+            }
+        }
+    }
+
+    return [
+        'missing_files' => $missing_files,
+        'invalid_headers' => $invalid_headers
+    ];
 }
 
 // Form processing and displaying
@@ -65,7 +114,7 @@ if ($mform->is_cancelled()) {
         $zip = new ZipArchive;
         $res = $zip->open($zipfilepath);
 
-        if ($res === TRUE) {
+        if ($res === true) {
             $zip->extractTo($tempdir); 
             $zip->close();
 
@@ -76,19 +125,25 @@ if ($mform->is_cancelled()) {
                 // Check the manifest.csv and validate required files
                 $missing_files = check_manifest_and_files($manifest_path, $tempdir);
 
-                if (empty($missing_files)) {
+                if (empty($missing_files['missing_files']) && empty($missing_files['invalid_headers'])) {
                     // Process the manifest.csv file and other required files
                     // CSV processing logic goes here
                     echo $OUTPUT->header();
                     echo 'CSV processing completed.<br>';
                 } else {
                     echo $OUTPUT->header();
-                    echo 'The following required files are missing: ' . implode(', ', $missing_files) . '<br>';
+                    if (!empty($missing_files['missing_files'])) {
+                        echo 'The following required files are missing: ' . implode(', ', $missing_files['missing_files']) . '<br>';
+                    }
+                    if (!empty($missing_files['invalid_headers'])) {
+                        echo 'The following files have invalid or missing headers: ' . implode(', ', $missing_files['invalid_headers']) . '<br>';
+                    }
                 }
             } else {
                 echo $OUTPUT->header();
                 echo 'The manifest.csv file is missing.<br>';
             }
+
 
             // Cleanup: remove the entire temporary directory
             delete_directory($tempdir);
