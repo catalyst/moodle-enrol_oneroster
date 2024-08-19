@@ -13,28 +13,10 @@ require_once('oneroster_csv_form.php');
 // Include expected csv headers
 require_once('expected_csv_headers.php');
 
-
 // Setup a new form instance
 $mform = new oneroster_csv_form();
 
-// Function to recursively delete a directory
-function delete_directory($dir) {
-    if (!file_exists($dir)) {
-        return true;
-    }
-    if (!is_dir($dir)) {
-        return unlink($dir);
-    }
-    foreach (scandir($dir) as $item) {
-        if ($item == '.' || $item == '..') {
-            continue;
-        }
-        if (!delete_directory($dir . DIRECTORY_SEPARATOR . $item)) {
-            return false;
-        }
-    }
-    return rmdir($dir);
-}
+const TEMPDIR = 'oneroster_csv';
 
 // Function to validate CSV headers
 function validate_csv_headers($file_path) {
@@ -62,7 +44,6 @@ function validate_csv_headers($file_path) {
     }
 }
 
-
 // Function to check the manifest.csv file and validate required files
 function check_manifest_and_files($manifest_path, $tempdir) {
     $invalid_headers = [];
@@ -80,8 +61,6 @@ function check_manifest_and_files($manifest_path, $tempdir) {
     // Check if all required files are present
     $extracted_files = array_diff(scandir($tempdir), array('.', '..', 'uploadedzip.zip'));
     $missing_files = array_diff($required_files, $extracted_files);
-
-    
 
     // Validate headers for each required file
     foreach ($required_files as $file) {
@@ -105,7 +84,7 @@ if ($mform->is_cancelled()) {
     redirect(new moodle_url('/admin/settings.php', ['section' => 'enrolsettingsoneroster']));
 } else if ($data = $mform->get_data()) {
     // Process the uploaded ZIP file
-    $tempdir = make_temp_directory('oneroster_csv'); 
+    $tempdir = make_temp_directory(TEMPDIR); 
 
     $filecontent = $mform->get_file_content('uploadedzip');
     $zipfilepath = $tempdir . '/uploadedzip.zip';
@@ -144,9 +123,8 @@ if ($mform->is_cancelled()) {
                 echo 'The manifest.csv file is missing.<br>';
             }
 
-
             // Cleanup: remove the entire temporary directory
-            delete_directory($tempdir);
+            remove_dir($tempdir); // Using Moodle's built-in remove_dir function
         } else {
             echo $OUTPUT->header();
             echo 'Failed to open the ZIP file.<br>';
