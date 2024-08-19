@@ -63,7 +63,7 @@ jobs:
         env:
           DB: ${{ matrix.database }}
           # TODO: Omitted MOODLE_BRANCH results in regex failure, investigate.
-          MOODLE_BRANCH: 'main'
+          MOODLE_BRANCH: 'MOODLE_310_STABLE'
 
       - name: Run phplint
         if: ${{ always() }}
