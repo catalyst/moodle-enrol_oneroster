@@ -12,7 +12,7 @@ class expected_csv_headers {
     const HEADER_ENROLLMENTS = ['sourcedId', 'status', 'dateLastModified', 'classSourcedId', 'schoolSourcedId', 'userSourcedId', 'role', 'primary', 'beginDate', 'endDate'];
     const HEADER_LINEITEMS = ['sourcedId', 'status', 'dateLastModified', 'title', 'description', 'assignDate', 'dueDate', 'classSourcedId', 'categorySourcedId', 'gradingPeriodSourcedId', 'resultValueMin', 'resultValueMax'];
     const HEADER_ORGS = ['sourcedId', 'status', 'dateLastModified', 'name', 'type', 'identifier', 'parentSourcedId'];
-    const HEADER_USERS = ['sourcedId', 'status', 'dateLastModified', 'enabledUser', 'orgSourcedIds', 'role', 'username', 'userIds', 'givenName', 'familyName', 'middleName', 'identifier', 'email', 'sms', 'phone', 'agentSourcedIds', 'grades', 'password', 'metadata.phoneticGivenName', 'metadata.phoneticFamilyName'];
+    const HEADER_USERS = ['sourcedId', 'status', 'dateLastModified', 'enabledUser', 'orgSourcedIds', 'role', 'username', 'userIds', 'givenName', 'familyName', 'middleName', 'identifier', 'email', 'sms', 'phone', 'agentSourcedIds', 'grades', 'password'];
     const HEADER_RESOURCES = ['sourcedId', 'status', 'dateLastModified', 'vendorResourceId', 'title', 'roles', 'importance', 'vendorId', 'applicationId'];
     const HEADER_RESULTS = ['sourcedId', 'status', 'dateLastModified', 'lineItemSourcedId', 'studentSourcedId', 'scoreStatus', 'score', 'resultDate', 'comment'];
 
