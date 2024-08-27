@@ -137,6 +137,9 @@ abstract class collection implements IteratorAggregate {
             $this->get_filter(),
             $this->get_params(),
             function($data) {
+                if (!($data instanceof stdClass)) {
+                    $data = (object) $data;
+                }
                 $data = static::parse_returned_row($this->container, $data);
                 if ($this->recordfilter && !call_user_func($this->recordfilter, $data)) {
                     return null;
