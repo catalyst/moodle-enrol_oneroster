@@ -1,7 +1,33 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * This class defines the expected headers for each CSV file.
+ *
+ * @package    enrol_oneroster
+ * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+namespace enrol_oneroster;
+
 class expected_csv_headers {
     
     // Define the expected headers for each CSV file
+    const HEADER_MANIFEST =['manifest.version', 'oneroster.version','file.academicSessions','file.categories','file.classes','file.classResources','file.courses','file.courseResources','file.demographics','file.enrollments','file.lineItems','file.orgs','file.resources','file.results','file.users'];
     const HEADER_ACADEMIC_SESSIONS = ['sourcedId', 'status', 'dateLastModified', 'title', 'type', 'startDate', 'endDate', 'parentSourcedId', 'schoolYear'];
     const HEADER_CATEGORIES = ['sourcedId', 'status', 'dateLastModified', 'title'];
     const HEADER_CLASSES = ['sourcedId', 'status', 'dateLastModified', 'title', 'grades', 'courseSourcedId', 'classCode', 'classType', 'location', 'schoolSourcedId', 'termSourcedIds', 'subjects', 'subjectCodes', 'periods'];
@@ -18,6 +44,7 @@ class expected_csv_headers {
 
     // Define the required files and their headers
     const REQUIRED_FILES = [
+        'manifest.csv' => self::HEADER_MANIFEST,
         'academicSessions.csv' => self::HEADER_ACADEMIC_SESSIONS,
         'categories.csv' => self::HEADER_CATEGORIES,
         'classes.csv' => self::HEADER_CLASSES,
@@ -36,6 +63,8 @@ class expected_csv_headers {
     // Get the header for a specific file
     public static function getHeader($file_name) {
         switch ($file_name) {
+            case 'manifest.csv':
+                return self::HEADER_MANIFEST;
             case 'academicSessions.csv':
                 return self::HEADER_ACADEMIC_SESSIONS;
             case 'categories.csv':

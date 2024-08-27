@@ -57,8 +57,6 @@ function xmldb_enrol_oneroster_upgrade($oldversion) {
         }
 
         // Oneroster savepoint reached.
-        upgrade_plugin_savepoint(true, 2020120700, 'enrol', 'oneroster');
-    }
-
-    return true;
+        upgrade_plugin_savepoint(true, 2020120700, 'enrol', 'oneroster'); 
+    } 
 }

@@ -1,91 +1,48 @@
 <?php
-require_once('../../config.php');
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-// Define the URL where this script is located
+namespace enrol_oneroster;
+
+use enrol_oneroster\OneRosterHelper;
+require_once('../../config.php');
+require_once('oneroster_csv_form.php');
+require_once('oneroster_helper.php');
+
+/**
+ * One Roster Client
+ *
+ * @package    enrol_oneroster
+ * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 $PAGE->set_url('/enrol/oneroster/processcsv.php');
 $PAGE->set_context(context_system::instance());
 $PAGE->set_title('Process OneRoster CSV');
 $PAGE->set_heading('Process OneRoster CSV');
 
-// Include form definition
-require_once('oneroster_csv_form.php');
-
-// Include expected csv headers
-require_once('expected_csv_headers.php');
-
-// Setup a new form instance
 $mform = new oneroster_csv_form();
 
 const TEMPDIR = 'oneroster_csv';
 
-// Function to validate CSV headers
-function validate_csv_headers($file_path) {
-
-    // Clean file path to avoid directory traversal
-    $clean_file_path = clean_param($file_path, PARAM_PATH);
-
-    // Extract the base file name without the directory path
-    $file_name = basename($clean_file_path);
-
-    // Get the required headers for the file name
-    $expected_headers = expected_csv_headers::getHeader($file_name);
-
-    // Read and compare csv headers
-    if (($handle = fopen($clean_file_path, "r")) !== false) {
-
-        $headers = fgetcsv($handle, 1000, ",");
-        fclose($handle);
-
-        // Compare the headers
-        return $headers === $expected_headers;
-        
-    } else {
-        throw new Exception("Unable to open file: $clean_file_path");
-    }
-}
-
-// Function to check the manifest.csv file and validate required files
-function check_manifest_and_files($manifest_path, $tempdir) {
-    $invalid_headers = [];
-    $required_files = [];
-
-    if (($handle = fopen($manifest_path, "r")) !== false) {
-        while (($data = fgetcsv($handle, 1000, ",")) !== false) {
-            if (in_array($data[1], ['bulk', 'delta'])) {
-                $required_files[] = str_replace('file.', '', $data[0]) . '.csv';
-            }
-        }
-        fclose($handle);
-    }
-
-    // Check if all required files are present
-    $extracted_files = array_diff(scandir($tempdir), array('.', '..', 'uploadedzip.zip'));
-    $missing_files = array_diff($required_files, $extracted_files);
-
-    // Validate headers for each required file
-    foreach ($required_files as $file) {
-        if (in_array($file, $extracted_files)) {
-            $file_path = $tempdir . '/' . $file;
-            if (!validate_csv_headers($file_path)) {
-                $invalid_headers[] = $file;
-            }
-        }
-    }
-
-    return [
-        'missing_files' => $missing_files,
-        'invalid_headers' => $invalid_headers
-    ];
-}
-
-// Form processing and displaying
 if ($mform->is_cancelled()) {
-    // Handle form cancellation
     redirect(new moodle_url('/admin/settings.php', ['section' => 'enrolsettingsoneroster']));
-} else if ($data = $mform->get_data()) {
-    // Process the uploaded ZIP file
-    $tempdir = make_temp_directory(TEMPDIR); 
 
+} else if ($data = $mform->get_data()) {
+    $tempdir = make_temp_directory(TEMPDIR); 
     $filecontent = $mform->get_file_content('uploadedzip');
     $zipfilepath = $tempdir . '/uploadedzip.zip';
 
@@ -97,34 +54,28 @@ if ($mform->is_cancelled()) {
             $zip->extractTo($tempdir); 
             $zip->close();
 
-            // Check if the manifest.csv file is present
             $manifest_path = $tempdir . '/manifest.csv';
 
             if (file_exists($manifest_path)) {
-                // Check the manifest.csv and validate required files
-                $missing_files = check_manifest_and_files($manifest_path, $tempdir);
+                $missing_files = OneRosterHelper::check_manifest_and_files($manifest_path, $tempdir);
+
+                echo $OUTPUT->header();
 
                 if (empty($missing_files['missing_files']) && empty($missing_files['invalid_headers'])) {
-                    // Process the manifest.csv file and other required files
-                    // CSV processing logic goes here
-                    echo $OUTPUT->header();
+                    $csv_data = OneRosterHelper::extract_csvs_to_arrays($tempdir);
+
+                    // Process the CSV files
+
                     echo 'CSV processing completed.<br>';
                 } else {
-                    echo $OUTPUT->header();
-                    if (!empty($missing_files['missing_files'])) {
-                        echo 'The following required files are missing: ' . implode(', ', $missing_files['missing_files']) . '<br>';
-                    }
-                    if (!empty($missing_files['invalid_headers'])) {
-                        echo 'The following files have invalid or missing headers: ' . implode(', ', $missing_files['invalid_headers']) . '<br>';
-                    }
+                    OneRosterHelper::display_missing_and_invalid_files($missing_files);
                 }
             } else {
                 echo $OUTPUT->header();
                 echo 'The manifest.csv file is missing.<br>';
             }
 
-            // Cleanup: remove the entire temporary directory
-            remove_dir($tempdir); // Using Moodle's built-in remove_dir function
+            remove_dir($tempdir);
         } else {
             echo $OUTPUT->header();
             echo 'Failed to open the ZIP file.<br>';
@@ -137,9 +88,10 @@ if ($mform->is_cancelled()) {
     $backbuttonurl = new moodle_url('/enrol/oneroster/processcsv.php');
     echo $OUTPUT->single_button($backbuttonurl, get_string('back'));
     echo $OUTPUT->footer();
+
 } else {
-    // Display the form
     echo $OUTPUT->header();
     $mform->display();
     echo $OUTPUT->footer();
 }
+
