@@ -85,5 +85,4 @@ class client_helper {
     public static function get_csv_client(): client_interface {
         return new \enrol_oneroster\local\csv_client();
     }
-
 }

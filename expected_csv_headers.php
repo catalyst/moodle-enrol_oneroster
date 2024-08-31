@@ -1,4 +1,5 @@
 <?php
+namespace enrol_oneroster;
 class expected_csv_headers {
     
     // Define the expected headers for each CSV file
