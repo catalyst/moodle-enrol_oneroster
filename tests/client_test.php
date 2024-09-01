@@ -54,7 +54,7 @@ use advanced_testcase;
         $classes = csv_data_helper::get_classes_data();
         $courses = csv_data_helper::get_courses_data();
         $orgs = csv_data_helper::get_orgs_data();
-        $enrolments = csv_data_helper::get_enrolments_data();
+        $enrollments = csv_data_helper::get_enrollments_data();
         $academicsessions = csv_data_helper::get_academicSessions_data();
 
         

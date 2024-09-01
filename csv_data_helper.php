@@ -690,7 +690,7 @@ class csv_data_helper {
         );
     }
 
-    public static function get_enrolments_data() {
+    public static function get_enrollments_data() {
         return array(
             array(
                 'sourcedId' => NULL,

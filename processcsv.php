@@ -45,19 +45,48 @@ if ($mform->is_cancelled()) {
                 // Check the manifest.csv and validate required files
                 $missing_files = OneRosterHelper::check_manifest_and_files($manifest_path, $tempdir);
 
+                echo $OUTPUT->header(); // Ensure the header is echoed
+
                 if (empty($missing_files['missing_files']) && empty($missing_files['invalid_headers'])) {
                     // Process the manifest.csv file and other required files
                     // CSV processing logic goes here
-                    echo $OUTPUT->header();
+                    $csv_data = OneRosterHelper::extract_csvs_to_arrays($tempdir);
+
+
+                    // Tests the data Array (can get rid of this later)
+                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    foreach ($csv_data as $file_name => $data_array) {
+                        echo "<h2>Data from $file_name.csv</h2>";
+                        if (!empty($data_array)) {
+                            echo '<table border="1">';
+                            echo '<tr>';
+                    
+                            // Output table headers
+                            foreach (array_keys($data_array[0]) as $header) {
+                                echo "<th>{$header}</th>";
+                            }
+                            echo '</tr>';
+                    
+                            // Output table rows
+                            foreach ($data_array as $row) {
+                                echo '<tr>';
+                                foreach ($row as $cell) {
+                                    echo "<td>" . htmlspecialchars($cell) . "</td>"; // htmlspecialchars to avoid XSS
+                                }
+                                echo '</tr>';
+                            }
+                    
+                            echo '</table><br>';
+                        } else {
+                            echo '<p>No data found.</p>';
+                        }
+                    }
+                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
                     echo 'CSV processing completed.<br>';
                 } else {
-                    echo $OUTPUT->header();
-                    if (!empty($missing_files['missing_files'])) {
-                        echo 'The following required files are missing: ' . implode(', ', $missing_files['missing_files']) . '<br>';
-                    }
-                    if (!empty($missing_files['invalid_headers'])) {
-                        echo 'The following files have invalid or missing headers: ' . implode(', ', $missing_files['invalid_headers']) . '<br>';
-                    }
+                    OneRosterHelper::display_missing_and_invalid_files($missing_files);
                 }
             } else {
                 echo $OUTPUT->header();
@@ -84,3 +113,4 @@ if ($mform->is_cancelled()) {
     $mform->display();
     echo $OUTPUT->footer();
 }
+

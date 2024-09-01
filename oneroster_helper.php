@@ -66,4 +66,50 @@ class OneRosterHelper {
         ];
     }
 
+
+    // Function to extract csv files to arrays
+    public static function extract_csvs_to_arrays($directory) {
+        $csv_data = [];
+    
+        // Get all files in the directory
+        $files = scandir($directory);
+    
+        // Loop through each file in the directory
+        foreach ($files as $file) {
+            // Check if the file has a .csv extension
+            if (pathinfo($file, PATHINFO_EXTENSION) === 'csv') {
+                // Get the file name without the extension
+                $file_name = pathinfo($file, PATHINFO_FILENAME);
+    
+                // Initialize an array to hold the CSV data
+                $csv_data[$file_name] = [];
+    
+                // Open the CSV file for reading
+                if (($handle = fopen($directory . '/' . $file, 'r')) !== false) {
+                    // Get the headers of the CSV file
+                    $headers = fgetcsv($handle, 1000, ',');
+    
+                    // Loop through each row in the CSV file
+                    while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+                        // Combine the headers with the row data to create an associative array
+                        $csv_data[$file_name][] = array_combine($headers, $row);
+                    }
+    
+                    // Close the CSV file
+                    fclose($handle);
+                }
+            }
+        }
+        return $csv_data;
+    }
+
+    public static function display_missing_and_invalid_files($missing_files) {
+        if (!empty($missing_files['missing_files'])) {
+            echo 'The following required files are missing: ' . implode(', ', $missing_files['missing_files']) . '<br>';
+        }
+        if (!empty($missing_files['invalid_headers'])) {
+            echo 'The following files have invalid or missing headers: ' . implode(', ', $missing_files['invalid_headers']) . '<br>';
+        }
+    }
+    
 }

@@ -47,9 +47,16 @@ use enrol_oneroster\local\v1p1\oneroster_client as versioned_client;
 class csv_client implements client_interface  {
     use root_oneroster_client;
     use versioned_client;
-
     public function authenticate(): void {
         return;
+    }
+    public function synchronise(?int $onlysincetime = NULL): void {
+        $result = new stdClass();
+        $result->response = [
+            'collection' => ['item1', 'item2', 'item3'] // Add a collection to the response
+        ];
+        
+        $this->lastSyncResult = $result;
     }
 
     /**
