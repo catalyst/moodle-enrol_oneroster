@@ -52,7 +52,6 @@ if ($mform->is_cancelled()) {
                     // CSV processing logic goes here
                     $csv_data = OneRosterHelper::extract_csvs_to_arrays($tempdir);
 
-
                     // Tests the data Array (can get rid of this later)
                     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     foreach ($csv_data as $file_name => $data_array) {

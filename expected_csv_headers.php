@@ -3,6 +3,7 @@ namespace enrol_oneroster;
 class expected_csv_headers {
     
     // Define the expected headers for each CSV file
+    const HEADER_MANIFEST =['manifest.version', 'oneroster.version','file.academicSessions','file.categories','file.classes','file.classResources','file.courses','file.courseResources','file.demographics','file.enrollments','file.lineItems','file.orgs','file.resources','file.results','file.users'];
     const HEADER_ACADEMIC_SESSIONS = ['sourcedId', 'status', 'dateLastModified', 'title', 'type', 'startDate', 'endDate', 'parentSourcedId', 'schoolYear'];
     const HEADER_CATEGORIES = ['sourcedId', 'status', 'dateLastModified', 'title'];
     const HEADER_CLASSES = ['sourcedId', 'status', 'dateLastModified', 'title', 'grades', 'courseSourcedId', 'classCode', 'classType', 'location', 'schoolSourcedId', 'termSourcedIds', 'subjects', 'subjectCodes', 'periods'];
@@ -19,6 +20,7 @@ class expected_csv_headers {
 
     // Define the required files and their headers
     const REQUIRED_FILES = [
+        'manifest.csv' => self::HEADER_MANIFEST,
         'academicSessions.csv' => self::HEADER_ACADEMIC_SESSIONS,
         'categories.csv' => self::HEADER_CATEGORIES,
         'classes.csv' => self::HEADER_CLASSES,
@@ -37,6 +39,8 @@ class expected_csv_headers {
     // Get the header for a specific file
     public static function getHeader($file_name) {
         switch ($file_name) {
+            case 'manifest.csv':
+                return self::HEADER_MANIFEST;
             case 'academicSessions.csv':
                 return self::HEADER_ACADEMIC_SESSIONS;
             case 'categories.csv':

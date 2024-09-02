@@ -50,6 +50,7 @@ class csv_client implements client_interface  {
     public function authenticate(): void {
         return;
     }
+    
     public function synchronise(?int $onlysincetime = NULL): void {
         $result = new stdClass();
         $result->response = [

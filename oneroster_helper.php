@@ -111,5 +111,4 @@ class OneRosterHelper {
             echo 'The following files have invalid or missing headers: ' . implode(', ', $missing_files['invalid_headers']) . '<br>';
         }
     }
-    
 }

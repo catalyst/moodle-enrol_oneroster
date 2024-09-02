@@ -40,31 +40,30 @@ use advanced_testcase;
  class client_csv_testcase extends advanced_testcase {
 
     public function test_csv_client(): void {
+      global $DB;
+      $this->resetAfterTest(true);
 
-        $this->resetAfterTest(true);
+      // Include the helper file
+      require_once(__DIR__ . '/../csv_data_helper.php');
 
-        // Include the helper file
-        require_once(__DIR__ . '/../csv_data_helper.php');
+      // Setup fixtures here.
 
-        // Setup fixtures here.
+      // Get data from the helper
+      $manifest = csv_data_helper::get_manifest_data();
+      $users = csv_data_helper::get_users_data();
+      $classes = csv_data_helper::get_classes_data();
+      $courses = csv_data_helper::get_courses_data();
+      $orgs = csv_data_helper::get_orgs_data();
+      $enrollments = csv_data_helper::get_enrollments_data();
+      $academicsessions = csv_data_helper::get_academicSessions_data();
 
-        // Get data from the helper
-        $manifest = csv_data_helper::get_manifest_data();
-        $users = csv_data_helper::get_users_data();
-        $classes = csv_data_helper::get_classes_data();
-        $courses = csv_data_helper::get_courses_data();
-        $orgs = csv_data_helper::get_orgs_data();
-        $enrollments = csv_data_helper::get_enrollments_data();
-        $academicsessions = csv_data_helper::get_academicSessions_data();
-
-        
-        $csvclient = client_helper::get_csv_client();
-        $csvclient->synchronise();
-       
-        // Assert final state here
-        // $schools = $DB->get_records();
-        // $this->assertCount(3, $schools);;
-     
+      
+      $csvclient = client_helper::get_csv_client();
+      $csvclient->synchronise();
+    
+      // Assert final state here.
+      // $schools = $DB->get_records();
+      // $this->assertCount(3, $schools);
   } 
 }
 

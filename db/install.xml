@@ -17,5 +17,19 @@
         <INDEX NAME="mappedid" UNIQUE="false" FIELDS="mappedid"/>
       </INDEXES>
     </TABLE>
+    <TABLE NAME="oneroster_orgs" COMMENT="Stores organization data from OneRoster">
+      <FIELDS>
+        <FIELD NAME="sourcedid" TYPE="char" LENGTH="36" NOTNULL="true" SEQUENCE="false" COMMENT="Unique id for the organization"/>
+        <FIELD NAME="status" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="Status of the organization"/>
+        <FIELD NAME="datelastmodified" TYPE="datetime" NOTNULL="true" SEQUENCE="false" COMMENT="The date that this record was last modified"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Name of the organization"/>
+        <FIELD NAME="type" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Type of the organization"/>
+        <FIELD NAME="identifier" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="NCES ID for the school/district"/>
+        <FIELD NAME="parentsourcedid" TYPE="char" LENGTH="36" NOTNULL="false" SEQUENCE="false" COMMENT="SourcedId of the parent organization"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="sourcedid"/>
+      </KEYS>
+    </TABLE>
   </TABLES>
 </XMLDB>
