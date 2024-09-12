@@ -59,27 +59,4 @@ function xmldb_enrol_oneroster_upgrade($oldversion) {
         // Oneroster savepoint reached.
         upgrade_plugin_savepoint(true, 2020120700, 'enrol', 'oneroster'); 
     } 
-
-    if ($oldversion < 20201206) {
-
-        $table = new xmldb_table('oneroster_orgs');
-
-        $table->add_field('sourcedid', XMLDB_TYPE_CHAR, '36', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('status', XMLDB_TYPE_CHAR, '20', null, null, null, null);
-        $table->add_field('datelastmodified', XMLDB_TYPE_DATETIME, null, null, XMLDB_NOTNULL, null, null);
-        $table->add_field('name', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('type', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('identifier', XMLDB_TYPE_CHAR, '20', null, null, null, null);
-        $table->add_field('parentsourcedid', XMLDB_TYPE_CHAR, '36', null, null, null, null);
-
-
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['sourcedid']);
-
-        if (!$dbman->table_exists($table)) {
-            $dbman->create_table($table);
-        }
-
-        upgrade_plugin_savepoint(true, 2023101000, 'enrol', 'oneroster');
-    }
-    return true;
 }

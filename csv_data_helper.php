@@ -7,7 +7,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "student_01",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_01",
                 'role' => "student",
@@ -27,7 +27,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "student_02",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_01",
                 'role' => "student",
@@ -47,7 +47,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "student_03",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_01",
                 'role' => "student",
@@ -67,7 +67,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "student_04",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_01",
                 'role' => "student",
@@ -87,7 +87,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "student_05",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_01",
                 'role' => "student",
@@ -107,7 +107,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "student_06",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_01",
                 'role' => "student",
@@ -127,7 +127,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "student_07",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_01",
                 'role' => "student",
@@ -147,7 +147,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "student_08",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_01",
                 'role' => "student",
@@ -167,7 +167,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "student_09",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_01",
                 'role' => "student",
@@ -187,7 +187,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "student_10",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_01",
                 'role' => "student",
@@ -207,7 +207,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "student_11",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_02",
                 'role' => "student",
@@ -227,7 +227,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "student_12",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_02",
                 'role' => "student",
@@ -247,7 +247,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "student_13",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_02",
                 'role' => "student",
@@ -267,7 +267,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "student_14",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_02",
                 'role' => "student",
@@ -287,7 +287,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "student_15",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_02",
                 'role' => "student",
@@ -307,7 +307,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "student_16",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_02",
                 'role' => "student",
@@ -327,7 +327,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "parent_01",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_01",
                 'role' => "parent",
@@ -347,7 +347,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "parent_02",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_01",
                 'role' => "parent",
@@ -367,7 +367,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "parent_03",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_02",
                 'role' => "parent",
@@ -387,7 +387,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "parent_04",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_02",
                 'role' => "parent",
@@ -407,7 +407,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "teacher_01",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_01",
                 'role' => "teacher",
@@ -427,7 +427,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "teacher_02",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_01",
                 'role' => "teacher",
@@ -447,7 +447,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "teacher_03",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'enabledUser' => True,
                 'orgSourcedIds' => "ORG_02",
                 'role' => "teacher",
@@ -472,7 +472,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "CLASS_01",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'title' => "1st Grade Math Sem A - Mrs. Smith",
                 'grades' => NULL,
                 'courseSourcedId' => "COURSE_01",
@@ -488,7 +488,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "CLASS_02",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'title' => "American History Sem B - Mr. Jones",
                 'grades' => NULL,
                 'courseSourcedId' => "COURSE_01",
@@ -504,7 +504,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "CLASS_03",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'title' => "Digital Photography - Dr. Spock",
                 'grades' => NULL,
                 'courseSourcedId' => "COURSE_02",
@@ -520,7 +520,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "CLASS_04",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'title' => "US History - Section 9 - Mr. Jones",
                 'grades' => NULL,
                 'courseSourcedId' => "COURSE_03",
@@ -541,7 +541,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "COURSE_01",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'schoolYearSourcedId' => NULL,
                 'title' => "1st Grade Math Sem A",
                 'courseCode' => NULL,
@@ -553,7 +553,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "COURSE_02",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'schoolYearSourcedId' => NULL,
                 'title' => "American History Sem B",
                 'courseCode' => NULL,
@@ -565,7 +565,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "COURSE_03",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'schoolYearSourcedId' => NULL,
                 'title' => "Digital Photography",
                 'courseCode' => NULL,
@@ -581,7 +581,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "ORG_01",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'name' => "METROPOLIS ELEMENTARY",
                 'type' => "school",
                 'identifier' => NULL,
@@ -590,7 +590,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "ORG_02",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'name' => "METROPOLIS MIDDLE",
                 'type' => "school",
                 'identifier' => NULL,
@@ -599,7 +599,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "ORG_03",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'name' => "METROPOLIS HIGHSCHOOL",
                 'type' => "school",
                 'identifier' => NULL,
@@ -608,7 +608,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "ORG_04",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'name' => "METROPOLIS SCHOOL DISTRICT",
                 'type' => "district",
                 'identifier' => NULL,
@@ -693,8 +693,8 @@ class csv_data_helper {
     public static function get_enrollments_data() {
         return array(
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0001",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_01",
                 'schoolSourcedId' => "ORG_01",
@@ -705,8 +705,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0002",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_01",
                 'schoolSourcedId' => "ORG_01",
@@ -717,8 +717,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0003",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_01",
                 'schoolSourcedId' => "ORG_01",
@@ -729,8 +729,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0004",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_01",
                 'schoolSourcedId' => "ORG_01",
@@ -741,8 +741,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0005",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_01",
                 'schoolSourcedId' => "ORG_01",
@@ -753,8 +753,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0006",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_01",
                 'schoolSourcedId' => "ORG_01",
@@ -765,8 +765,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0007",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_01",
                 'schoolSourcedId' => "ORG_01",
@@ -777,8 +777,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0008",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_02",
                 'schoolSourcedId' => "ORG_01",
@@ -789,8 +789,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0009",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_02",
                 'schoolSourcedId' => "ORG_01",
@@ -801,8 +801,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0010",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_02",
                 'schoolSourcedId' => "ORG_01",
@@ -813,8 +813,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0011",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_04",
                 'schoolSourcedId' => "ORG_02",
@@ -825,8 +825,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0012",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_04",
                 'schoolSourcedId' => "ORG_02",
@@ -837,8 +837,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0013",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_04",
                 'schoolSourcedId' => "ORG_02",
@@ -849,8 +849,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0014",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_04",
                 'schoolSourcedId' => "ORG_02",
@@ -861,8 +861,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0015",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_04",
                 'schoolSourcedId' => "ORG_02",
@@ -873,8 +873,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0016",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_04",
                 'schoolSourcedId' => "ORG_02",
@@ -885,8 +885,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0017",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_03",
                 'schoolSourcedId' => "ORG_01",
@@ -897,8 +897,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0018",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_03",
                 'schoolSourcedId' => "ORG_01",
@@ -909,8 +909,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0019",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_03",
                 'schoolSourcedId' => "ORG_01",
@@ -921,8 +921,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0020",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_03",
                 'schoolSourcedId' => "ORG_01",
@@ -933,8 +933,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0021",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_01",
                 'schoolSourcedId' => "ORG_01",
@@ -945,8 +945,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0022",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_02",
                 'schoolSourcedId' => "ORG_01",
@@ -957,8 +957,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' => "en0023",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_03",
                 'schoolSourcedId' => "ORG_01",
@@ -969,8 +969,8 @@ class csv_data_helper {
                 'endDate' => NULL,
             ),
             array(
-                'sourcedId' => NULL,
-                'status' => "2021-02-01",
+                'sourcedId' =>  "en0024",
+                'status' => NULL,
                 'dateLastModified' => NULL,
                 'classSourcedId' => "CLASS_04",
                 'schoolSourcedId' => "ORG_02",
@@ -988,7 +988,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "ACADSESS_01",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'title' => "Fall 2019",
                 'type' => "semester",
                 'startDate' => "19-08-2019",
@@ -999,7 +999,7 @@ class csv_data_helper {
             array(
                 'sourcedId' => "ACADSESS_02",
                 'status' => NULL,
-                'dateLastModified' => "2021-02-01",
+                'dateLastModified' => NULL,
                 'title' => "Spring 2020",
                 'type' => "semester",
                 'startDate' => "19-01-2020",
