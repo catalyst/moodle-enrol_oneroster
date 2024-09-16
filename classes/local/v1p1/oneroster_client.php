@@ -144,9 +144,9 @@ trait oneroster_client {
         // Most systems do not have many organisations in them.
         // Fetch all organisations to add them to the cache.
         $this->fetch_organisation_list();
-
         $schoolidstosync = explode(',', get_config('enrol_oneroster', 'datasync_schools'));
         $countofschools = count($schoolidstosync);
+        
 
         $this->get_trace()->output("Processing {$countofschools} schools");
 
@@ -165,6 +165,7 @@ trait oneroster_client {
         // Only fetch users last modified in the past day.
         // All timezones in One Roster are Zulu.
         $this->sync_users_in_schools($schoolidstosync, $onlysince);
+
 
         // Fetch the details of all enrolment instances before running the sync.
         $this->cache_enrolment_instances();
@@ -318,7 +319,7 @@ EOF;
             // Only fetch users last modified in the onlysince period.
             $classfilter->add_filter('dateLastModified',  $onlysince->format('o-m-d'), '>');
         }
-
+        
         $this->get_trace()->output("Fetching class data", 3);
         $classes = $school->get_classes([], $classfilter);
         foreach ($classes as $class) {

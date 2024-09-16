@@ -51,23 +51,29 @@ class csv_client implements client_interface  {
 
     private $data;
 
-    public function set_data($users, $classes, $courses, $orgs, $enrollments, $academicsessions) {
+
+    public function set_data($manifest, $users, $classes, $courses, $orgs, $enrollments, $academicSessions, $demographics, $lineItems, $results, $categories) {
         $this->data = [
-            'users' => $users,
-            'classes' => $classes,
-            'courses' => $courses,
-            'orgs' => $orgs,
-            'enrollments' => $enrollments,
-            'academicsessions' => $academicsessions,
+            'manifest' => $manifest,                  // Manifest data
+            'users' => $users,                        // Users data
+            'classes' => $classes,                    // Classes data
+            'courses' => $courses,                    // Courses data
+            'orgs' => $orgs,                          // Orgs data
+            'enrollments' => $enrollments,            // Enrollments data
+            'academicSessions' => $academicSessions,  // Academic sessions data
+            'demographics' => $demographics,          // Demographics data
+            'lineItems' => $lineItems,                // Line items data
+            'results' => $results,                    // Results data
+            'categories' => $categories               // Categories data
         ];
     }
+    
 
     public function authenticate(): void {
         return;
     }
 
-
-
+   
 
     /**
      * Execute the supplied command.
@@ -77,15 +83,19 @@ class csv_client implements client_interface  {
      * @return  stdClass
      */
     public function execute(command $command, ?filter $filter = null): stdClass {
-        $result = new stdClass();
 
-        switch ($command->get_method()):
+        $url = $command->get_url('');
+        $basepath =  explode('/', $url)[1];
+        $result = new stdClass();
+        echo("I was called: " . $basepath . "\n");
+
+        switch ($basepath):
             case 'getAllAcademicSessions':
                 $result->AllAcademicSessions = array_column($this->data['academicsessions'], 'sourcedId');
                 break;
 
             case 'getAcademicSession':
-                $sourcedId = $_GET['sourcedId'] ?? null; 
+                $sourcedId = $command->get_params()['sourcedId'] ?? null;
                 $academicsession = $this->getAcademicSession($sourcedId);
                 if ($academicsession) {
                     $result->AcademicSession = $academicsession;
@@ -124,13 +134,17 @@ class csv_client implements client_interface  {
             //     return getGradingPeriod();
             //     break;
 
-            // case 'getAllDemographics':
-            //     return getAllDemographics();
-            //     break;
+            case 'getAllDemographics':
+                $result->AllCourses = array_column($this->data['demographics'], 'sourcedId');
+                break;
 
-            // case 'getDemographics':
-            //     return getDemographics();
-            //     break;
+            case 'getDemographics':
+                $sourcedId = $_GET['sourcedId'] ?? null; 
+                $demographic = $this->getDemographics($sourcedId);
+                if ($demographic) {
+                    $result->Demographic = $demographic;
+                }
+                break;
 
             case 'getAllEnrollments':
                 $result->AllEnrollments = array_column($this->data['enrollments'], 'sourcedId');
@@ -144,9 +158,32 @@ class csv_client implements client_interface  {
                 }
                 break;
 
-            case 'getAllOrgs':
-                $result->AllOrgs = array_column($this->data['orgs'], 'sourcedId');
-                break;
+                case 'orgs':
+                    $data = $this->data['orgs'];
+                
+                    if (isset($data[0])) {
+                        // Create a new org object to store the sourcedId and type
+                        $org = new stdClass();
+                
+                        $org->sourcedId = $data[0]['sourcedId'] ?? null;
+                        $org->status = $data[0]['status'] ?? null ;
+                        $org->dateLastModified = $data[0]['dateLastModified'] ?? null;
+                        $org->name = $data[0]['name'] ?? null;
+                        $org->type = isset($data[0]['type']) && !empty($data[0]['type']) ? $data[0]['type'] : 'school';
+                        $org->identifier = $data[0]['identifier'] ?? null;
+                        $org->parentSourcedId = $data[0]['parentSourcedId'] ?? null;
+                        
+                        return (object) [
+                            'response' => (object) [
+                                'org' => $org,
+                                
+                            ]
+                        ];
+                    }
+                
+                
+                
+                
 
             case 'getOrg':
                 $sourcedId = $_GET['sourcedId'] ?? null; 
@@ -156,9 +193,37 @@ class csv_client implements client_interface  {
                 }
                 break;
 
-            case 'getAllSchools':
-                $result->AllSchools = array_column($this->data['orgs'], 'name');
-                break;
+
+            case 'schools':
+                $data = isset($this->data['orgs']) ? $this->data['orgs'] : [];
+
+                // Initialize the orgs collection as an array
+                $orgs = [];
+
+                // If there is org data, loop through it
+                if (!empty($data) && is_array($data)) {
+                    foreach ($data as $orgData) {
+                        $org = new stdClass();
+                        $org->sourcedId = $data[0]['sourcedId'] ?? null;
+                        $org->status = $data[0]['status'] ?? null ;
+                        $org->dateLastModified = $data[0]['dateLastModified'] ?? null;
+                        $org->name = $data[0]['name'] ?? null;
+                        $org->type = isset($data[0]['type']) && !empty($data[0]['type']) ? $data[0]['type'] : 'school';
+                        $org->identifier = $data[0]['identifier'] ?? null;
+                        $org->parentSourcedId = $data[0]['parentSourcedId'] ?? null;
+
+                        $orgs[] = $org;
+                    }
+                }
+
+                return (object) [
+                    'response' => (object) [
+                        'collection' => (object) [
+                            'orgs' => $orgs
+                        ]
+                    ]
+                ];
+                    
 
             case 'getSchool':
                 $name = $_GET['name'] ?? null; 
@@ -213,9 +278,31 @@ class csv_client implements client_interface  {
             //     break;
 
 
-            case 'getAllUsers':
-                $result->AllUsers= array_column($this->data['users'], 'sourcedId');
-                break;
+            case 'users':
+                $data = $this->data['users'];
+                $users = [];
+            
+                foreach ($data as $userData) {
+                    $user = new stdClass();
+                    
+                    $user->sourcedId = $userData['sourcedId'] ?? null;
+            
+                    // Convert 'orgSourcedIds' into an array of objects with 'sourcedId' property
+                    $user->orgs = array_map(function($orgSourcedId) {
+                        return (object) ['sourcedId' => $orgSourcedId];
+                    }, is_array($userData['orgSourcedIds']) ? $userData['orgSourcedIds'] : [$userData['orgSourcedIds']]);
+                    
+                    $users[] = $user;
+                }
+            
+                return (object) [
+                    'response' => (object) [
+                        'users' => $users 
+                    ]
+                ];
+            
+
+            
 
             case 'getUser':
                 $sourcedId = $_GET['sourcedId'] ?? null;
@@ -301,7 +388,7 @@ class csv_client implements client_interface  {
             default:
                 return new stdClass();
         endswitch;
-    
+        
         return $result;
     }
     
@@ -381,6 +468,20 @@ class csv_client implements client_interface  {
         }
     
         foreach ($this->data['courses'] as $session) {
+            if ($session['sourcedId'] === $sourcedId) {
+                return $session;
+            }
+        }
+    
+        return null; // or handle the case where the session is not found
+    }
+
+    public function getDemographic($sourcedId) {
+        if (!$sourcedId) {
+            return null; // or handle the error as needed
+        }
+    
+        foreach ($this->data['demographics'] as $session) {
             if ($session['sourcedId'] === $sourcedId) {
                 return $session;
             }
