@@ -144,6 +144,7 @@ trait oneroster_client {
         // Most systems do not have many organisations in them.
         // Fetch all organisations to add them to the cache.
         $this->fetch_organisation_list();
+        
         $schoolidstosync = explode(',', get_config('enrol_oneroster', 'datasync_schools'));
         $countofschools = count($schoolidstosync);
         
@@ -466,7 +467,7 @@ EOF;
             $localcategory = core_course_category::create($remotecategory);
             $this->add_metric('coursecat', 'create');
         }
-
+        
         return $localcategory;
     }
 

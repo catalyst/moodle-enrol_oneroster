@@ -1,32 +1,48 @@
 <?php
-require_once('../../config.php');
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-// Define the URL where this script is located
+namespace enrol_oneroster;
+
+use enrol_oneroster\OneRosterHelper;
+require_once('../../config.php');
+require_once('oneroster_csv_form.php');
+require_once('oneroster_helper.php');
+
+/**
+ * One Roster Client
+ *
+ * @package    enrol_oneroster
+ * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 $PAGE->set_url('/enrol/oneroster/processcsv.php');
 $PAGE->set_context(context_system::instance());
 $PAGE->set_title('Process OneRoster CSV');
 $PAGE->set_heading('Process OneRoster CSV');
 
-// Include form definition
-require_once('oneroster_csv_form.php');
-
-// Include helper functions
-require_once('oneroster_helper.php');
-use enrol_oneroster\OneRosterHelper;
-
-// Setup a new form instance
 $mform = new oneroster_csv_form();
 
 const TEMPDIR = 'oneroster_csv';
 
-// Form processing and displaying
 if ($mform->is_cancelled()) {
-    // Handle form cancellation
     redirect(new moodle_url('/admin/settings.php', ['section' => 'enrolsettingsoneroster']));
-} else if ($data = $mform->get_data()) {
-    // Process the uploaded ZIP file
-    $tempdir = make_temp_directory(TEMPDIR); 
 
+} else if ($data = $mform->get_data()) {
+    $tempdir = make_temp_directory(TEMPDIR); 
     $filecontent = $mform->get_file_content('uploadedzip');
     $zipfilepath = $tempdir . '/uploadedzip.zip';
 
@@ -38,50 +54,17 @@ if ($mform->is_cancelled()) {
             $zip->extractTo($tempdir); 
             $zip->close();
 
-            // Check if the manifest.csv file is present
             $manifest_path = $tempdir . '/manifest.csv';
 
             if (file_exists($manifest_path)) {
-                // Check the manifest.csv and validate required files
                 $missing_files = OneRosterHelper::check_manifest_and_files($manifest_path, $tempdir);
 
-                echo $OUTPUT->header(); // Ensure the header is echoed
+                echo $OUTPUT->header();
 
                 if (empty($missing_files['missing_files']) && empty($missing_files['invalid_headers'])) {
-                    // Process the manifest.csv file and other required files
-                    // CSV processing logic goes here
                     $csv_data = OneRosterHelper::extract_csvs_to_arrays($tempdir);
 
-                    // Tests the data Array (can get rid of this later)
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    foreach ($csv_data as $file_name => $data_array) {
-                        echo "<h2>Data from $file_name.csv</h2>";
-                        if (!empty($data_array)) {
-                            echo '<table border="1">';
-                            echo '<tr>';
-                    
-                            // Output table headers
-                            foreach (array_keys($data_array[0]) as $header) {
-                                echo "<th>{$header}</th>";
-                            }
-                            echo '</tr>';
-                    
-                            // Output table rows
-                            foreach ($data_array as $row) {
-                                echo '<tr>';
-                                foreach ($row as $cell) {
-                                    echo "<td>" . htmlspecialchars($cell) . "</td>"; // htmlspecialchars to avoid XSS
-                                }
-                                echo '</tr>';
-                            }
-                    
-                            echo '</table><br>';
-                        } else {
-                            echo '<p>No data found.</p>';
-                        }
-                    }
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                    // Process the CSV files
 
                     echo 'CSV processing completed.<br>';
                 } else {
@@ -92,8 +75,7 @@ if ($mform->is_cancelled()) {
                 echo 'The manifest.csv file is missing.<br>';
             }
 
-            // Cleanup: remove the entire temporary directory
-            remove_dir($tempdir); // Using Moodle's built-in remove_dir function
+            remove_dir($tempdir);
         } else {
             echo $OUTPUT->header();
             echo 'Failed to open the ZIP file.<br>';
@@ -106,8 +88,8 @@ if ($mform->is_cancelled()) {
     $backbuttonurl = new moodle_url('/enrol/oneroster/processcsv.php');
     echo $OUTPUT->single_button($backbuttonurl, get_string('back'));
     echo $OUTPUT->footer();
+
 } else {
-    // Display the form
     echo $OUTPUT->header();
     $mform->display();
     echo $OUTPUT->footer();

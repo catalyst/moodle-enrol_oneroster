@@ -1,7 +1,36 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace enrol_oneroster;
 
+/**
+ * Class csv_data_helper
+ *
+ * This class provides sample data for the CSV files that are used in the unit tests.
+ *
+ * @package    enrol_oneroster
+ * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class csv_data_helper {
+    /**
+     * Returns the manifest data.
+     *
+     * @return array
+     */
     public static function get_manifest_data() {
         return array(
             array(
@@ -75,6 +104,11 @@ class csv_data_helper {
         );
     }
 
+    /**
+     * Returns the academic sessions data.
+     *
+     * @return array
+     */
     public static function get_academicsessions_data() {
         return array(
             array(
@@ -103,6 +137,11 @@ class csv_data_helper {
         );
     }
 
+    /**
+     * Returns the categories data.
+     *
+     * @return array
+     */
     public static function get_categories_data() {
         return array(
             array(
@@ -120,6 +159,11 @@ class csv_data_helper {
         );
     }
 
+    /**
+     * Returns the classes data.
+     *
+     * @return array
+     */
     public static function get_classes_data() {
         return array(
             array(
@@ -138,10 +182,6 @@ class csv_data_helper {
                 ),
                 'subjects' => array('Science'),  // List of Strings, Optional
                 'periods' => array('B'),         // List of Strings, Optional
-                'metadata' => array(             // Optional metadata
-                    'department_0' => 'org-dpt-222-3456',
-                    'lead_section' => 'cls-222-123456'
-                )
             ),
             array(
                 'sourcedId' => 'cls-222-123478', // GUID, Required
@@ -159,14 +199,15 @@ class csv_data_helper {
                 ),
                 'subjects' => array('History'),  // List of Strings, Optional
                 'periods' => array('D'),         // List of Strings, Optional
-                'metadata' => array(             // Optional metadata
-                    'department_0' => 'org-dpt-222-3456',
-                    'lead_section' => 'cls-222-123477'
-                )
             )
         );
     }
 
+    /**
+     * Returns the courses data.
+     *
+     * @return array
+     */
     public static function get_courses_data() {
         return array(
             array(
@@ -180,9 +221,6 @@ class csv_data_helper {
                 'orgSourcedId' => 'org-sch-222-456', // GUID Reference, Required
                 'subjects' => array('Science'),     // List of Strings, Optional
                 'subjectCodes' => null,             // List of Strings, Optional (null for now)
-                'metadata' => array(                // Optional metadata
-                    'department_0' => 'org-dpt-222-3456'
-                )
             ),
             array(
                 'sourcedId' => 'crs-222-123654',    // GUID, Required
@@ -195,13 +233,15 @@ class csv_data_helper {
                 'orgSourcedId' => 'org-sch-222-456', // GUID Reference, Required
                 'subjects' => array('History'),     // List of Strings, Optional
                 'subjectCodes' => null,             // List of Strings, Optional (null for now)
-                'metadata' => array(                // Optional metadata
-                    'department_0' => 'org-dpt-222-4567'
-                )
             )
         );
     }
 
+    /**
+     * Returns the demographics data.
+     *
+     * @return array
+     */
     public static function get_demographics_data() {
         return array(
             array(
@@ -221,11 +261,6 @@ class csv_data_helper {
                 'countryOfBirthCode' => null,      // String, Optional
                 'stateOfBirthAbbreviation' => null, // String, Optional
                 'publicSchoolResidenceStatus' => null, // String, Optional
-                'metadata' => array(               // Optional metadata
-                    'iepStatus' => 'true',
-                    'ellStatus' => 'false',
-                    'frlStatus' => 'Reduced'
-                )
             ),
             array(
                 'sourcedId' => 'usr-222-66778896',  // GUID Reference, Required
@@ -244,15 +279,15 @@ class csv_data_helper {
                 'countryOfBirthCode' => null,      // String, Optional
                 'stateOfBirthAbbreviation' => null, // String, Optional
                 'publicSchoolResidenceStatus' => null, // String, Optional
-                'metadata' => array(               // Optional metadata
-                    'iepStatus' => 'false',
-                    'ellStatus' => 'true',
-                    'frlStatus' => 'Free'
-                )
             )
         );
     }
 
+    /**
+     * Returns the enrollments data.
+     *
+     * @return array
+     */
     public static function get_enrollments_data() {
         return array(
             array(
@@ -282,6 +317,11 @@ class csv_data_helper {
         );
     }
 
+    /**
+     * Returns the line items data.
+     *
+     * @return array
+     */
     public static function get_line_items_data() {
         return array(
             array(
@@ -315,6 +355,11 @@ class csv_data_helper {
         );
     }
 
+    /**
+     * Returns the orgs data.
+     *
+     * @return array
+     */
     public static function get_orgs_data() {
         return array(
             array(
@@ -324,30 +369,25 @@ class csv_data_helper {
                 'name' => 'Upper School',            // String, Required
                 'type' => 'school',                  // Enumeration, Required
                 'identifier' => 'US',                // String, Optional
-                'parentSourcedId' => null,           // GUID Reference, Optional
-                'metadata' => array(                 // Optional metadata
-                    'address1' => '1234 Elm Street',
-                    'address2' => 'Building 101',
-                    'address3' => 'Main Campus',
-                    'city' => 'Manchester',
-                    'state' => 'NH',
-                    'postCode' => '03101-1001',
-                    'gradeRange' => '09, 10, 11, 12'
-                )
+                'parentSourcedId' => 'org-dpt-222-456',           // GUID Reference, Optional
             ),
             array(
                 'sourcedId' => 'org_sch-222-7654',   // GUID, Required
                 'status' => null,                    // Enumeration, Null for Bulk mode
-                'dateLastModified' => null,          // DateTime, Null for Bulk mode
+                'dateLastModified' => null,          // DateTime, Null forBulk mode
                 'name' => 'US History',              // String, Required
                 'type' => 'department',              // Enumeration, Required
                 'identifier' => 'US History',        // String, Optional
                 'parentSourcedId' => 'org-sch-222-3456', // GUID Reference, Optional
-                'metadata' => null                   // No metadata in this case
             )
         );
     }
 
+    /**
+     * Returns the results data.
+     *
+     * @return array
+     */
     public static function get_results_data() {
         return array(
             array(
@@ -375,6 +415,11 @@ class csv_data_helper {
         );
     }
 
+    /**
+     * Returns the users data.
+     *
+     * @return array
+     */
     public static function get_users_data() {
         return array(
             array(
@@ -396,14 +441,6 @@ class csv_data_helper {
                 'agentSourcedIds' => null,               // List of GUID References, Optional
                 'grades' => null,                        // String, Optional (for students)
                 'password' => null,                      // String, Optional
-                'metadata' => array(                     // Optional metadata
-                    'stateId' => 'NH-987-654',
-                    'address1' => '5555 Main Street',
-                    'address2' => 'Apartment 255',
-                    'city' => 'Nashua',
-                    'state' => 'NH',
-                    'postCode' => '03060-6006'
-                )
             ),
             array(
                 'sourcedId' => 'usr-222-66778899',       // GUID, Required
@@ -427,17 +464,6 @@ class csv_data_helper {
                 'agentSourcedIds' => array('usr-222-66778900'), // List of GUID References, Optional
                 'grades' => '12',                        // String, Optional
                 'password' => null,                      // String, Optional
-                'metadata' => array(                     // Optional metadata
-                    'grade' => '12th Grade',
-                    'stateId' => 'NH-345-678',
-                    'address1' => '1234 Elm Street',
-                    'address2' => 'Apartment 3C',
-                    'address3' => 'basement',
-                    'city' => 'Manchester',
-                    'state' => 'NH',
-                    'postCode' => '03101-1001',
-                    'microsoft.userFlags' => 'iep,ell,freeLunch'
-                )
             ),
             array(
                 'sourcedId' => 'usr-222-66778900',       // GUID, Required
@@ -458,15 +484,6 @@ class csv_data_helper {
                 'agentSourcedIds' => array('usr-222-66778899'), // List of GUID References, Optional
                 'grades' => null,                        // String, Optional
                 'password' => null,                      // String, Optional
-                'metadata' => array(                     // Optional metadata
-                    'stateId' => 'NH-345-678',
-                    'address1' => '1234 Elm Street',
-                    'address2' => 'Apartment 3C',
-                    'address3' => 'basement',
-                    'city' => 'Manchester',
-                    'state' => 'NH',
-                    'postCode' => '03101-1001'
-                )
             )
         );
     }

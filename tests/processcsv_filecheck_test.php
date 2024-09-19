@@ -1,27 +1,49 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace enrol_oneroster\tests;
+use enrol_oneroster\OneRosterHelper;
+global $CFG;
 
 defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->dirroot . '/enrol/oneroster/oneroster_helper.php');
 
-use enrol_oneroster\OneRosterHelper;
-
+/**
+ * One Roster tests for the client_helper class.
+ *
+ * @package    enrol_oneroster
+ * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * @covers  enrol_oneroster\OneRosterHelper
+ */
 class processcsv_test extends \advanced_testcase {
     private $testDir;
     private $manifestPath;
-
+    
+    /**
+     * Set up the test environment.
+     */
     protected function setUp(): void
     {
-        // Create a temporary directory for testing
         $this->testDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'testDir';
         if (!file_exists($this->testDir)) {
             mkdir($this->testDir);
         }
-
-        // Create a manifest.csv file
         $this->manifestPath = $this->testDir . DIRECTORY_SEPARATOR . 'manifest.csv';
         $manifest_content = [
             ['propertyName', 'value'],
@@ -48,7 +70,6 @@ class processcsv_test extends \advanced_testcase {
         }
         fclose($handle);
 
-        // Create required files listed in the manifest
         file_put_contents($this->testDir . DIRECTORY_SEPARATOR . 'users.csv', 'User data');
         file_put_contents($this->testDir . DIRECTORY_SEPARATOR . 'enrollments.csv', 'Enrollment data');
         file_put_contents($this->testDir . DIRECTORY_SEPARATOR . 'courses.csv', 'Course data');
@@ -57,27 +78,31 @@ class processcsv_test extends \advanced_testcase {
         file_put_contents($this->testDir . DIRECTORY_SEPARATOR . 'orgs.csv', 'Org data');
     }
 
+    /**
+     * Tear down the test environment.
+     */
     protected function tearDown(): void
     {
-        // Clean up after the test, if the directory still exists
         if (file_exists($this->testDir)) {
             OneRosterHelper::delete_directory($this->testDir);
         }
     }
 
+    /**
+     * Test the check_manifest_and_files method.
+     */
     public function testCheckManifestAndFiles_allFilesPresent()
     {
-        // Assert that there are no missing files
         $missing_files = OneRosterHelper::check_manifest_and_files($this->manifestPath, $this->testDir);
         $this->assertEmpty($missing_files, 'No files should be missing');
     }
 
+    /**
+     * Test the check_manifest_and_files method with a missing file.
+     */
     public function testCheckManifestAndFiles_missingFile()
     {
-        // Remove the users.csv file to simulate a missing file
         unlink($this->testDir . DIRECTORY_SEPARATOR . 'users.csv');
-        
-        // Assert that the users.csv file is reported as missing
         $missing_files = OneRosterHelper::check_manifest_and_files($this->manifestPath, $this->testDir);
         $this->assertEqualsCanonicalizing(['users.csv'], $missing_files, 'users.csv should be reported as missing');
     }
