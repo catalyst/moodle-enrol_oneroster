@@ -48,7 +48,6 @@ require_once(__DIR__ . '/../csv_data_helper.php');
      * Test Synchronise method.to check the data is inserted into the database.
      */
     public function test_execute(): void {
-        ob_start();
 
         global $DB;
         $this->resetAfterTest(true);
@@ -77,11 +76,10 @@ require_once(__DIR__ . '/../csv_data_helper.php');
         $user = $DB->get_records('user');
         $enrol = $DB->get_records('enrol');
 
-        $this->assertCount(2, $course);
+        $this->assertCount(3, $course);
         $this->assertCount(2, $user);
-        $this->assertCount(4, $enrol);
+        $this->assertCount(8, $enrol);
 
-        ob_end_clean();
     }
 }
 

@@ -89,7 +89,6 @@ class csv_client implements client_interface  {
         $basepath = $tokens[1];
         $param = $tokens[2] ?? '';
         $type = $tokens[3] ?? '';
-        echo $url . "\n";
 
         $orgId = 'org-sch-222-456';
 
@@ -106,8 +105,9 @@ class csv_client implements client_interface  {
                     if (isset($mapped_data[$orgId])) {
                         $org = (object) $mapped_data[$orgId];
                         $org->status = 'active'; 
-                        $org->datkeysastModified = date('Y-m-d H:i:s'); 
+                        $org->dateLastModified = date('Y-m-d H:i:s'); 
                     }
+
                     return (object) [
                         'response' => (object) [
                             'org' => (object) $org
@@ -157,12 +157,10 @@ class csv_client implements client_interface  {
                     foreach ($mapped_data as $classId => $classData) {
                         $class = (object) $classData;
                         if (isset($class->schoolSourcedId) && $class->schoolSourcedId == $orgId) {
-                            $class->school = (object) [
-                                'sourcedId' => $class->schoolSourcedId
-                            ];
-                            $class->course = isset($class->courseSourcedId) ? (object) [
-                                'sourcedId' => $class->courseSourcedId
-                            ] : null;
+                            $class->school = (object) [ 'sourcedId' => $class->schoolSourcedId ];
+
+                            $class->course = isset($class->courseSourcedId) ? (object) [ 'sourcedId' => $class->courseSourcedId ] : null;
+
                             $class->terms = isset($class->termSourcedIds) ? array_map(function($term) {
                                 return (object) ['sourcedId' => $term];
                             }, (array) $class->termSourcedIds) : [null];
@@ -181,11 +179,8 @@ class csv_client implements client_interface  {
                             unset($class->subjects);
                             unset($class->periods);
                         }
+                        $classes[$classId] = $class;
                     }
-                    
-                    // appparently the sychronize only works for one class ???
-                    $classes[$classId] = $class;
-
                     return (object) [
                         'response' => (object) [
                             'classes' => $classes
@@ -204,10 +199,13 @@ class csv_client implements client_interface  {
                     foreach ($mapped_data as $enrollmentId => $enrollmentData) {
                         $enrollment = (object) $enrollmentData;
                         if (isset($enrollment->schoolSourcedId) && $enrollment->schoolSourcedId == $orgId) {
+
                             $enrollment->user = isset($enrollmentData['userSourcedId']) ? (object) [
                                 'sourcedId' => $enrollmentData['userSourcedId']] : null;
+
                             $enrollment->school = (object) [
                                 'sourcedId' => $enrollmentData['schoolSourcedId']];
+
                             $enrollment->class = isset($enrollmentData['classSourcedId']) ? (is_array($enrollmentData['classSourcedId']) ? array_map(function($classSourcedId) {
                                 return (object) ['sourcedId' => $classSourcedId]; }, $enrollmentData['classSourcedId']) : [(object) ['sourcedId' => $enrollmentData['classSourcedId']]]) : [null];
                             
