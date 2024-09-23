@@ -74,14 +74,6 @@ class csv_client implements client_interface  {
         ];
     }
 
-    /**
-     * Class constructor to initialize the count variable.
-     *
-     * @return void
-     */
-    public function __construct() {
-        $this->count = 0;
-    }
    
     /**
      * Execute the supplied command.
@@ -93,63 +85,57 @@ class csv_client implements client_interface  {
     public function execute(command $command, ?filter $filter = null): stdClass {
         $url = $command->get_url('');
         $basepath =  explode('/', $url)[1];
+        $tokens = explode('/', $url); 
+        $basepath = $tokens[1];
+        $param = $tokens[2] ?? '';
+        $type = $tokens[3] ?? '';
+        echo $url . "\n";
+
+        $orgId = 'org-sch-222-456';
+
 
         switch ($basepath):
             case 'orgs':
                 /** The endpoint getOrg is called to fetch the org data */
-                if ($this->count == 1 || $this->count == 4) {
-                    $orgdata = $this->data['orgs'];
-                    $org = null;  
+                if ($param == $orgId || $param == '') {
+                    $orgdata = $this->data['orgs']; 
 
-                    foreach ($orgdata as $data) {
-                        // ISSUE HERE: sourcedId is not called dynamically yet
-                        if (isset($data['sourcedId']) && $data['sourcedId'] === 'org-sch-222-3456') {
-                            $org = new stdClass();
-                            $org->name = $data['name'] ?? null;
-                            $org->identifier = $data['identifier'] ?? null;
-                            $org->type = $data['type'] ?? null;
-                            $org->sourcedId = $data['sourcedId'] ?? null;
+                    $keys = array_map(function($keys) { return $keys['sourcedId']; }, $orgdata);
+                    $mapped_data = array_combine($keys, $orgdata);
 
-                            // ISSUE HERE: the status and dateLastModified are not called dynamically yet and need to be fixed
-                            $org->status = $data['status'] ?? 'active';
-                            $org->dateLastModified = $data['dateLastModified'] ?? '2023-01-10T09:15:00.0000000+00:00';
-                        }
+                    if (isset($mapped_data[$orgId])) {
+                        $org = (object) $mapped_data[$orgId];
+                        $org->status = 'active'; 
+                        $org->datkeysastModified = date('Y-m-d H:i:s'); 
                     }
-                    $this->count++;
                     return (object) [
                         'response' => (object) [
-                            'org' => $org  
+                            'org' => (object) $org
                         ]
                     ];
                 }
                 
-
             case 'schools':
-                /** The endpoint getTermsForSchool is called to fetch a list of classes held in a term */
-                if ($this->count == 2) {
+                /** The endpoint getTermsForSchool is called to fetch a list of classes hkeysd in a term */
+                if ($type == 'terms') {
                     $academicsessiondata = $this->data['academicSessions'];
+                    $keys = array_map(function($keys) { return $keys['sourcedId']; }, $academicsessiondata);
+                    $mapped_data = array_combine($keys, $academicsessiondata);
+
                     $academicSession = [];
+                    foreach ($mapped_data as $academicId => $academicdata) {
+                        $academic = (object) $academicdata;
+                        $academic->parent = isset($academicdata['parentSourcedId']) ? (object) [
+                            'sourcedId' => $academicdata['parentSourcedId']
+                        ] : [null];
+                        $academic->children = isset($academicdata['sourcedId']) ? (object) [
+                            'sourcedId' => $academicdata['sourcedId']
+                        ] : [null];
 
-                    foreach ($academicsessiondata as $dataacademicSession) {
-                        $academicSessionObject = new stdClass();
-                        $academicSessionObject->title = $dataacademicSession['title'] ?? null;
-                        $academicSessionObject->startDate = $dataacademicSession['startDate'] ?? null;
-                        $academicSessionObject->endDate = $dataacademicSession['endDate'] ?? null;
-                        $academicSessionObject->type = $dataacademicSession['type'] ?? null;
-                        $academicSessionObject->parent = isset($dataacademicSession['parentSourcedId']) ? (object) [
-                            'sourcedId' => $dataacademicSession['parentSourcedId']
-                        ] : null;
-                        $academicSessionObject->children = isset($dataacademicSession['sourcedId']) ? (object) [
-                            'sourcedId' => $dataacademicSession['sourcedId']
-                        ] : null;
-                        $academicSessionObject->schoolYear = $dataacademicSession['schoolYear'] ?? null;
-                        $academicSessionObject->sourcedId = $dataacademicSession['sourcedId'] ?? null;
-                        $academicSessionObject->status = $dataacademicSession['status'] ?? null;
-                        $academicSessionObject->dateLastModified = $dataacademicSession['dateLastModified'] ?? null;
-
-                        $academicSession[] = $academicSessionObject;
+                        unset($academic->parentSourcedId);
+                        
+                        $academicSession[$academicId] = $academic;
                     }
-                    $this->count++;
                     return (object) [
                         'response' => (object) [
                             'academicSessions' => $academicSession,
@@ -158,72 +144,78 @@ class csv_client implements client_interface  {
                     ];
                 }
 
-                /** The endpoint getClassesForSchool is called to fetch all students for a class */
-                if ($this->count == 3) {
+                
+                if ($type == 'classes') {
+                    /** The endpoint getClassesForSchool is called to fetch all students for a class */
                     $classdata = $this->data['classes'];
+
+                    $keys = array_map(function($keys) { return $keys['sourcedId']; }, $classdata);
+                    $mapped_data = array_combine($keys, $classdata);
+
                     $classes = [];
-                    foreach ($classdata as $dataclass) {
-                        // ISSUE HERE: schoolSourcedId is not called dynamically yet
-                        if (isset($dataclass['schoolSourcedId']) && $dataclass['schoolSourcedId'] === 'org-sch-222-456') {
-                            $classObject = new stdClass();
-                            $classObject->title = $dataclass['title'] ?? null;
-                            $classObject->classCode = $dataclass['classCode'] ?? null;
-                            $classObject->classType = $dataclass['classType'] ?? null;
-                            $classObject->location = $dataclass['location'] ?? null;
-                            $classObject->grades = $dataclass['grades'] ?? null;
-                            $classObject->subjects = $dataclass['subjects'] ?? null;
-                            $classObject->course = isset($dataclass['courseSourcedId']) ? (object) [
-                                'sourcedId' => $dataclass['courseSourcedId']
-                            ] : null;
-                            $classObject->school = (object) [
-                                'sourcedId' => $dataclass['schoolSourcedId']
+
+                    foreach ($mapped_data as $classId => $classData) {
+                        $class = (object) $classData;
+                        if (isset($class->schoolSourcedId) && $class->schoolSourcedId == $orgId) {
+                            $class->school = (object) [
+                                'sourcedId' => $class->schoolSourcedId
                             ];
-                            $classObject->terms = isset($dataclass['termSourcedIds']) ? array_map(function($term) {
+                            $class->course = isset($class->courseSourcedId) ? (object) [
+                                'sourcedId' => $class->courseSourcedId
+                            ] : null;
+                            $class->terms = isset($class->termSourcedIds) ? array_map(function($term) {
                                 return (object) ['sourcedId' => $term];
-                            }, $dataclass['termSourcedIds']) : [];
-                            $classObject->periods = $dataclass['periods'] ?? null;
-                            $classObject->sourcedId = $dataclass['sourcedId'] ?? null;
-                            $classObject->status = $dataclass['status'] ?? null;
-                            $classObject->dateLastModified = $dataclass['dateLastModified'] ?? null;
+                            }, (array) $class->termSourcedIds) : [null];
+
+                            $class->subject = isset($class->subjects) ? array_map(function($subject) {
+                                return (object) ['subject' => $subject];
+                            }, (array) $class->subjects) : [null];
+                            
+                            $class->period = isset($class->periods) ? array_map(function($period) {
+                                return (object) ['period' => $period];
+                            }, (array) $class->periods) : [null];
+                
+                            unset($class->schoolSourcedId);
+                            unset($class->courseSourcedId);
+                            unset($class->termSourcedIds);
+                            unset($class->subjects);
+                            unset($class->periods);
                         }
-                        $classes[] = $classObject;
-                        $this->count++;
-                        return (object) [
-                            'response' => (object) [
-                                'classes' => $classes
-                            ]
-                        ];
                     }
+                    
+                    // appparently the sychronize only works for one class ???
+                    $classes[$classId] = $class;
+
+                    return (object) [
+                        'response' => (object) [
+                            'classes' => $classes
+                        ]
+                    ];
                 }
 
-                /** The endpoint getEnrollmentsForSchool is called to fetch all enrolments in a school */
-                if ($this->count == 5){
+                if ($type == 'enrollments') {
+                    /** The endpoint getEnrollmentsForSchool is called to fetch all enrolments in a school */
                     $enrollmentdata = $this->data['enrollments'];
+                    $keys = array_map(function($keys) { return $keys['sourcedId']; }, $enrollmentdata);
+                    $mapped_data = array_combine($keys, $enrollmentdata);
+
                     $enrollments = [];
-                    foreach ($enrollmentdata as $dataenrollment) {
-                        // ISSUE HERE: schoolSourcedId is not called dynamically yet and also onyl gets one enrollment object
-                        if (isset($dataenrollment['schoolSourcedId']) && $dataenrollment['schoolSourcedId'] === 'org-sch-222-456') {
-                            $enrollmentObject = new stdClass();
-                            $enrollmentObject->user = isset($dataenrollment['userSourcedId']) ? (object) [
-                                'sourcedId' => $dataenrollment['userSourcedId']
-                            ] : null;
-                            $enrollmentObject->school = (object) [
-                                'sourcedId' => $dataenrollment['schoolSourcedId']
-                            ];
-                            $enrollmentObject->class = isset($dataenrollment['classSourcedId']) ? (is_array($dataenrollment['classSourcedId']) ? array_map(function($classSourcedId) {
-                                        return (object) ['sourcedId' => $classSourcedId];
-                                    }, $dataenrollment['classSourcedId']) : [(object) ['sourcedId' => $dataenrollment['classSourcedId']]]) : [];
-                            $enrollmentObject->role = $dataenrollment['role'] ?? null;
-                            $enrollmentObject->primary = $dataenrollment['primary'] ?? null;
-                            $enrollmentObject->beginDate = $dataenrollment['beginDate'] ?? null;
-                            $enrollmentObject->endDate = $dataenrollment['endDate'] ?? null;
-                            $enrollmentObject->sourcedId = $dataenrollment['sourcedId'] ?? null;
-                            $enrollmentObject->status = $dataenrollment['status'] ?? null;
-                            $enrollmentObject->dateLastModified = $dataenrollment['dateLastModified'] ?? null;
-                            $enrollments[] = $enrollmentObject;
+
+                    foreach ($mapped_data as $enrollmentId => $enrollmentData) {
+                        $enrollment = (object) $enrollmentData;
+                        if (isset($enrollment->schoolSourcedId) && $enrollment->schoolSourcedId == $orgId) {
+                            $enrollment->user = isset($enrollmentData['userSourcedId']) ? (object) [
+                                'sourcedId' => $enrollmentData['userSourcedId']] : null;
+                            $enrollment->school = (object) [
+                                'sourcedId' => $enrollmentData['schoolSourcedId']];
+                            $enrollment->class = isset($enrollmentData['classSourcedId']) ? (is_array($enrollmentData['classSourcedId']) ? array_map(function($classSourcedId) {
+                                return (object) ['sourcedId' => $classSourcedId]; }, $enrollmentData['classSourcedId']) : [(object) ['sourcedId' => $enrollmentData['classSourcedId']]]) : [null];
+                            
+                            unset($class->schoolSourcedId);
+                            unset($class->classSourcedId);
                         }
+                        $enrollments[$enrollmentId] = $enrollment;
                     }
-                    $this->count++;
                     return (object) [
                         'response' => (object) [
                             'enrollments' => $enrollments
@@ -234,86 +226,40 @@ class csv_client implements client_interface  {
                     
             case 'users':
                 /** The endpoint GetAllUsers is called to fetch all users */
-                if ($this->count == 0) {
-                    $usersData = $this->data['users'];
+                     $usersData = $this->data['users'];
+
+                    $keys = array_map(function($user) {return $user['sourcedId']; }, $usersData);
+                    $mapped_data = array_combine($keys, $usersData);
+
                     $users = [];
-                    foreach ($usersData as $datauser) {
-                        $userObject = new stdClass();
-                        $userObject->username = $datauser['username'] ?? null;
-                        $userObject->userIds = isset($datauser['userIds']) ? array_map(function($userId) {
-                            return (object) ['type' => $userId['type'], 'identifier' => $userId['identifier']];
-                        }, $datauser['userIds']) : [];
-                        $userObject->enabledUser = $datauser['enabledUser'] ?? null;
-                        $userObject->givenName = $datauser['givenName'] ?? null;
-                        $userObject->familyName = $datauser['familyName'] ?? null;
-                        $userObject->middleName = $datauser['middleName'] ?? null;
-                        $userObject->role = $datauser['role'] ?? null;
-                        $userObject->identifier = $datauser['identifier'] ?? null;
-                        $userObject->email = $datauser['email'] ?? null;
-                        $userObject->sms = $datauser['sms'] ?? null;
-                        $userObject->phone = $datauser['phone'] ?? null;
-                        $userObject->agents = isset($datauser['agentSourcedIds']) ? array_map(function($agents) {
-                            return (object) ['sourcedId' => $agents];
-                        }, $datauser['agentSourcedIds']) : [];
-                        $userObject->orgs = array_map(function($orgs) {
-                            return (object) ['sourcedId' => $orgs];
-                        }, is_array($datauser['orgSourcedIds']) ? $datauser['orgSourcedIds'] : [$datauser['orgSourcedIds']]);
-                        $userObject->sourcedId = $datauser['sourcedId'] ?? null;  
-                        $userObject->status = $datauser['status'] ?? null;
-                        $userObject->dateLastModified = $datauser['dateLastModified'] ?? null;
-                        $userObject->grades = $datauser['grades'] ?? null;
-                        $userObject->password = $datauser['password'] ?? null;
-                        $users[] = $userObject;
+                    foreach ($mapped_data as $userId => $userData) {
+                        $user = (object) $userData;
+
+                        if (isset($user->orgSourcedIds) && in_array($orgId, (array) $user->orgSourcedIds)) {
+
+                                $user->orgs = array_map(function($org) {
+                                    return (object) ['sourcedId' => $org];
+                                }, is_array($userData['orgSourcedIds']) ? $userData['orgSourcedIds'] : [$userData['orgSourcedIds']]);
+                    
+                                $user->agents = isset($userData['agentSourcedIds']) ? array_map(function($agent) {
+                                    return (object) ['sourcedId' => $agent];
+                                }, (array) $userData['agentSourcedIds']) : [null];
+
+                                $user->userIds = isset($userData['userIds']) ? array_map(function($userId) {
+                                    return (object) ['type' => $userId['type'], 'identifier' => $userId['identifier']];
+                                }, (array) $userData['userIds']) : [null];
+                    
+                                unset($user->orgSourcedIds);
+                                unset($user->agentSourcedIds);
+                            }
+                        
+                        $users[$userId] = $user;
                     }
-                    $this->count++;
                     return (object) [
                         'response' => (object) [
                             'users' => $users 
                         ]
                     ];
-                }
-
-                if ($this->count == 6) {
-                    /** The endpoint GetAllUsers is called to fetch an user */
-                    $usersData = $this->data['users'];
-                    $userObject = null;
-
-                    foreach ($usersData as $datauser) {
-                    // ISSUE HERE: sourcedId is not called dynamically yet
-                    if (isset($datauser['sourcedId']) && $datauser['sourcedId'] === 'usr-222-123456') {
-                        $userObject = new stdClass();
-                        $userObject->username = $datauser['username'] ?? null;
-                        $userObject->userIds = isset($datauser['userIds']) ? array_map(function($userId) {
-                            return (object) ['type' => $userId['type'], 'identifier' => $userId['identifier']];
-                        }, $datauser['userIds']) : [];
-                        $userObject->enabledUser = $datauser['enabledUser'] ?? null;
-                        $userObject->givenName = $datauser['givenName'] ?? null;
-                        $userObject->familyName = $datauser['familyName'] ?? null;
-                        $userObject->middleName = $datauser['middleName'] ?? null;
-                        $userObject->role = $datauser['role'] ?? null;
-                        $userObject->identifier = $datauser['identifier'] ?? null;
-                        $userObject->email = $datauser['email'] ?? null;
-                        $userObject->sms = $datauser['sms'] ?? null;
-                        $userObject->phone = $datauser['phone'] ?? null;
-                        $userObject->agents = isset($datauser['agentSourcedIds']) ? array_map(function($agents) {
-                            return (object) ['sourcedId' => $agents];
-                        }, $datauser['agentSourcedIds']) : [];
-                        $userObject->orgs = array_map(function($orgs) {
-                            return (object) ['sourcedId' => $orgs];
-                        }, is_array($datauser['orgSourcedIds']) ? $datauser['orgSourcedIds'] : [$datauser['orgSourcedIds']]);
-                        $userObject->sourcedId = $datauser['sourcedId'] ?? null;  
-                        $userObject->status = $datauser['status'] ?? null;
-                        $userObject->dateLastModified = $datauser['dateLastModified'] ?? null;
-                        $userObject->grades = $datauser['grades'] ?? null;
-                        $userObject->password = $datauser['password'] ?? null;
-                        }
-                    }      
-                    return (object) [
-                        'response' => (object) [
-                            'user' => $userObject
-                        ]
-                    ];
-                }
             default:
                 return new stdClass();
         endswitch;

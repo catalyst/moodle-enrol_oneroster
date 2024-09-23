@@ -177,11 +177,11 @@ class csv_data_helper {
                 'classType' => 'Scheduled',      // Enumeration, Required
                 'location' => 'Room 2-B',        // String, Optional
                 'schoolSourcedId' => 'org-sch-222-456', // GUID Reference, Required
-                'termSourcedIds' => array(       // List of GUID References, Required
+                'termSourcedIds' =>       // List of GUID References, Required
                     'as-trm-222-1234'
-                ),
-                'subjects' => array('Science'),  // List of Strings, Optional
-                'periods' => array('B'),         // List of Strings, Optional
+                ,
+                'subjects' => 'Science',  // List of Strings, Optional
+                'periods' => 'B',         // List of Strings, Optional
             ),
             array(
                 'sourcedId' => 'cls-222-123478', // GUID, Required
@@ -194,11 +194,11 @@ class csv_data_helper {
                 'classType' => 'Scheduled',      // Enumeration, Required
                 'location' => 'Room 18-C',       // String, Optional
                 'schoolSourcedId' => 'org-sch-222-456', // GUID Reference, Required
-                'termSourcedIds' => array(       // List of GUID References, Required
+                'termSourcedIds' =>        // List of GUID References, Required
                     'as-trm-222-1234'
-                ),
-                'subjects' => array('History'),  // List of Strings, Optional
-                'periods' => array('D'),         // List of Strings, Optional
+                ,
+                'subjects' => 'History',  // List of Strings, Optional
+                'periods' => 'D',         // List of Strings, Optional
             )
         );
     }
@@ -291,26 +291,14 @@ class csv_data_helper {
     public static function get_enrollments_data() {
         return array(
             array(
-                'sourcedId' => 'enr-s-222-12345-987654', // GUID, Required
-                'status' => null,                        // Enumeration, Null for Bulk mode
-                'dateLastModified' => null,              // DateTime, Null for Bulk mode
-                'classSourcedId' => 'cls-222-12345',     // GUID Reference, Required
-                'schoolSourcedId' => 'org-sch-222-456',  // GUID Reference, Required
-                'userSourcedId' => 'usr-222-987654',     // GUID Reference, Required
-                'role' => 'student',                     // Enumeration, Required
-                'primary' => 'false',                    // Enumeration, Optional
-                'beginDate' => '2022-03-15T01:30:00.0000000+00:00', // Date, Optional
-                'endDate' => '2022-06-15T01:30:00.0000000+00:00'    // Date, Optional
-            ),
-            array(
                 'sourcedId' => 'enr-t-222-12345-123456', // GUID, Required
                 'status' => null,                        // Enumeration, Null for Bulk mode
                 'dateLastModified' => null,              // DateTime, Null for Bulk mode
                 'classSourcedId' => 'cls-222-12345',     // GUID Reference, Required
                 'schoolSourcedId' => 'org-sch-222-456',  // GUID Reference, Required
                 'userSourcedId' => 'usr-222-123456',     // GUID Reference, Required
-                'role' => 'teacher',                     // Enumeration, Required
-                'primary' => 'true',                     // Enumeration, Optional
+                'role' => 'student',                     // Enumeration, Required
+                'primary' => 'false',                     // Enumeration, Optional
                 'beginDate' => '2022-03-15T01:30:00.0000000+00:00', // Date, Optional
                 'endDate' => '2022-06-15T01:30:00.0000000+00:00'    // Date, Optional
             )
@@ -372,6 +360,15 @@ class csv_data_helper {
                 'parentSourcedId' => 'org-dpt-222-456',           // GUID Reference, Optional
             ),
             array(
+                'sourcedId' => 'org-sch-222-456',    // GUID, Required
+                'status' => null,                    // Enumeration, Null for Bulk mode
+                'dateLastModified' => null,          // DateTime, Null for Bulk mode
+                'name' => 'History Department',      // String, Required
+                'type' => 'department',              // Enumeration, Required
+                'identifier' => 'History',           // String, Optional
+                'parentSourcedId' => 'org-sch-222-3456', // GUID Reference, Optional
+            ),
+            array(
                 'sourcedId' => 'org_sch-222-7654',   // GUID, Required
                 'status' => null,                    // Enumeration, Null for Bulk mode
                 'dateLastModified' => null,          // DateTime, Null forBulk mode
@@ -427,7 +424,7 @@ class csv_data_helper {
                 'status' => null,                        // Enumeration, Null for Bulk mode
                 'dateLastModified' => null,              // DateTime, Null for Bulk mode
                 'enabledUser' => 'true',                 // Enumeration, Required
-                'orgSourcedIds' => array('org-sch-222-456'), // List of GUID References, Required
+                'orgSourcedIds' => 'org-sch-222-456', // List of GUID References, Required
                 'role' => 'teacher',                     // Enumeration, Required
                 'username' => 'john.doe@myschool.com',   // String, Required
                 'userIds' => null,                       // List of Strings, Optional
@@ -447,7 +444,7 @@ class csv_data_helper {
                 'status' => null,                        // Enumeration, Null for Bulk mode
                 'dateLastModified' => null,              // DateTime, Null for Bulk mode
                 'enabledUser' => 'true',                 // Enumeration, Required
-                'orgSourcedIds' => array('org-sch-222-456'), // List of GUID References, Required
+                'orgSourcedIds' => 'org-sch-222-456', // List of GUID References, Required
                 'role' => 'student',                    // Enumeration, Required
                 'username' => 'mary.jones@myschool.com', // String, Required
                 'userIds' => array(                     // List of Strings, Optional
@@ -461,7 +458,7 @@ class csv_data_helper {
                 'email' => 'mary.jones@myschool.com',    // String, Optional
                 'sms' => '6031234567',                   // String, Optional
                 'phone' => '6031234567',                 // String, Optional
-                'agentSourcedIds' => array('usr-222-66778900'), // List of GUID References, Optional
+                'agentSourcedIds' => 'usr-222-66778900', // List of GUID References, Optional
                 'grades' => '12',                        // String, Optional
                 'password' => null,                      // String, Optional
             ),
@@ -470,7 +467,7 @@ class csv_data_helper {
                 'status' => null,                        // Enumeration, Null for Bulk mode
                 'dateLastModified' => null,              // DateTime, Null for Bulk mode
                 'enabledUser' => 'true',                 // Enumeration, Required
-                'orgSourcedIds' => array('org-sch-222-456'), // List of GUID References, Required
+                'orgSourcedIds' => 'org-sch-222-456', // List of GUID References, Required
                 'role' => 'parent',                     // Enumeration, Required
                 'username' => 'thomas.jones@myschool.com', // String, Required
                 'userIds' => null,                       // List of Strings, Optional
@@ -481,7 +478,7 @@ class csv_data_helper {
                 'email' => 'thomas.jones@testemail.com', // String, Optional
                 'sms' => '6039876543',                   // String, Optional
                 'phone' => '6039876543',                 // String, Optional
-                'agentSourcedIds' => array('usr-222-66778899'), // List of GUID References, Optional
+                'agentSourcedIds' => 'usr-222-66778899', // List of GUID References, Optional
                 'grades' => null,                        // String, Optional
                 'password' => null,                      // String, Optional
             )

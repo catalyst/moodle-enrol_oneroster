@@ -507,9 +507,11 @@ class rostering extends endpoint implements rostering_endpoint_interface {
      */
     protected static function get_command_data(string $command): array {
         if (array_key_exists($command, self::$commands)) {
+            echo "Command: $command\n";
             return self::$commands[$command];
         }
         return parent::get_command_data($command);
+        
     }
 
     /**
