@@ -74,7 +74,13 @@ class csv_client implements client_interface  {
         ];
     }
 
-   
+    private $orgId; // Add this line
+
+    public function set_orgid($orgId) {
+        $this->orgId = $orgId;
+    }
+
+    
     /**
      * Execute the supplied command.
      *
@@ -90,7 +96,7 @@ class csv_client implements client_interface  {
         $param = $tokens[2] ?? '';
         $type = $tokens[3] ?? '';
 
-        $orgId = 'org-sch-222-456';
+        $orgId = $this->orgId;
 
 
         switch ($basepath):

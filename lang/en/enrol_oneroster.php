@@ -78,3 +78,4 @@ $string['fullsync'] = 'Full sync of One Roster';
 $string['csv_upload'] = 'CSV Upload';
 $string['csv_upload_process'] = 'Process CSV Upload';
 $string['options'] = 'You can import OneRoster information by either uploading a zip file containing OneRoster spec CSV files or by connecting a REST API server.';
+$string['selectorganization'] = 'Select organization';
