@@ -16,29 +16,32 @@
 
 namespace enrol_oneroster;
 
-use enrol_oneroster\OneRosterHelper;
 use enrol_oneroster\client_helper;
 use enrol_oneroster\form\oneroster_org_selection_form;
 require_once('../../config.php');
 require_once('classes/client_helper.php');
-require_once('oneroster_csv_form.php');
-require_once('oneroster_helper.php');
-require_once('classes/local/csv_client.php');
+require_once(__DIR__ . '/form/oneroster_csv_form.php');
 require_once(__DIR__ . '/form/oneroster_org_selection_form.php');
+require_once(__DIR__ . '/classes/local/csv_client.php');
+require_once(__DIR__ . '/classes/local/csv_client_helper.php');
 
 /**
  * One Roster Client
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * 
  */
 
-
-$PAGE->set_url('/enrol/oneroster/processcsv.php');
+$PAGE->set_url(get_string('set_url', 'enrol_oneroster'));
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_title('Process OneRoster CSV');
-$PAGE->set_heading('Process OneRoster CSV');
+$PAGE->set_title(get_string('title', 'enrol_oneroster'));
+$PAGE->set_heading(get_string('title', 'enrol_oneroster'));
+global $DB;
+$mform = new oneroster_csv_form();
+
+const TEMPDIR = 'oneroster_csv';
 
 $step = optional_param('step', 1, PARAM_INT);
 
@@ -48,90 +51,78 @@ if ($step == 1) {
 
     if ($mform->is_cancelled()) {
         redirect(new \moodle_url('/admin/settings.php', ['section' => 'enrolsettingsoneroster']));
-
-    } else if ($data = $mform->get_data()) {
+    } 
+    else if ($data = $mform->get_data()) {
         $uniqueid = $USER->id . '_' . time();
         $tempdir = make_temp_directory('oneroster_csv/' . $uniqueid);
         $filecontent = $mform->get_file_content('uploadedzip');
         $zipfilepath = $tempdir . '/uploadedzip.zip';
-
         if (file_put_contents($zipfilepath, $filecontent)) {
             $zip = new \ZipArchive();
             $res = $zip->open($zipfilepath);
-
             if ($res === true) {
                 $zip->extractTo($tempdir); 
                 $zip->close();
-
                 $manifest_path = $tempdir . '/manifest.csv';
-
                 if (file_exists($manifest_path)) {
-                    //$missing_files = OneRosterHelper::check_manifest_and_files($manifest_path, $tempdir);
-
-                    if (true) {
-                        $csv_data = OneRosterHelper::extract_csvs_to_arrays($tempdir);
-                        $orgs = $csv_data['orgs'] ?? [];
-
-                        // Prepare organization options
-                        $orgoptions = [];
-                        foreach ($orgs as $org) {
-                            $orgoptions[$org['sourcedId']] = $org['name'];
-                        }
-
-                        if (count($orgoptions) == 1) {
-                            // Only one organization, skip the selection form
-                            $selected_org_sourcedId = array_key_first($orgoptions);
-                            // Proceed to process the selected organization
-                            process_selected_organization($selected_org_sourcedId, $tempdir, $csv_data);
-                            exit;
-
-                        } else {
-                            // Display the organization selection form
-                            $orgform = new oneroster_org_selection_form(null, ['orgoptions' => $orgoptions, 'tempdir' => $tempdir]);
-                            echo $OUTPUT->header();
-                            $orgform->display();
-                            echo $OUTPUT->footer();
-                            exit;
-                        }
-
+                    $csv_data = OneRosterHelper::extract_csvs_to_arrays($tempdir);
+                    $orgs = $csv_data['orgs'] ?? [];
+                    // Prepare organization options
+                    $orgoptions = [];
+                    foreach ($orgs as $org) {
+                        $orgoptions[$org['sourcedId']] = $org['name'];
+                    }
+                    if (count($orgoptions) == 1) {
+                        // Only one organization, skip the selection form
+                        $selected_org_sourcedId = array_key_first($orgoptions);
+                        // Proceed to process the selected organization
+                        process_selected_organization($selected_org_sourcedId, $tempdir, $csv_data);
+                        exit;
                     } else {
+                        // Display the organization selection form
+                        $orgform = new oneroster_org_selection_form(null, ['orgoptions' => $orgoptions, 'tempdir' => $tempdir]);
                         echo $OUTPUT->header();
-                        OneRosterHelper::display_missing_and_invalid_files($missing_files);
+                        $orgform->display();
                         echo $OUTPUT->footer();
                         exit;
-                    }
-                } else {
+                    } 
+                } 
+                else {
                     echo $OUTPUT->header();
-                    echo 'The manifest.csv file is missing.<br>';
+                    echo get_string('missing_csv_files', 'enrol_oneroster');
                     echo $OUTPUT->footer();
                     exit;
                 }
-            } else {
+            } 
+            else {
                 echo $OUTPUT->header();
-                echo 'Failed to open the ZIP file.<br>';
+                echo get_string('failed_to_open_zip_file', 'enrol_oneroster');
                 echo $OUTPUT->footer();
                 exit;
             }
-        } else {
+        } 
+        else {
             echo $OUTPUT->header();
-            echo 'Failed to move the uploaded ZIP file.<br>';
+            echo get_string('failed_upload_zip_file', 'enrol_oneroster');
             echo $OUTPUT->footer();
             exit;
         }
-
-    } else {
+    } 
+    else {
         echo $OUTPUT->header();
         $mform->display();
         echo $OUTPUT->footer();
     }
 
-} else if ($step == 2) {
+} 
+else if ($step == 2) {
     // Step 2: Select Organization.
     $orgform = new oneroster_org_selection_form();
 
     if ($orgform->is_cancelled()) {
         redirect(new \moodle_url('/admin/settings.php', ['section' => 'enrolsettingsoneroster']));
-    } else if ($orgdata = $orgform->get_data()) {
+    } 
+    else if ($orgdata = $orgform->get_data()) {
         $selected_org_sourcedId = $orgdata->organization;
         $tempdir = $orgdata->tempdir;
 
@@ -139,9 +130,10 @@ if ($step == 1) {
         process_selected_organization($selected_org_sourcedId, $tempdir);
         exit;
 
-    } else {
+    } 
+    else {
         echo $OUTPUT->header();
-        echo 'Invalid form submission.<br>';
+        echo get_string('invalid_form', 'enrol_oneroster');
         echo $OUTPUT->footer();
     }
 }
@@ -157,7 +149,6 @@ function process_selected_organization($selected_org_sourcedId, $tempdir, $csv_d
     global $OUTPUT;
 
     if (is_null($csv_data)) {
-        // Process the ZIP file from tempdir
         $zipfilepath = $tempdir . '/uploadedzip.zip';
 
         if (file_exists($zipfilepath)) {
@@ -176,33 +167,36 @@ function process_selected_organization($selected_org_sourcedId, $tempdir, $csv_d
                     if (empty($missing_files['missing_files']) && empty($missing_files['invalid_headers'])) {
                         $csv_data = OneRosterHelper::extract_csvs_to_arrays($tempdir);
 
-                    } else {
+                    } 
+                    else {
                         echo $OUTPUT->header();
                         OneRosterHelper::display_missing_and_invalid_files($missing_files);
                         echo $OUTPUT->footer();
                         return;
                     }
-                } else {
+                } 
+                else {
                     echo $OUTPUT->header();
-                    echo 'The manifest.csv file is missing.<br>';
+                    echo get_string('missing_csv_files', 'enrol_oneroster');
                     echo $OUTPUT->footer();
-                    return;
+                    exit;
                 }
-            } else {
+            } 
+            else {
                 echo $OUTPUT->header();
-                echo 'Failed to open the ZIP file.<br>';
+                echo get_string('failed_to_open_zip_file', 'enrol_oneroster');
                 echo $OUTPUT->footer();
-                return;
+                exit;
             }
-        } else {
+        } 
+        else {
             echo $OUTPUT->header();
-            echo 'Failed to find the uploaded ZIP file.<br>';
+            echo get_string('failed_upload_zip_file', 'enrol_oneroster');
             echo $OUTPUT->footer();
-            return;
+            exit;
         }
     }
 
-    // Map CSV data to variables
     $manifest = $csv_data['manifest'] ?? [];
     $users = $csv_data['users'] ?? [];
     $classes = $csv_data['classes'] ?? [];
@@ -210,10 +204,8 @@ function process_selected_organization($selected_org_sourcedId, $tempdir, $csv_d
     $enrollments = $csv_data['enrollments'] ?? [];
     $academicSessions = $csv_data['academicSessions'] ?? [];
 
-    // Instantiate csv_client and synchronize
     $csvclient = client_helper::get_csv_client();
 
-    // Set the $orgId in csv_client
     $csvclient->set_orgid($selected_org_sourcedId);
 
     $csvclient->set_data(
@@ -228,7 +220,7 @@ function process_selected_organization($selected_org_sourcedId, $tempdir, $csv_d
     $csvclient->synchronise();
 
     echo $OUTPUT->header();
-    echo 'CSV processing completed.<br>';
+    echo get_string('successful_upload', 'enrol_oneroster');;
     echo $OUTPUT->footer();
 
     // Clean up temp directory

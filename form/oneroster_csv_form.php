@@ -13,18 +13,16 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 namespace enrol_oneroster;
 use moodleform;
 
 require_once($CFG->libdir . '/formslib.php');
 
-
 /**
- * One Roster Enrolment Client.
+ * One Roster Enrollment Client.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class oneroster_csv_form extends moodleform {

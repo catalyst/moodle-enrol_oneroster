@@ -20,38 +20,31 @@
  * This plugin synchronises enrolment and roles with a One Roster endpoint.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 namespace enrol_oneroster\local;
-
-defined('MOODLE_INTERNAL') || die;
-
-require_once($CFG->dirroot . '/lib/oauthlib.php');
 
 use enrol_oneroster\local\interfaces\client as client_interface;
 use enrol_oneroster\local\oneroster_client as root_oneroster_client;
 use enrol_oneroster\local\command;
 use enrol_oneroster\local\interfaces\filter;
 use stdClass;
+use DateTime;
 use enrol_oneroster\local\v1p1\oneroster_client as versioned_client;
-use enrol_oneroster\local\interfaces\rostering_client;
 
-
-/**
- * One Roster CSV Client.
- * 
- * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class csv_client implements client_interface  {
     use root_oneroster_client;
     use versioned_client;
 
-    private $data;
-    private int $count;
+    // Define constants for the base paths and types
+    const BASEPATH_ORGS = 'orgs';
+    const BASEPATH_SCHOOLS = 'schools';
+    const TYPE_TERMS = 'terms';
+    const TYPE_CLASSES = 'classes';
+    const TYPE_ENROLLMENTS = 'enrollments';
+    const BASEPATH_USERS = 'users';
+    private $orgId; 
 
     /**
      * Authenticate the client. This is a no-op for the CSV client.
@@ -62,25 +55,44 @@ class csv_client implements client_interface  {
         return;
     }
 
-
-    public function set_data($manifest, $users, $classes, $orgs, $enrollments, $academicSessions) {
+    /**
+     * Set the data retrieved from the CSV file.
+     *
+     * @param array $manifest The manifest data
+     * @param array $users The users data
+     * @param array $classes The classes data
+     * @param array $orgs The orgs data
+     * @param array $enrollments The enrollments data
+     * @param array $academicSessions The academic sessions data
+     * @return void
+     */
+    public function set_data(
+        array $manifest, 
+        array $users, 
+        array $classes, 
+        array $orgs, 
+        array $enrollments, 
+        array $academicSessions
+    ): void {
         $this->data = [
-            'manifest' => $manifest,                  // Manifest data
-            'users' => $users,                        // Users data
-            'classes' => $classes,                    // Classes data
-            'orgs' => $orgs,                          // Orgs data
-            'enrollments' => $enrollments,            // Enrollments data
-            'academicSessions' => $academicSessions,  // Academic sessions data
+            'manifest' => $manifest,
+            'users' => $users,
+            'classes' => $classes,
+            'orgs' => $orgs,
+            'enrollments' => $enrollments,
+            'academicSessions' => $academicSessions,
         ];
     }
 
-    private $orgId; // Add this line
-
+    /**
+     * Set the organisation ID.
+     *
+     * @param string $orgId The organisation ID
+     */
     public function set_orgid($orgId) {
         $this->orgId = $orgId;
     }
-
-    
+   
     /**
      * Execute the supplied command.
      *
@@ -90,56 +102,71 @@ class csv_client implements client_interface  {
      */
     public function execute(command $command, ?filter $filter = null): stdClass {
         $url = $command->get_url('');
-        $basepath =  explode('/', $url)[1];
+        // Split the URL into tokens using '/' as the delimiter (eg. /schools/org-sch-222-456/terms)
         $tokens = explode('/', $url); 
+        // The second token represents the base path ('users', 'orgs', 'schools')
         $basepath = $tokens[1];
+        // The third token represents the Organisation ID
         $param = $tokens[2] ?? '';
+        // The fourth token represents the type of data to fetch ('terms', 'classes', 'enrollments')
         $type = $tokens[3] ?? '';
-
+        // Get the organisation ID
         $orgId = $this->orgId;
 
-
         switch ($basepath):
-            case 'orgs':
-                /** The endpoint getOrg is called to fetch the org data */
+            case self::BASEPATH_ORGS:
+                // The endpoint getOrg is called to fetch the org data 
                 if ($param == $orgId || $param == '') {
-                    $orgdata = $this->data['orgs']; 
-
-                    $keys = array_map(function($keys) { return $keys['sourcedId']; }, $orgdata);
+                    $orgdata = $this->data['orgs'];
+                    $keys = array_map(function($orgs) { return $orgs['sourcedId']; }, $orgdata);
                     $mapped_data = array_combine($keys, $orgdata);
-
                     if (isset($mapped_data[$orgId])) {
                         $org = (object) $mapped_data[$orgId];
                         $org->status = 'active'; 
-                        $org->dateLastModified = date('Y-m-d H:i:s'); 
+                        $org->dateLastModified = date('Y-m-d\TH:i:s\Z');
                     }
-
                     return (object) [
                         'response' => (object) [
-                            'org' => (object) $org
+                            'org' => $org
                         ]
                     ];
                 }
-                
-            case 'schools':
-                /** The endpoint getTermsForSchool is called to fetch a list of classes hkeysd in a term */
-                if ($type == 'terms') {
-                    $academicsessiondata = $this->data['academicSessions'];
-                    $keys = array_map(function($keys) { return $keys['sourcedId']; }, $academicsessiondata);
-                    $mapped_data = array_combine($keys, $academicsessiondata);
 
+            case self::BASEPATH_SCHOOLS:
+                // The endpoint getTermsForSchool is called to fetch a list of classes in a term 
+                if ($type == self::TYPE_TERMS) {
+                    $academicsessiondata = $this->data['academicSessions'];
+                    $keys = array_map(function($schools) { return $schools['sourcedId']; }, $academicsessiondata);
+                    $mapped_data = array_combine($keys, $academicsessiondata);
                     $academicSession = [];
                     foreach ($mapped_data as $academicId => $academicdata) {
+                        if (isset($academicdata['startDate'])) {
+                            $academicdata['startDate'] = str_replace('-', '/', $academicdata['startDate']);
+                            $date = DateTime::createFromFormat('d/m/Y', $academicdata['startDate']);
+                            if ($date) {
+                                $academicdata['startDate'] = $date->format('Y-m-d');
+                            }
+                        }
+                        
+                        if (isset($academicdata['endDate'])) {
+                            $academicdata['endDate'] = str_replace('-', '/', $academicdata['endDate']);
+                            $date = DateTime::createFromFormat('d/m/Y', $academicdata['endDate']);
+                            if ($date) {
+                                $academicdata['endDate'] = $date->format('Y-m-d');
+                            }
+                        }
                         $academic = (object) $academicdata;
-                        $academic->parent = isset($academicdata['parentSourcedId']) ? (object) [
-                            'sourcedId' => $academicdata['parentSourcedId']
-                        ] : [null];
-                        $academic->children = isset($academicdata['sourcedId']) ? (object) [
-                            'sourcedId' => $academicdata['sourcedId']
-                        ] : [null];
+                        $getparentSourcedId = (object)['sourcedId' => $academicdata['parentSourcedId']];
+                        $getchildrenSourcedId = (object)['sourcedId' => $academicdata['sourcedId']];
+
+                        $parentSourcedId = isset($academicdata['parentSourcedId']) ? $getparentSourcedId : [null];
+                        $childrenSourcedId = isset($academicdata['sourcedId']) ? $getchildrenSourcedId : [null];
+
+                        $academic->parent = $parentSourcedId;
+                        $academic->children = $childrenSourcedId;
 
                         unset($academic->parentSourcedId);
-                        
+
                         $academicSession[$academicId] = $academic;
                     }
                     return (object) [
@@ -150,40 +177,33 @@ class csv_client implements client_interface  {
                     ];
                 }
 
-                
-                if ($type == 'classes') {
-                    /** The endpoint getClassesForSchool is called to fetch all students for a class */
+                if ($type == self::TYPE_CLASSES) {
+                    // The endpoint getClassesForSchool is called to fetch all students for a class 
                     $classdata = $this->data['classes'];
-
-                    $keys = array_map(function($keys) { return $keys['sourcedId']; }, $classdata);
+                    $keys = array_map(function($schools) { return $schools['sourcedId']; }, $classdata);
                     $mapped_data = array_combine($keys, $classdata);
-
                     $classes = [];
-
                     foreach ($mapped_data as $classId => $classData) {
                         $class = (object) $classData;
                         if (isset($class->schoolSourcedId) && $class->schoolSourcedId == $orgId) {
-                            $class->school = (object) [ 'sourcedId' => $class->schoolSourcedId ];
+                            $getcourseSource = (object) ['sourcedId' => $class->courseSourcedId];;
+                            $getschoolSource = (object) ['sourcedId' => $class->schoolSourcedId];
+                            $getermSourcedIds = array_map(function ($term) { return (object) ['sourcedId' => $term]; }, (array) $class->termSourcedIds);
+                            $getsubjects = array_map(function ($subject) { return (object) ['subject' => $subject]; }, (array) $class->subjects);
+                            $getperiods = array_map(function ($period) { return (object) ['period' => $period]; }, (array) $class->periods);
 
-                            $class->course = isset($class->courseSourcedId) ? (object) [ 'sourcedId' => $class->courseSourcedId ] : null;
+                            $courseObject = isset($class->courseSourcedId) ? $getcourseSource: null;
+                            $termsArray = isset($class->termSourcedIds) ? $getermSourcedIds : [null];
+                            $subjectsArray = isset($class->subjects) ? $getsubjects : [null];
+                            $periodArray = isset($class->periods) ? $getperiods : [null];
 
-                            $class->terms = isset($class->termSourcedIds) ? array_map(function($term) {
-                                return (object) ['sourcedId' => $term];
-                            }, (array) $class->termSourcedIds) : [null];
+                            $class->school = $getschoolSource;
+                            $class->period = $periodArray;
+                            $class->course = $courseObject;
+                            $class->terms = $termsArray;
+                            $class->subject = $subjectsArray;
 
-                            $class->subject = isset($class->subjects) ? array_map(function($subject) {
-                                return (object) ['subject' => $subject];
-                            }, (array) $class->subjects) : [null];
-                            
-                            $class->period = isset($class->periods) ? array_map(function($period) {
-                                return (object) ['period' => $period];
-                            }, (array) $class->periods) : [null];
-                
-                            unset($class->schoolSourcedId);
-                            unset($class->courseSourcedId);
-                            unset($class->termSourcedIds);
-                            unset($class->subjects);
-                            unset($class->periods);
+                            unset($class->schoolSourcedId, $class->courseSourcedId, $class->termSourcedIds, $class->subjects, $class->periods);
                         }
                         $classes[$classId] = $class;
                     }
@@ -194,29 +214,28 @@ class csv_client implements client_interface  {
                     ];
                 }
 
-                if ($type == 'enrollments') {
-                    /** The endpoint getEnrollmentsForSchool is called to fetch all enrolments in a school */
+                if ($type == self::TYPE_ENROLLMENTS) {
+                    // The endpoint getEnrollmentsForSchool is called to fetch all enrollments in a school 
                     $enrollmentdata = $this->data['enrollments'];
-                    $keys = array_map(function($keys) { return $keys['sourcedId']; }, $enrollmentdata);
+                    $keys = array_map(function($schools) { return $schools['sourcedId']; }, $enrollmentdata);
                     $mapped_data = array_combine($keys, $enrollmentdata);
-
                     $enrollments = [];
-
                     foreach ($mapped_data as $enrollmentId => $enrollmentData) {
                         $enrollment = (object) $enrollmentData;
                         if (isset($enrollment->schoolSourcedId) && $enrollment->schoolSourcedId == $orgId) {
+                            $getuserSourcedId = (object) ['sourcedId' => $enrollmentData['userSourcedId']];
+                            $isClassSourcedIdArray = is_array($enrollmentData['classSourcedId']);
+                            $classSourcedIdList  = array_map(function ($classSourcedId) { (object) ['sourcedId' => $classSourcedId]; }, (array) $enrollmentData['classSourcedId']);
+                            $classSourcedIdObject  = (object) ['sourcedId' => $enrollmentData['classSourcedId']];
 
-                            $enrollment->user = isset($enrollmentData['userSourcedId']) ? (object) [
-                                'sourcedId' => $enrollmentData['userSourcedId']] : null;
+                            $userObject = isset($enrollmentData['userSourcedId']) ? $getuserSourcedId : null;
+                            $enrollment->school = (object) ['sourcedId' => $enrollmentData['schoolSourcedId']];
+                            $classObject = isset($enrollmentData['classSourcedId']) ? ($isClassSourcedIdArray ? $classSourcedIdList : $classSourcedIdObject ) : [null];
 
-                            $enrollment->school = (object) [
-                                'sourcedId' => $enrollmentData['schoolSourcedId']];
+                            $enrollment->user = $userObject;
+                            $enrollment->class = $classObject;
 
-                            $enrollment->class = isset($enrollmentData['classSourcedId']) ? (is_array($enrollmentData['classSourcedId']) ? array_map(function($classSourcedId) {
-                                return (object) ['sourcedId' => $classSourcedId]; }, $enrollmentData['classSourcedId']) : [(object) ['sourcedId' => $enrollmentData['classSourcedId']]]) : [null];
-                            
-                            unset($class->schoolSourcedId);
-                            unset($class->classSourcedId);
+                            unset($enrollment->schoolSourcedId, $enrollment->classSourcedId);
                         }
                         $enrollments[$enrollmentId] = $enrollment;
                     }
@@ -227,43 +246,42 @@ class csv_client implements client_interface  {
                     ];
                 }
 
-                    
-            case 'users':
-                /** The endpoint GetAllUsers is called to fetch all users */
-                     $usersData = $this->data['users'];
+            case self::BASEPATH_USERS:
+                // The endpoint GetAllUsers is called to fetch all users in a school
+                $usersData = $this->data['users'];
+                $keys = array_map(function($user) {return $user['sourcedId']; }, $usersData);
+                $mapped_data = array_combine($keys, $usersData);
+                $users = [];
+                foreach ($mapped_data as $userId => $userData) {
+                    $user = (object) $userData;
+                    if (isset($user->orgSourcedIds) && in_array($orgId, (array) $user->orgSourcedIds)) {
+                        if (isset($userData['agentSourcedIds']) && !empty($userData['agentSourcedIds'])) {
+                            $getagents = array_map(function ($agent) {
+                                return (object) ['sourcedId' => $agent];
+                            }, (array) $userData['agentSourcedIds']);
+                        } else {
+                            $getagents = [(object) ['sourcedId' => ""]];
+                        }
+                        if (isset($userData['orgSourcedIds']) && !empty($userData['orgSourcedIds'])) {
+                            $orgs = array_map(function ($org) {
+                                return (object) ['sourcedId' => $org];
+                            }, (array) $userData['orgSourcedIds']);
+                        } else {
+                            $orgs = [(object) ['sourcedId' => ""]];
+                        }
 
-                    $keys = array_map(function($user) {return $user['sourcedId']; }, $usersData);
-                    $mapped_data = array_combine($keys, $usersData);
+                        $user->agents = $getagents;
+                        $user->orgs = $orgs;
 
-                    $users = [];
-                    foreach ($mapped_data as $userId => $userData) {
-                        $user = (object) $userData;
-
-                        if (isset($user->orgSourcedIds) && in_array($orgId, (array) $user->orgSourcedIds)) {
-
-                                $user->orgs = array_map(function($org) {
-                                    return (object) ['sourcedId' => $org];
-                                }, is_array($userData['orgSourcedIds']) ? $userData['orgSourcedIds'] : [$userData['orgSourcedIds']]);
-                    
-                                $user->agents = isset($userData['agentSourcedIds']) ? array_map(function($agent) {
-                                    return (object) ['sourcedId' => $agent];
-                                }, (array) $userData['agentSourcedIds']) : [null];
-
-                                $user->userIds = isset($userData['userIds']) ? array_map(function($userId) {
-                                    return (object) ['type' => $userId['type'], 'identifier' => $userId['identifier']];
-                                }, (array) $userData['userIds']) : [null];
-                    
-                                unset($user->orgSourcedIds);
-                                unset($user->agentSourcedIds);
-                            }
-                        
+                        unset($user->orgSourcedIds, $user->agentSourcedIds);
                         $users[$userId] = $user;
-                    }
-                    return (object) [
-                        'response' => (object) [
-                            'users' => $users 
-                        ]
-                    ];
+                    }    
+                }
+                return (object) [
+                    'response' => (object) [
+                        'users' => $users 
+                    ]
+                ];
             default:
                 return new stdClass();
         endswitch;
