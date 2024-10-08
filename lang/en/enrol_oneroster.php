@@ -86,5 +86,3 @@ $string['failed_to_open_zip_file'] = 'Failed to open the ZIP file.<br>';
 $string['failed_upload_zip_file'] = 'Failed to move the uploaded ZIP file.<br>';
 $string['successful_upload'] = 'CSV processing completed.<br>';
 $string['invalid_form'] = 'Invalid form submission.<br>';
-$string['set_url'] = '/enrol/oneroster/processcsv.php';
-$string['title'] = 'Process OneRoster CSV';

@@ -18,11 +18,12 @@ namespace enrol_oneroster;
 
 use enrol_oneroster\client_helper;
 use enrol_oneroster\form\oneroster_org_selection_form;
+
 require_once('../../config.php');
 require_once('classes/client_helper.php');
 require_once(__DIR__ . '/form/oneroster_csv_form.php');
 require_once(__DIR__ . '/form/oneroster_org_selection_form.php');
-require_once(__DIR__ . '/classes/local/csv_client.php');
+require_once('classes/local/csv_client.php');
 require_once(__DIR__ . '/classes/local/csv_client_helper.php');
 
 /**
@@ -34,10 +35,10 @@ require_once(__DIR__ . '/classes/local/csv_client_helper.php');
  * 
  */
 
-$PAGE->set_url(get_string('set_url', 'enrol_oneroster'));
+$PAGE->set_url('/enrol/oneroster/processcsv.php');
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_title(get_string('title', 'enrol_oneroster'));
-$PAGE->set_heading(get_string('title', 'enrol_oneroster'));
+$PAGE->set_title('Process OneRoster CSV');
+$PAGE->set_heading('Process OneRoster CSV');
 global $DB;
 $mform = new oneroster_csv_form();
 
@@ -129,7 +130,6 @@ else if ($step == 2) {
         // Proceed to process the selected organization
         process_selected_organization($selected_org_sourcedId, $tempdir);
         exit;
-
     } 
     else {
         echo $OUTPUT->header();
