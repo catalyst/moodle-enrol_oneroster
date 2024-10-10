@@ -28,7 +28,7 @@ require_once(__DIR__ . '/../classes/local/csv_client_helper.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers  enrol_oneroster\OneRosterHelper
  */
-class processcsv_test extends \advanced_testcase {
+class process_csv_file_check_test extends \advanced_testcase {
     private $testDir;
     private $manifestPath;
     
@@ -59,7 +59,9 @@ class processcsv_test extends \advanced_testcase {
         fclose($handle);
         
         // Creating academicSessions.csv
-        $academicSessions_content = [OneRosterHelper::HEADER_ACADEMIC_SESSIONS, ['session1', 'active', '2023-05-01', 'Session Title', 'term', '2023-01-01', '2023-12-31', 'parent1', '2023']];
+        $academicSessions_content = [OneRosterHelper::HEADER_ACADEMIC_SESSIONS, 
+        ['as-trm-222-1234', 'active', '2023-05-01T18:25:43.511Z', 'Session Title', 'term', '2022-09-01', '2022-12-24', 'as-syr-222-2023', '2023'], 
+        ['as-grp-222-2345', '', '', 'Session Title', 'gradingPeriod', '2022-10-02', '2022-12-24', 'as-trm-222-1234', '2023']];
         $handle = fopen($this->testDir . DIRECTORY_SEPARATOR . 'academicSessions.csv', 'w');
         foreach ($academicSessions_content as $line) {
             fputcsv($handle, $line);
@@ -67,16 +69,20 @@ class processcsv_test extends \advanced_testcase {
         fclose($handle);
 
         // Creating classes.csv
-        $classes_content = [OneRosterHelper::HEADER_CLASSES, ['class1', 'active', '2023-05-01', 'Class Title', '10', 'course1', 'code1', 'type1', 'Room 101', 'school1', 'term1', 'Math', 'MTH101', '1']];
+        $classes_content = [OneRosterHelper::HEADER_CLASSES, 
+        ['cls-222-123456', 'active', '2023-05-01T18:25:43.511Z', 'Introduction to Physics', '09,10,11', 'crs-222-2023-456-12345', 'Phys 100 - 1', 'Scheduled', 'Room 2-B', 'org-sch-222-456', 'as-trm-222-1234', 'Science, Physics, Biology', 'PHY123, ASV120', '1'],
+        ['cls-222-123478', 'tobedeleted', '2023-05-01T18:25:43.511Z', 'History - 2', '10', 'crs-222-2023-456-23456', '2', 'Scheduled', 'Room 18-C', 'org-sch-222-456', 'as-trm-222-1234', 'History', 'HIS123', '1,2,3']];
         $handle = fopen($this->testDir . DIRECTORY_SEPARATOR . 'classes.csv', 'w');
         foreach ($classes_content as $line) {
             fputcsv($handle, $line);
         }
         fclose($handle);
 
-
         // Creating enrollments.csv
-        $enrollments_content = [OneRosterHelper::HEADER_ENROLLMENTS, ['enrollment1', 'active', '2023-05-01', 'class1', 'school1', 'user1', 'student', 'true', '2023-01-01', '2023-12-31']];
+        $enrollments_content = [OneRosterHelper::HEADER_ENROLLMENTS,
+            ['enr-t-222-12345-123456', 'active', '2023-05-01T18:25:43.511Z', 'cls-222-12345', 'org-sch-222-456', 'usr-222-123456', 'teacher', 'FALSE', '2022-03-15', '2022-06-15'],
+            ['enr-s-222-12345-987654', '', '', 'cls-222-12345', 'org-sch-222-456', 'usr-222-987654', 'student', 'FALSE', '2022-03-16', '2022-06-16']
+        ];
         $handle = fopen($this->testDir . DIRECTORY_SEPARATOR . 'enrollments.csv', 'w');
         foreach ($enrollments_content as $line) {
             fputcsv($handle, $line);
@@ -84,7 +90,10 @@ class processcsv_test extends \advanced_testcase {
         fclose($handle);
 
         // Creating orgs.csv
-        $orgs_content = [OneRosterHelper::HEADER_ORGS, ['org1', 'active', '2023-05-01', 'Org Name', 'school', 'ID123', 'parentOrg']];
+        $orgs_content = [OneRosterHelper::HEADER_ORGS, 
+        ['org-sch-222-3456', 'active', '2023-05-01T18:25:43.511Z', 'Upper School', 'school', 'US', 'org-dpt-222-456'],
+        ['org-sch-222-456', '', '', 'History Department', 'department', 'History', 'org-sch-222-3456'],
+        ['org_sch-222-7654', 'tobedeleted', '2023-05-01T18:25:43.511Z', 'US History', 'department', 'US History', 'org-sch-222-3456']];
         $handle = fopen($this->testDir . DIRECTORY_SEPARATOR . 'orgs.csv', 'w');
         foreach ($orgs_content as $line) {
             fputcsv($handle, $line);
@@ -92,7 +101,11 @@ class processcsv_test extends \advanced_testcase {
         fclose($handle);
 
         // Creating users.csv
-        $users_content = [OneRosterHelper::HEADER_USERS, ['user1', 'active', '2023-05-01', 'true', 'org1', 'student', 'jdoe', 'ID456', 'John', 'Doe', 'M', 'ID789', 'jdoe@example.com', '', '', 'agent1', '10', 'password123']];
+        $users_content = [OneRosterHelper::HEADER_USERS,  // Header
+            ['usr-222-123456', 'active', '2023-05-01', 'TRUE', 'org-sch-222-456', 'teacher', 'john.doe', '', 'John', 'Doe', 'Michael', '123456', 'john.doe@myschool.com', '6037778888', '6032221111', 'usr-222-66778900', '11', 'CHANGEME'],
+            ['usr-222-66778899', '', '', 'TRUE', 'org-sch-222-456', 'student', 'mary.jones', '{LDAP:12}', 'Mary', 'Jones', 'Jane', '66778899', 'mary.jones@myschool.com', '6031234567', '6031234567', 'usr-222-66778900', '12', 'CHANGEME'],
+            ['usr-222-66778900', 'active', '2023-05-01', 'TRUE', 'org-sch-222-456', 'parent', 'thomas.joness', '{LDAP:12},{LTI:15},{Fed:23}', 'Thomas', 'Jones', 'Paul', '66778900', 'thomas.jones@testemail.com', '6039876543', '6039876543', 'usr-222-66778899', '10', 'CHANGEME']
+        ];
         $handle = fopen($this->testDir . DIRECTORY_SEPARATOR . 'users.csv', 'w');
         foreach ($users_content as $line) {
             fputcsv($handle, $line);
@@ -193,24 +206,24 @@ class processcsv_test extends \advanced_testcase {
         $result = OneRosterHelper::extract_csvs_to_arrays($this->testDir);
         
         $this->assertArrayHasKey('academicSessions', $result);
-        $this->assertCount(1, $result['academicSessions']);
-        $this->assertEquals('session1', $result['academicSessions'][0]['sourcedId']);
+        $this->assertCount(2, $result['academicSessions']);
+        $this->assertEquals('as-trm-222-1234', $result['academicSessions'][0]['sourcedId']);
         
         $this->assertArrayHasKey('classes', $result);
-        $this->assertCount(1, $result['classes']);
-        $this->assertEquals('class1', $result['classes'][0]['sourcedId']);
+        $this->assertCount(2, $result['classes']);
+        $this->assertEquals('cls-222-123456', $result['classes'][0]['sourcedId']);
         
         $this->assertArrayHasKey('enrollments', $result);
-        $this->assertCount(1, $result['enrollments']);
-        $this->assertEquals('enrollment1', $result['enrollments'][0]['sourcedId']);
+        $this->assertCount(2, $result['enrollments']);
+        $this->assertEquals('enr-t-222-12345-123456', $result['enrollments'][0]['sourcedId']);
         
         $this->assertArrayHasKey('orgs', $result);
-        $this->assertCount(1, $result['orgs']);
-        $this->assertEquals('org1', $result['orgs'][0]['sourcedId']);
+        $this->assertCount(3, $result['orgs']);
+        $this->assertEquals('org-sch-222-3456', $result['orgs'][0]['sourcedId']);
         
         $this->assertArrayHasKey('users', $result);
-        $this->assertCount(1, $result['users']);
-        $this->assertEquals('user1', $result['users'][0]['sourcedId']);
+        $this->assertCount(3, $result['users']);
+        $this->assertEquals('usr-222-123456', $result['users'][0]['sourcedId']);
     }
 
     /**
