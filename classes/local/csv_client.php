@@ -116,8 +116,6 @@ class csv_client implements client_interface  {
         $param = $tokens[2] ?? '';
         // The fourth token represents the type of data to fetch ('terms', 'classes', 'enrollments')
         $type = $tokens[3] ?? '';
-        // Get the organisation ID
-        $orgId = "org-sch-222-456";
 
         switch ($basepath):
             case self::BASEPATH_ORGS:
