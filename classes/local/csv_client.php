@@ -101,6 +101,12 @@ class csv_client implements client_interface  {
      * @return  stdClass
      */
     public function execute(command $command, ?filter $filter = null): stdClass {
+        $orgId = $this->orgId ?? null;
+
+        if ($orgId === null) {
+            throw new \Exception('Organization ID is not set.');
+        }
+
         $url = $command->get_url('');
         // Split the URL into tokens using '/' as the delimiter (eg. /schools/org-sch-222-456/terms)
         $tokens = explode('/', $url); 

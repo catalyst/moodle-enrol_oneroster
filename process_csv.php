@@ -97,6 +97,7 @@ if ($step == 1) {
                         exit;
                     } else {
                         // Display the organization selection form
+                        $_SESSION['oneroster_csv']['orgoptions'] = $orgoptions;
                         $orgform = new oneroster_org_selection_form(null, ['orgoptions' => $orgoptions, 'tempdir' => $tempdir]);
                         echo $OUTPUT->header();
                         $orgform->display();
@@ -133,7 +134,9 @@ if ($step == 1) {
 } 
 else if ($step == 2) {
     // Step 2: Select Organization.
-    $orgform = new oneroster_org_selection_form();
+    $tempdir = required_param('tempdir', PARAM_RAW); // Retrieve tempdir from submitted data
+    $orgoptions = $_SESSION['oneroster_csv']['orgoptions']; // Retrieve orgoptions from session
+    $orgform = new oneroster_org_selection_form(null, ['orgoptions' => $orgoptions, 'tempdir' => $tempdir]);
 
     if ($orgform->is_cancelled()) {
         redirect(new \moodle_url('/admin/settings.php', ['section' => 'enrolsettingsoneroster']));
@@ -198,4 +201,5 @@ function process_selected_organization($selected_org_sourcedId, $tempdir, $csv_d
 
     // Clean up temp directory
     remove_dir($tempdir);
+    unset($_SESSION['oneroster_csv']);
 }
