@@ -111,7 +111,11 @@ class csv_client implements client_interface  {
         // The fourth token represents the type of data to fetch ('terms', 'classes', 'enrollments')
         $type = $tokens[3] ?? '';
         // Get the organisation ID
-        $orgId = "org-sch-222-456";
+        $orgId = $this->orgId ?? null;
+
+        if ($orgId === null) {
+            throw new \Exception('Organization ID is not set.');
+        }
 
         switch ($basepath):
             case self::BASEPATH_ORGS:
