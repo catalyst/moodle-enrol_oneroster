@@ -97,6 +97,7 @@ if ($step == 1) {
                         exit;
                     } else {
                         // Display the organization selection form
+                        $_SESSION['oneroster_csv']['orgoptions'] = $orgoptions;
                         $orgform = new oneroster_org_selection_form(null, ['orgoptions' => $orgoptions, 'tempdir' => $tempdir]);
                         echo $OUTPUT->header();
                         $orgform->display();
@@ -133,7 +134,9 @@ if ($step == 1) {
 } 
 else if ($step == 2) {
     // Step 2: Select Organization.
-    $orgform = new oneroster_org_selection_form();
+    $tempdir = required_param('tempdir', PARAM_RAW); // Retrieve tempdir from submitted data
+    $orgoptions = $_SESSION['oneroster_csv']['orgoptions']; // Retrieve orgoptions from session
+    $orgform = new oneroster_org_selection_form(null, ['orgoptions' => $orgoptions, 'tempdir' => $tempdir]);
 
     if ($orgform->is_cancelled()) {
         redirect(new \moodle_url('/admin/settings.php', ['section' => 'enrolsettingsoneroster']));
@@ -188,9 +191,20 @@ function process_selected_organization($selected_org_sourcedId, $tempdir, $csv_d
 
     $csvclient->set_orgid($selected_org_sourcedId);
 
+    if (OneRosterHelper::validate_and_save_users_to_database($csv_data) === true) {
+        set_config('datasync_schools', $selected_org_sourcedId, 'enrol_oneroster');
+    }
+
     $csvclient->set_data($manifest, $users, $classes, $orgs, $enrollments, $academicSessions);
 
-    $csvclient->synchronise();
+    try {
+        $csvclient->synchronise();
+    } catch (\Exception $e) {
+        echo $OUTPUT->header();
+        echo $e->getMessage() . ' <br>';
+        echo $OUTPUT->footer();
+        exit;
+    }
 
     echo $OUTPUT->header();
     echo get_string('successful_upload', 'enrol_oneroster') . ' <br>';
@@ -198,4 +212,5 @@ function process_selected_organization($selected_org_sourcedId, $tempdir, $csv_d
 
     // Clean up temp directory
     remove_dir($tempdir);
+    unset($_SESSION['oneroster_csv']);
 }
