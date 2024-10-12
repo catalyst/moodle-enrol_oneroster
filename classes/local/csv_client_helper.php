@@ -96,6 +96,7 @@ class OneRosterHelper {
     const DATATYPE_ARRAY_SUBJECTS = 'array_subjects';
     const DATATYPE_ARRAY_SUBJECT_CODES = 'array_subjectCodes';
     const DATATYPE_ARRAY_PERIODS = 'array_periods';
+    const DATATYPE_PASSWORD = 'password';
     const DATATYPE_STRING = 'string';
 
     // Header constants for each file
@@ -192,7 +193,7 @@ class OneRosterHelper {
             self::HEADER_PHONE => [self::DATATYPE_STRING, self::DATATYPE_NULL],
             self::HEADER_AGENT_SOURCEDIDS => [self::DATATYPE_ARRAY_GUID, self::DATATYPE_NULL],
             self::HEADER_GRADES => [self::DATATYPE_GRADE, self::DATATYPE_NULL],
-            self::HEADER_PASSWORD => [self::DATATYPE_STRING, self::DATATYPE_NULL],
+            self::HEADER_PASSWORD => [self::DATATYPE_PASSWORD, self::DATATYPE_NULL],
         ],
     ];
 
@@ -226,6 +227,7 @@ class OneRosterHelper {
         self::DATATYPE_ENUM_ORG_TYPE => 'is_org_type_enum',
         self::DATATYPE_ARRAY_SUBJECTS => 'is_list_of_strings',
         self::DATATYPE_ARRAY_SUBJECT_CODES => 'is_valid_subject_codes',
+        self::DATATYPE_PASSWORD => 'is_valid_password',
         self::DATATYPE_ARRAY_PERIODS => 'is_valid_periods',
         self::DATATYPE_STRING => 'is_valid_human_readable_string',
     ];
@@ -458,6 +460,23 @@ class OneRosterHelper {
     }
 
     /**
+     * Function to validate users and configure settings for database entry
+     * If all users have an identifier, the users will be saved to the database
+     * Otherwise, no users will be saved
+     *
+     * @param array $csv_data An array containing user data, including identifiers and other relevant details.
+     */
+    public static function validate_and_save_users_to_database($csv_data): bool {
+        foreach ($csv_data['users'] as $user) {
+            // If any user has an empty identifier, return false
+            if (empty($user['identifier']) && empty($user['password'])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Determine the data type of a value
      *
      * @param string $value The value to determine the data type of
@@ -475,6 +494,28 @@ class OneRosterHelper {
             }
         }
         return 'unknown';
+    }
+
+    /**
+     * Check if a value is a valid password
+     *
+     * @param mixed $value The value to check
+     * @return bool True if the value is a valid password, false otherwise
+     */
+    public static function is_valid_password($value) {
+        if (!preg_match('/\d/', $value)) {
+            return false;
+        }
+    
+        if (!preg_match('/[a-z]/', $value)) {
+            return false;
+        }
+    
+        if (!preg_match('/[\W_]/', $value)) {
+            return false;
+        }
+    
+        return true;
     }
 
     /**
