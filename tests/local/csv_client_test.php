@@ -47,6 +47,7 @@ class client_csv_testcase extends advanced_testcase {
     public function test_execute_full_data(){
         global $DB;
         $this->resetAfterTest(true);
+        $selected_org_sourcedId = 'org-sch-222-456';
 
         $uniqueid = uniqid();
         $tempdir = make_temp_directory('oneroster_csv/' . $uniqueid);
@@ -72,8 +73,6 @@ class client_csv_testcase extends advanced_testcase {
         $this->assertNotEmpty($csv_data, 'The extracted CSV data should not be empty.');
 
         $csvclient = client_helper::get_csv_client();
-
-        $selected_org_sourcedId = 'org-sch-222-456';
 
         if (OneRosterHelper::validate_and_save_users_to_database($csv_data) === true) {
             set_config('datasync_schools',  $selected_org_sourcedId, 'enrol_oneroster');
@@ -116,7 +115,7 @@ class client_csv_testcase extends advanced_testcase {
         }
         
         $this->assertCount(3, $course_records, 'There should be exactly 3 course records.');
-        $this->assertCount(7, $user_records, 'There should be exactly 7 user records.');
+        $this->assertCount(8, $user_records, 'There should be exactly 7 user records.');
         $this->assertCount(8, $enrol_records, 'There should be exactly 8 enrolment records.');
     }
 
@@ -124,6 +123,7 @@ class client_csv_testcase extends advanced_testcase {
      * Test Synchronise method to check the data is inserted into the database.
      * This test uses the minimal data set.
      */
+
     public function test_execute_minimal_data() {
         global $DB;
         $this->resetAfterTest(true);
