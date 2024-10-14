@@ -180,10 +180,6 @@ function process_selected_organization($selected_org_sourcedId, $tempdir, $csv_d
     $zip->close();
     $csv_data = OneRosterHelper::extract_csvs_to_arrays($tempdir);
 
-    if (OneRosterHelper::validate_and_save_users_to_database($csv_data) === true) {
-        set_config('datasync_schools', 'org-sch-222-456', 'enrol_oneroster');
-    }
-
     $manifest = $csv_data['manifest'] ?? [];
     $users = $csv_data['users'] ?? [];
     $classes = $csv_data['classes'] ?? [];
@@ -194,6 +190,10 @@ function process_selected_organization($selected_org_sourcedId, $tempdir, $csv_d
     $csvclient = client_helper::get_csv_client();
 
     $csvclient->set_orgid($selected_org_sourcedId);
+
+    if (OneRosterHelper::validate_and_save_users_to_database($csv_data) === true) {
+        set_config('datasync_schools', $selected_org_sourcedId, 'enrol_oneroster');
+    }
 
     $csvclient->set_data($manifest, $users, $classes, $orgs, $enrollments, $academicSessions);
 

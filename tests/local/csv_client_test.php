@@ -71,13 +71,14 @@ class client_csv_testcase extends advanced_testcase {
         $csv_data = OneRosterHelper::extract_csvs_to_arrays($tempdir);
         $this->assertNotEmpty($csv_data, 'The extracted CSV data should not be empty.');
 
-        if (OneRosterHelper::validate_and_save_users_to_database($csv_data) === true) {
-            set_config('datasync_schools', 'org-sch-222-456', 'enrol_oneroster');
-        }
-
         $csvclient = client_helper::get_csv_client();
 
         $selected_org_sourcedId = 'org-sch-222-456';
+
+        if (OneRosterHelper::validate_and_save_users_to_database($csv_data) === true) {
+            set_config('datasync_schools',  $selected_org_sourcedId, 'enrol_oneroster');
+        }
+
         $csvclient->set_orgid($selected_org_sourcedId);
         
         $manifest = $csv_data['manifest'] ?? [];
@@ -152,7 +153,7 @@ class client_csv_testcase extends advanced_testcase {
         $this->assertNotEmpty($csv_data, 'The extracted CSV data should not be empty.');
 
         if (OneRosterHelper::validate_and_save_users_to_database($csv_data) === true) {
-            set_config('datasync_schools', 'org-sch-222-456', 'enrol_oneroster');
+            set_config('datasync_schools',  $selected_org_sourcedId, 'enrol_oneroster');
         }
 
         $csvclient = client_helper::get_csv_client();
@@ -190,7 +191,8 @@ class client_csv_testcase extends advanced_testcase {
         foreach ($enrol_records as $enrol) {
             $this->assertArrayHasKey('id', (array)$enrol);
             $this->assertArrayHasKey('courseid', (array)$enrol);
-            $this->assertIsInt($enrol->courseid, 'Course ID should be an integer.');
+            $courseid = (int) $enrol->courseid;
+            $this->assertIsInt($courseid, 'Course ID should be an integer.');
         }
         
         $this->assertCount(3, $course_records, 'There should be exactly 3 course records.');
