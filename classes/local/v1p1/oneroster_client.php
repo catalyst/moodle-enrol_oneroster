@@ -146,7 +146,7 @@ trait oneroster_client {
         $this->fetch_organisation_list();
 
         $schoolidstosync = explode(',', get_config('enrol_oneroster', 'datasync_schools'));
-        $countofschools = count($schoolidstosync); 
+        $countofschools = count($schoolidstosync);
 
         $this->get_trace()->output("Processing {$countofschools} schools");
 
