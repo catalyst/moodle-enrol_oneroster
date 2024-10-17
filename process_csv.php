@@ -75,7 +75,7 @@ if ($step == 1) {
                     } 
 
                     $datatype = OneRosterHelper::validate_csv_data_types($tempdir);
-                    if (!$datatype['isValid']) {
+                    if (!$datatype['is_valid']) {
                         echo $OUTPUT->header();
                         OneRosterHelper::display_validation_errors($datatype);
                         echo $OUTPUT->footer();

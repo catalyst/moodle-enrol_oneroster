@@ -99,6 +99,25 @@ class OneRosterHelper {
     const DATATYPE_PASSWORD = 'password';
     const DATATYPE_STRING = 'string';
 
+    // Valid grade codes from the Common Education Data Standards (CEDS)
+    // Reference: https://ceds.ed.gov/CEDSElementDetails.aspx?TermId=7100
+    const valid_grade_codes = [
+        'IT', 'PR', 'PK', 'TK', 'KG', '01', '02', '03', '04', '05', '06',
+        '07', '08', '09', '10', '11', '12', '13', 'PS', 'UG', 'Other'
+    ];
+
+    const valid_class_types = ['homeroom', 'scheduled'];
+
+    const valid_roles = ['administrator', 'proctor', 'student', 'teacher'];
+
+    const valid_primary_values = ['true', 'false'];
+
+    const valid_org_types = ['department', 'school', 'district', 'local', 'state', 'national'];
+
+    const valid_roles_users = [
+        'administrator', 'aide', 'guardian', 'parent', 'proctor', 
+        'relative', 'student', 'teacher'
+    ];
     // Header constants for each file
     const HEADER_ACADEMIC_SESSIONS = [
         self::HEADER_SOURCEDID, self::HEADER_STATUS, self::HEADER_DATE_LAST_MODIFIED, self::HEADER_TITLE,
@@ -529,28 +548,20 @@ class OneRosterHelper {
      * @return bool True if the value is a valid password, false otherwise
      */
     public static function is_valid_password($value) {
-        if (!preg_match('/\d/', $value)) {
-            return false;
-        }
-    
-        if (!preg_match('/[a-z]/', $value)) {
-            return false;
-        }
-    
-        if (!preg_match('/[\W_]/', $value)) {
-            return false;
-        }
-    
-        return true;
+        return check_password_policy($value, $errormsg);
     }
 
     /**
-     * Check if a value is a valid human-readable string
+     * Check if a value is a valid human-readable string.
+     *
+     * A valid human-readable string is defined as a string that:
+     * - Contains only letters, numbers, spaces, and a limited set of punctuation characters (.,-).
+     * - The regex uses Unicode properties to allow for letters from different languages (\p{L} for letters and \p{N} for numbers).
      *
      * @param mixed $value The value to check
-     * @return bool True if the value is human-readable string, false otherwise
+     * @return bool True if the value is a human-readable string, false otherwise
      */
-    public static function is_valid_human_readable_string($value) : bool {
+    public static function is_valid_human_readable_string($value): bool {
         $trimmed_value = trim($value);
         $result = is_string($trimmed_value) && preg_match('/^[\p{L}\p{N}\s.,-]+$/u', $trimmed_value);
         
@@ -563,7 +574,7 @@ class OneRosterHelper {
      * @param mixed $value The value to check
      * @return bool True if the value is of type int, false otherwise
      */
-    public static function is_int_type($value) : bool {
+    public static function is_int_type($value): bool {
         return is_numeric($value) && filter_var($value, FILTER_VALIDATE_INT) !== false;
     }
 
@@ -573,7 +584,7 @@ class OneRosterHelper {
     * @param mixed $value The value to check
     * @return bool True if the value is of type list of strings, false otherwise
     */
-    public static function is_list_of_strings($value) : bool {
+    public static function is_list_of_strings($value): bool {
         if (is_string($value)) {
             $value = array_map('trim', explode(',', $value)); 
         }
@@ -594,10 +605,10 @@ class OneRosterHelper {
      * Validate and parse subject codes
      * Subject codes can be a single string or a list of strings separated by commas
      *
-     * @param mixed $value The value to check
+     * @param string $value The value to check
      * @return bool True if the value is a valid list of subject codes, false otherwise
      */
-    public static function is_valid_subject_codes($value) : bool {
+    public static function is_valid_subject_codes(string $value): bool {
         if (is_string($value)) {
             $value = array_map('trim', explode(',', $value)); 
         }
@@ -626,7 +637,7 @@ class OneRosterHelper {
      * @param string $value The value to check and parse
      * @return bool True if the value is a valid periods string, false otherwise
      */
-    public static function is_valid_periods($value) : bool {
+    public static function is_valid_periods(string $value): bool {
         $value = trim($value);
 
         if (preg_match('/^".*?"$/', $value)) {
@@ -682,7 +693,7 @@ class OneRosterHelper {
      * @param mixed $value The value to check
      * @return bool True if the value is of type GUID, false otherwise
      */
-    public static function is_guid_type($value) : bool {
+    public static function is_guid_type($value): bool {
         return strlen($value) < 256 && preg_match('/^[0-9a-zA-Z.\-_\/@]+$/', $value) === 1;
     }
 
@@ -692,7 +703,7 @@ class OneRosterHelper {
      * @param mixed $value The value to check
      * @return bool True if the value is of type status enum, false otherwise
      */
-    public static function is_status_enum_type($value) : bool {
+    public static function is_status_enum_type($value): bool {
         $valid_status_values = ['active', 'tobedeleted', 'inactive'];
         return in_array(strtolower($value), $valid_status_values, true);
     }
@@ -703,7 +714,7 @@ class OneRosterHelper {
      * @param mixed $value The value to check
      * @return bool True if the value is of type type enum, false otherwise
      */
-    public static function is_type_enum($value) : bool {
+    public static function is_type_enum($value): bool {
         $valid_type_values = ['gradingPeriod', 'semester', 'schoolYear', 'term'];
         return in_array($value, $valid_type_values, true);
     }
@@ -715,9 +726,8 @@ class OneRosterHelper {
      * @param mixed $value The value to check
      * @return bool True if the value is of type year, false otherwise
      */
-    public static function is_year_type($value) : bool {
-        $currentYear = (int)date('Y');
-        return preg_match('/^\d{4}$/', $value) === 1 && (int)$value >= 1800 && (int)$value <= $currentYear;
+    public static function is_year_type($value): bool {
+        return preg_match('/^\d{4}$/', $value) === 1;
     }
 
     /**
@@ -726,34 +736,26 @@ class OneRosterHelper {
      * @param mixed $value The value to check
      * @return bool True if the value is of type grade, false otherwise
      */
-    public static function is_valid_grades($value) : bool{
-        $valid_grade_codes = [
-            'IT', 'PR', 'PK', 'TK', 'KG', '01', '02', '03', '04', '05', '06',
-            '07', '08', '09', '10', '11', '12', '13', 'PS', 'UG', 'Other'
-        ];
+    public static function is_valid_grades($value): bool {
         $grades = array_map('trim', explode(',', $value));
 
         foreach ($grades as $grade) {
-            if (!in_array($grade, $valid_grade_codes, true)) {
+            if (!self::is_valid_grade($grade)) {
                 return false;
             }
-        }    
+        }
         return true;
     }
 
     /**
      * Check if a value is of type grade
      *
-     * @param mixed $value The value to check
+     * @param string $value The value to check
      * @return bool True if the value is of type grade, false otherwise
      */
-    public static function is_valid_grade($value) : bool {
-        $valid_grade_codes = [
-            'IT', 'PR', 'PK', 'TK', 'KG', '01', '02', '03', '04', '05', '06',
-            '07', '08', '09', '10', '11', '12', '13', 'PS', 'UG', 'Other'
-        ];
+    public static function is_valid_grade(string $value): bool {
         $value = trim($value);
-        return in_array($value, $valid_grade_codes, true);
+        return in_array($value, self::valid_grade_codes, true);
     }
 
     /**
@@ -762,9 +764,8 @@ class OneRosterHelper {
      * @param mixed $value The value to check
      * @return bool True if the value is of type class type enum, false otherwise
      */
-    public static function is_class_type_enum($value) : bool {
-        $valid_class_types = ['homeroom', 'scheduled'];
-        return in_array(strtolower($value), $valid_class_types, true);
+    public static function is_class_type_enum($value): bool {        
+        return in_array(strtolower($value), self::valid_class_types, true);
     }
 
     /**
@@ -773,7 +774,7 @@ class OneRosterHelper {
      * @param mixed $value The value to check
      * @return bool True if the value is of type GUID list, false otherwise
      */
-    public static function is_valid_guid_list($value) : bool {
+    public static function is_valid_guid_list($value): bool {
         $guids = array_map('trim', explode(',', $value));
     
         foreach ($guids as $guid) {
@@ -787,12 +788,11 @@ class OneRosterHelper {
     /**
      * Check if a value is of type role enum
      *
-     * @param mixed $value The value to check
+     * @param string $value The value to check
      * @return bool True if the value is of type role enum, false otherwise
      */
-    public static function is_role_enum($value) : bool {
-        $valid_roles = ['administrator', 'proctor', 'student', 'teacher'];
-        return in_array(strtolower($value), $valid_roles, true);
+    public static function is_role_enum(string $value): bool {
+        return in_array(strtolower($value), self::valid_roles, true);
     }
 
     /**
@@ -801,9 +801,8 @@ class OneRosterHelper {
      * @param mixed $value The value to check
      * @return bool True if the value is of type primary enum, false otherwise
      */
-    public static function is_primary_enum($value) : bool {
-        $valid_primary_values = ['true', 'false'];
-        return in_array(strtolower($value), $valid_primary_values, true);
+    public static function is_primary_enum($value): bool {
+        return in_array(strtolower($value), self::valid_primary_values, true);
     }
 
     /**
@@ -812,9 +811,8 @@ class OneRosterHelper {
      * @param mixed $value The value to check
      * @return bool True if the value is of type org type enum, false otherwise
      */
-    public static function is_org_type_enum($value) : bool {
-        $valid_org_types = ['department', 'school', 'district', 'local', 'state', 'national'];
-        return in_array(strtolower($value), $valid_org_types, true);
+    public static function is_org_type_enum($value): bool {
+        return in_array(strtolower($value), self::valid_org_types, true);
     }
 
     /**
@@ -823,7 +821,7 @@ class OneRosterHelper {
      * @param mixed $value The value to check
      * @return bool True if the value is of type email, false otherwise
      */
-    public static function is_email_type($value) : bool {
+    public static function is_email_type($value): bool {
         return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
     }
 
@@ -834,7 +832,7 @@ class OneRosterHelper {
      * @param mixed $value The value to check
      * @return bool True if the value is of type user ID or user ID list, false otherwise
      */
-    public static function is_valid_user_id($value) : bool {
+    public static function is_valid_user_id($value): bool {
         $value = trim($value, '"');
         $userIds = array_map('trim', explode(',', $value));
         
@@ -853,11 +851,7 @@ class OneRosterHelper {
      * @param mixed $value The value to check
      * @return bool True if the value is of type role user enum, false otherwise
      */
-    public static function is_role_user_enum($value) : bool {
-        $valid_roles = [
-            'administrator', 'aide', 'guardian', 'parent', 'proctor', 
-            'relative', 'student', 'teacher'
-        ];
-        return in_array(strtolower($value), $valid_roles, true);
+    public static function is_role_user_enum($value): bool {
+        return in_array(strtolower($value), self::valid_roles_users, true);
     }
 }

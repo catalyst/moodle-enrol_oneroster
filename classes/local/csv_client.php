@@ -123,11 +123,9 @@ class csv_client implements client_interface  {
         // Get the organisation ID
         $org_id = $this->org_id ?? null;
 
-        if ($org_id === null) {
+        if ($org_id == null) {
             throw new \Exception('Organization ID is not set.');
         }
-
-        echo $url . "\n";
 
         switch ($basepath) {
             case self::basepath_orgs:
@@ -139,8 +137,8 @@ class csv_client implements client_interface  {
                     $mapped_data = array_combine($keys, $orgdata);
                     if (isset($mapped_data[$org_id])) {
                         $org = (object) $mapped_data[$org_id];
-                         // If status and dateLastModified are not set, set them to active and the current date
-                        if ($org->status === null && $org->dateLastModified === null) {
+                        // If status and dateLastModified are not set, set them to active and the current date
+                        if ($org->status == null && $org->dateLastModified == null) {
                             $org->status = 'active'; 
                             $org->dateLastModified = date('Y-m-d');
                         }
@@ -192,7 +190,7 @@ class csv_client implements client_interface  {
                     $classes = [];
                     foreach ($mapped_data as $classId => $classData) {
                         $class = (object) $classData;
-                        if (isset($class->schoolSourcedId) && $class->schoolSourcedId === $org_id) {
+                        if (isset($class->schoolSourcedId) && $class->schoolSourcedId == $org_id) {
                             if ($class->status === 'inactive') {
                                 $class->status = 'tobedeleted';
                             }
@@ -234,7 +232,6 @@ class csv_client implements client_interface  {
                         }
                         $classes[$classId] = $class;
                     }
-                    var_dump($classes);
                     return (object) [
                         'response' => (object) [
                             'classes' => $classes
@@ -250,7 +247,7 @@ class csv_client implements client_interface  {
                     $enrollments = [];
                     foreach ($mapped_data as $enrollmentId => $enrollmentData) {
                         $enrollment = (object) $enrollmentData;
-                        if (isset($enrollment->schoolSourcedId) && $enrollment->schoolSourcedId === $org_id) {
+                        if (isset($enrollment->schoolSourcedId) && $enrollment->schoolSourcedId == $org_id) {
                             if ($enrollment->status === 'inactive') {
                                 $enrollment->status = 'tobedeleted';
                             }
@@ -307,7 +304,7 @@ class csv_client implements client_interface  {
 
                     unset($user->orgSourcedIds, $user->agentSourcedIds);
                     foreach ($user->orgs as $org) {
-                        if ($org->sourcedId === $org_id) {
+                        if ($org->sourcedId == $org_id) {
                             $users[$userId] = $user;
                         }
                     }
