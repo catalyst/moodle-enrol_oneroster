@@ -33,7 +33,13 @@ namespace enrol_oneroster;
  * @covers  enrol_oneroster\local\v1p1\oneroster_client
  * @covers  enrol_oneroster\local\csv_client
  */
-class client_csv_testcase extends \advanced_testcase {
+
+ use enrol_oneroster\OneRosterHelper;
+
+require_once(__DIR__ . '/../../../../config.php');
+require_once(__DIR__ . '/../../classes/local/csv_client_helper.php');
+ 
+class csv_client_test extends \advanced_testcase {
     /**
      * Test Synchronise method to check the data is inserted into the database.
      * This test uses the full data set.
@@ -44,7 +50,7 @@ class client_csv_testcase extends \advanced_testcase {
      * @covers enrol_oneroster\OneRosterHelper::check_manifest_and_files
      * @covers enrol_oneroster\OneRosterHelper::validate_csv_data_types
      * @covers enrol_oneroster\OneRosterHelper::extract_csvs_to_arrays
-     * @covers enrol_oneroster\OneRosterHelper::validate_and_save_users_to_database
+     * @covers enrol_oneroster\OneRosterHelper::validate_user_data
      */
     public function test_execute_full_data(){
         global $DB;
@@ -68,15 +74,15 @@ class client_csv_testcase extends \advanced_testcase {
         $this->assertEmpty($missing_files['invalid_headers'], 'There should be no invalid headers in the extracted CSV files.');
 
         $is_valid_data = OneRosterHelper::validate_csv_data_types($tempdir);
-        $this->assertArrayHasKey('isValid', $is_valid_data);
-        $this->assertTrue($is_valid_data['isValid']);
+        $this->assertArrayHasKey('is_valid', $is_valid_data);
+        $this->assertTrue($is_valid_data['is_valid']);
 
         $csv_data = OneRosterHelper::extract_csvs_to_arrays($tempdir);
         $this->assertNotEmpty($csv_data, 'The extracted CSV data should not be empty.');
 
         $csvclient = client_helper::get_csv_client();
 
-        if (OneRosterHelper::validate_and_save_users_to_database($csv_data) === true) {
+        if (OneRosterHelper::validate_user_data($csv_data) === true) {
             set_config('datasync_schools',  $selected_org_sourcedId, 'enrol_oneroster');
         }
 
@@ -148,13 +154,13 @@ class client_csv_testcase extends \advanced_testcase {
         $this->assertEmpty($missing_files['invalid_headers'], 'There should be no invalid headers in the extracted CSV files.');
 
         $is_valid_data = OneRosterHelper::validate_csv_data_types($tempdir);
-        $this->assertArrayHasKey('isValid', $is_valid_data);
-        $this->assertTrue($is_valid_data['isValid']);
+        $this->assertArrayHasKey('is_valid', $is_valid_data);
+        $this->assertTrue($is_valid_data['is_valid']);
 
         $csv_data = OneRosterHelper::extract_csvs_to_arrays($tempdir);
         $this->assertNotEmpty($csv_data, 'The extracted CSV data should not be empty.');
 
-        if (OneRosterHelper::validate_and_save_users_to_database($csv_data) === true) {
+        if (OneRosterHelper::validate_user_data($csv_data) === true) {
             set_config('datasync_schools',  $selected_org_sourcedId, 'enrol_oneroster');
         }
 

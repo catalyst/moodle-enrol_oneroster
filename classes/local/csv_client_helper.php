@@ -126,76 +126,78 @@ class OneRosterHelper {
     ];
 
     // Data type definitions for each file
-    public static $datatype_files = [
-        self::FILE_ACADEMIC_SESSIONS => [
-            self::HEADER_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
-            self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
-            self::HEADER_TITLE => self::DATATYPE_STRING,
-            self::HEADER_TYPE => self::DATATYPE_ENUM_TYPE,
-            self::HEADER_START_DATE => self::DATATYPE_DATE,
-            self::HEADER_END_DATE => self::DATATYPE_DATE,
-            self::HEADER_PARENT_SOURCEDID => [self::DATATYPE_GUID, self::DATATYPE_NULL],
-            self::HEADER_SCHOOL_YEAR => self::DATATYPE_YEAR,
-        ],
-        self::FILE_CLASSES => [
-            self::HEADER_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
-            self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
-            self::HEADER_TITLE => self::DATATYPE_STRING,
-            self::HEADER_GRADES => [self::DATATYPE_ARRAY_GRADE, self::DATATYPE_NULL],
-            self::HEADER_COURSE_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_CLASS_CODE => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-            self::HEADER_CLASS_TYPE => self::DATATYPE_ENUM_CLASS_TYPE,
-            self::HEADER_LOCATION => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-            self::HEADER_SCHOOL_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_TERM_SOURCEDIDS => [self::DATATYPE_ARRAY_GUID],
-            self::HEADER_SUBJECTS => [self::DATATYPE_ARRAY_SUBJECTS, self::DATATYPE_NULL],
-            self::HEADER_SUBJECT_CODES => [self::DATATYPE_ARRAY_SUBJECT_CODES, self::DATATYPE_NULL],
-            self::HEADER_PERIODS => [self::DATATYPE_ARRAY_PERIODS, self::DATATYPE_NULL],
-        ],
-        self::FILE_ENROLLMENTS => [
-            self::HEADER_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
-            self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
-            self::HEADER_CLASS_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_SCHOOL_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_USER_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_ROLE => self::DATATYPE_ENUM_TYPE_ENROL,
-            self::HEADER_PRIMARY => [self::DATATYPE_ENUM_PRIMARY, self::DATATYPE_NULL],
-            self::HEADER_BEGIN_DATE => [self::DATATYPE_DATE, self::DATATYPE_NULL],
-            self::HEADER_END_DATE => [self::DATATYPE_DATE, self::DATATYPE_NULL],
-        ],
-        self::FILE_ORGS => [
-            self::HEADER_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
-            self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
-            self::HEADER_NAME => self::DATATYPE_STRING,
-            self::HEADER_TYPE => self::DATATYPE_ENUM_ORG_TYPE,
-            self::HEADER_IDENTIFIER => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-            self::HEADER_PARENT_SOURCEDID => [self::DATATYPE_GUID, self::DATATYPE_NULL],
-        ],
-        self::FILE_USERS => [
-            self::HEADER_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
-            self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
-            self::HEADER_ENABLED_USER => self::DATATYPE_ENUM_PRIMARY,
-            self::HEADER_ORG_SOURCEDIDS => self::DATATYPE_ARRAY_GUID,
-            self::HEADER_ROLE => self::DATATYPE_ENUM_ROLE_USER,
-            self::HEADER_USERNAME => self::DATATYPE_STRING,
-            self::HEADER_USERIDS => [self::DATATYPE_ARRAY_USERIDS, self::DATATYPE_NULL],
-            self::HEADER_GIVEN_NAME => self::DATATYPE_STRING,
-            self::HEADER_FAMILY_NAME => self::DATATYPE_STRING,
-            self::HEADER_MIDDLE_NAME => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-            self::HEADER_IDENTIFIER => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-            self::HEADER_EMAIL => [self::DATATYPE_STRING_EMAIL, self::DATATYPE_NULL],
-            self::HEADER_SMS => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-            self::HEADER_PHONE => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-            self::HEADER_AGENT_SOURCEDIDS => [self::DATATYPE_ARRAY_GUID, self::DATATYPE_NULL],
-            self::HEADER_GRADES => [self::DATATYPE_GRADE, self::DATATYPE_NULL],
-            self::HEADER_PASSWORD => [self::DATATYPE_PASSWORD, self::DATATYPE_NULL],
-        ],
-    ];
+    public static function get_file_datatypes(): array {
+        return [
+            self::FILE_ACADEMIC_SESSIONS => [
+                self::HEADER_SOURCEDID => self::DATATYPE_GUID,
+                self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
+                self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
+                self::HEADER_TITLE => self::DATATYPE_STRING,
+                self::HEADER_TYPE => self::DATATYPE_ENUM_TYPE,
+                self::HEADER_START_DATE => self::DATATYPE_DATE,
+                self::HEADER_END_DATE => self::DATATYPE_DATE,
+                self::HEADER_PARENT_SOURCEDID => [self::DATATYPE_GUID, self::DATATYPE_NULL],
+                self::HEADER_SCHOOL_YEAR => self::DATATYPE_YEAR,
+            ],
+            self::FILE_CLASSES => [
+                self::HEADER_SOURCEDID => self::DATATYPE_GUID,
+                self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
+                self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
+                self::HEADER_TITLE => self::DATATYPE_STRING,
+                self::HEADER_GRADES => [self::DATATYPE_ARRAY_GRADE, self::DATATYPE_NULL],
+                self::HEADER_COURSE_SOURCEDID => self::DATATYPE_GUID,
+                self::HEADER_CLASS_CODE => [self::DATATYPE_STRING, self::DATATYPE_NULL],
+                self::HEADER_CLASS_TYPE => self::DATATYPE_ENUM_CLASS_TYPE,
+                self::HEADER_LOCATION => [self::DATATYPE_STRING, self::DATATYPE_NULL],
+                self::HEADER_SCHOOL_SOURCEDID => self::DATATYPE_GUID,
+                self::HEADER_TERM_SOURCEDIDS => [self::DATATYPE_ARRAY_GUID],
+                self::HEADER_SUBJECTS => [self::DATATYPE_ARRAY_SUBJECTS, self::DATATYPE_NULL],
+                self::HEADER_SUBJECT_CODES => [self::DATATYPE_ARRAY_SUBJECT_CODES, self::DATATYPE_NULL],
+                self::HEADER_PERIODS => [self::DATATYPE_ARRAY_PERIODS, self::DATATYPE_NULL],
+            ],
+            self::FILE_ENROLLMENTS => [
+                self::HEADER_SOURCEDID => self::DATATYPE_GUID,
+                self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
+                self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
+                self::HEADER_CLASS_SOURCEDID => self::DATATYPE_GUID,
+                self::HEADER_SCHOOL_SOURCEDID => self::DATATYPE_GUID,
+                self::HEADER_USER_SOURCEDID => self::DATATYPE_GUID,
+                self::HEADER_ROLE => self::DATATYPE_ENUM_TYPE_ENROL,
+                self::HEADER_PRIMARY => [self::DATATYPE_ENUM_PRIMARY, self::DATATYPE_NULL],
+                self::HEADER_BEGIN_DATE => [self::DATATYPE_DATE, self::DATATYPE_NULL],
+                self::HEADER_END_DATE => [self::DATATYPE_DATE, self::DATATYPE_NULL],
+            ],
+            self::FILE_ORGS => [
+                self::HEADER_SOURCEDID => self::DATATYPE_GUID,
+                self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
+                self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
+                self::HEADER_NAME => self::DATATYPE_STRING,
+                self::HEADER_TYPE => self::DATATYPE_ENUM_ORG_TYPE,
+                self::HEADER_IDENTIFIER => [self::DATATYPE_STRING, self::DATATYPE_NULL],
+                self::HEADER_PARENT_SOURCEDID => [self::DATATYPE_GUID, self::DATATYPE_NULL],
+            ],
+            self::FILE_USERS => [
+                self::HEADER_SOURCEDID => self::DATATYPE_GUID,
+                self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
+                self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
+                self::HEADER_ENABLED_USER => self::DATATYPE_ENUM_PRIMARY,
+                self::HEADER_ORG_SOURCEDIDS => self::DATATYPE_ARRAY_GUID,
+                self::HEADER_ROLE => self::DATATYPE_ENUM_ROLE_USER,
+                self::HEADER_USERNAME => self::DATATYPE_STRING,
+                self::HEADER_USERIDS => [self::DATATYPE_ARRAY_USERIDS, self::DATATYPE_NULL],
+                self::HEADER_GIVEN_NAME => self::DATATYPE_STRING,
+                self::HEADER_FAMILY_NAME => self::DATATYPE_STRING,
+                self::HEADER_MIDDLE_NAME => [self::DATATYPE_STRING, self::DATATYPE_NULL],
+                self::HEADER_IDENTIFIER => [self::DATATYPE_STRING, self::DATATYPE_NULL],
+                self::HEADER_EMAIL => [self::DATATYPE_STRING_EMAIL, self::DATATYPE_NULL],
+                self::HEADER_SMS => [self::DATATYPE_STRING, self::DATATYPE_NULL],
+                self::HEADER_PHONE => [self::DATATYPE_STRING, self::DATATYPE_NULL],
+                self::HEADER_AGENT_SOURCEDIDS => [self::DATATYPE_ARRAY_GUID, self::DATATYPE_NULL],
+                self::HEADER_GRADES => [self::DATATYPE_GRADE, self::DATATYPE_NULL],
+                self::HEADER_PASSWORD => [self::DATATYPE_PASSWORD, self::DATATYPE_NULL],
+            ],
+        ];
+    }
 
     // Required files and their headers
     const REQUIRED_FILES = [
@@ -207,30 +209,32 @@ class OneRosterHelper {
     ];
 
     // Validators for each data type
-    public static $validators = [
-        self::DATATYPE_GUID => 'is_guid_type',
-        self::DATATYPE_INT => 'is_int_type',
-        self::DATATYPE_DATETIME => 'is_datetime_type',
-        self::DATATYPE_DATE => 'is_date_type',
-        self::DATATYPE_YEAR => 'is_year_type',
-        self::DATATYPE_ENUM_STATUS => 'is_status_enum_type',
-        self::DATATYPE_ENUM_TYPE => 'is_type_enum',
-        self::DATATYPE_ARRAY_GUID => 'is_valid_guid_list',
-        self::DATATYPE_ARRAY_GRADE => 'is_valid_grades',
-        self::DATATYPE_GRADE => 'is_valid_grade',
-        self::DATATYPE_STRING_EMAIL => 'is_email_type',
-        self::DATATYPE_ARRAY_USERIDS => 'is_valid_user_id',
-        self::DATATYPE_ENUM_ROLE_USER => 'is_role_user_enum',
-        self::DATATYPE_ENUM_TYPE_ENROL => 'is_role_enum',
-        self::DATATYPE_ENUM_PRIMARY => 'is_primary_enum',
-        self::DATATYPE_ENUM_CLASS_TYPE => 'is_class_type_enum',
-        self::DATATYPE_ENUM_ORG_TYPE => 'is_org_type_enum',
-        self::DATATYPE_ARRAY_SUBJECTS => 'is_list_of_strings',
-        self::DATATYPE_ARRAY_SUBJECT_CODES => 'is_valid_subject_codes',
-        self::DATATYPE_PASSWORD => 'is_valid_password',
-        self::DATATYPE_ARRAY_PERIODS => 'is_valid_periods',
-        self::DATATYPE_STRING => 'is_valid_human_readable_string',
-    ];
+    public static function get_validator(): array {
+        return [
+            self::DATATYPE_GUID => 'is_guid_type',
+            self::DATATYPE_INT => 'is_int_type',
+            self::DATATYPE_DATETIME => 'is_datetime_type',
+            self::DATATYPE_DATE => 'is_date_type',
+            self::DATATYPE_YEAR => 'is_year_type',
+            self::DATATYPE_ENUM_STATUS => 'is_status_enum_type',
+            self::DATATYPE_ENUM_TYPE => 'is_type_enum',
+            self::DATATYPE_ARRAY_GUID => 'is_valid_guid_list',
+            self::DATATYPE_ARRAY_GRADE => 'is_valid_grades',
+            self::DATATYPE_GRADE => 'is_valid_grade',
+            self::DATATYPE_STRING_EMAIL => 'is_email_type',
+            self::DATATYPE_ARRAY_USERIDS => 'is_valid_user_id',
+            self::DATATYPE_ENUM_ROLE_USER => 'is_role_user_enum',
+            self::DATATYPE_ENUM_TYPE_ENROL => 'is_role_enum',
+            self::DATATYPE_ENUM_PRIMARY => 'is_primary_enum',
+            self::DATATYPE_ENUM_CLASS_TYPE => 'is_class_type_enum',
+            self::DATATYPE_ENUM_ORG_TYPE => 'is_org_type_enum',
+            self::DATATYPE_ARRAY_SUBJECTS => 'is_list_of_strings',
+            self::DATATYPE_ARRAY_SUBJECT_CODES => 'is_valid_subject_codes',
+            self::DATATYPE_PASSWORD => 'is_valid_password',
+            self::DATATYPE_ARRAY_PERIODS => 'is_valid_periods',
+            self::DATATYPE_STRING => 'is_valid_human_readable_string',
+        ];
+    }
 
     /**
      * Function to validate CSV headers
@@ -244,7 +248,7 @@ class OneRosterHelper {
         $expected_headers = self::getHeader($file_name);
 
         if (($handle = fopen($clean_file_path, "r")) !== false) {
-            $headers = fgetcsv($handle, 1000, ",");
+            $headers = fgetcsv($handle, 0, ",");
             fclose($handle);
             return $headers === $expected_headers;
         } 
@@ -263,8 +267,9 @@ class OneRosterHelper {
         $required_files = [];
 
         if (($handle = fopen($manifest_path, "r")) !== false) {
-            while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+            while (($data = fgetcsv($handle, 0, ",")) !== false) {
                 if (in_array($data[1], ['bulk', 'delta'])) {
+                    // remove 'file.' prefix and add '.csv' suffix in the manifest file to clean the param names.
                     $required_files[] = str_replace('file.', '', $data[0]) . '.csv';
                 }
             }
@@ -275,7 +280,9 @@ class OneRosterHelper {
         $missing_files = array_diff($required_files, $extracted_files);
 
         foreach ($required_files as $file) {
-            if (in_array($file, $extracted_files)) {
+            $clean_file_path = clean_param($file, PARAM_PATH);
+
+            if (in_array($clean_file_path, $extracted_files)) {
                 $file_path = $tempdir . '/' . $file;
                 if (!self::validate_csv_headers($file_path)) {
                     $invalid_headers[] = $file;
@@ -305,8 +312,8 @@ class OneRosterHelper {
                 $csv_data[$file_name] = [];
 
                 if (($handle = fopen($directory . '/' . $file, 'r')) !== false) {
-                    $headers = fgetcsv($handle, 1000, ',');
-                    while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+                    $headers = fgetcsv($handle, 0, ',');
+                    while (($row = fgetcsv($handle, 0, ',')) !== false) {
                         $csv_data[$file_name][] = array_combine($headers, $row);
                     }
                     fclose($handle);
@@ -337,16 +344,18 @@ class OneRosterHelper {
             }
 
             if (!empty($critical_missing_files)) {
-                echo get_string('missingfiles', 'enrol_oneroster') . implode(', ', $critical_missing_files) . '<br>';
+                $critical_files_list = implode(', ', $critical_missing_files);
+                echo get_string('missingfiles', 'enrol_oneroster', ['a' => $critical_files_list]) . '<br>';
             }
 
             foreach ($non_critical_files as $non_critical_file) {
-                echo $non_critical_file . get_string('invalid_manifest_selection', 'enrol_oneroster') .'<br>';
+                echo get_string('invalid_manifest_selection', 'enrol_oneroster', ['a' => $non_critical_file]) . '<br>';
             }
         }
-    
+
         if (!empty($missing_files['invalid_headers'])) {
-            echo get_string('invalidheaders', 'enrol_oneroster') . implode(', ', $missing_files['invalid_headers']) . '<br>';
+            $invalid_headers_list = implode(', ', $missing_files['invalid_headers']);
+            echo get_string('invalidheaders', 'enrol_oneroster', ['a' => $invalid_headers_list]) . '<br>';
         }
     }
     
@@ -358,8 +367,6 @@ class OneRosterHelper {
      */
     public static function getHeader($file_name) {
         switch ($file_name) {
-            case self::FILE_MANIFEST:
-                return self::HEADER_MANIFEST;
             case self::FILE_ACADEMIC_SESSIONS:
                 return self::HEADER_ACADEMIC_SESSIONS;
             case self::FILE_CLASSES:
@@ -382,7 +389,7 @@ class OneRosterHelper {
      * @return array The expected data types for the given file
      */
     public static function get_data_types($file_name) {
-        return self::$datatype_files[$file_name] ?? [];
+        return self::get_file_datatypes()[$file_name] ?? [];
     }
 
     /**
@@ -392,7 +399,7 @@ class OneRosterHelper {
      * @return array An array containing the validity of the files, the invalid files, and error messages
      */
     public static function validate_csv_data_types($directory) {
-        $isValid = true;
+        $is_valid = true;
         $invalid_files = [];
         $error_messages = [];
 
@@ -408,20 +415,25 @@ class OneRosterHelper {
             $detected_data_types = [];
 
             if (($handle = fopen($clean_file_path, "r")) !== false) {
-                $headers = fgetcsv($handle, 1000, ",");
+                $headers = fgetcsv($handle, 0, ",");
                 if ($headers === false) {
-                    $isValid = false;
+                    $is_valid = false;
                     $invalid_files[] = $file;
                     $error_messages[] = "Failed to read headers from CSV file: $file";
                     continue;
                 }
 
                 $detected_data_types = array_fill(0, count($headers), 'unknown');
-                while (($row = fgetcsv($handle, 1000, ",")) !== false) {
+
+                while (($row = fgetcsv($handle, 0, ",")) !== false) {
+                    $row = array_slice($row, 0, count($headers));
                     foreach ($row as $index => $value) {
-                        $detected_type = self::determine_data_type($value, $expected_data_types[$headers[$index]] ?? []);
-                        if ($detected_data_types[$index] === 'unknown' || $detected_data_types[$index] === self::DATATYPE_NULL || $detected_data_types[$index] !== false) {
-                            $detected_data_types[$index] = $detected_type;
+                        if (isset($headers[$index])) {
+                            $detected_type = self::determine_data_type($value, $expected_data_types[$headers[$index]] ?? []);
+                            
+                            if ($detected_data_types[$index] === 'unknown' || $detected_data_types[$index] === self::DATATYPE_NULL || $detected_data_types[$index] !== false) {
+                                $detected_data_types[$index] = $detected_type;
+                            }
                         }
                     }
                 }
@@ -434,7 +446,7 @@ class OneRosterHelper {
                     $detected_type = $detected_data_types[$index];
                     if (!in_array($detected_type, (array)$expected_types, true)) {
                         $error_messages[] = "Validation failed for header '$header' in file '$file'.";
-                        $isValid = false;
+                        $is_valid = false;
                         $file_is_valid = false;
                     }
                 }
@@ -446,7 +458,7 @@ class OneRosterHelper {
         }
 
         return [
-            'isValid' => $isValid,
+            'is_valid' => $is_valid,
             'invalid_files' => $invalid_files,
             'error_messages' => $error_messages
         ];
@@ -459,14 +471,17 @@ class OneRosterHelper {
      */
     public static function display_validation_errors($validation_result) {
         if (!empty($validation_result['error_messages'])) {
-            echo '<h3>' . "Data Type Errors Messages" . '</h3>';
-            echo '<ul>';
+            echo \html_writer::tag('h3', get_string('datatype_error_messages', 'enrol_oneroster'));
+
+            $error_list_items = '';
             foreach ($validation_result['error_messages'] as $message) {
-                echo '<li>' . $message . '</li>';
+                $error_list_items .= \html_writer::tag('li', $message);
             }
-            echo '</ul>';
-            echo '<p>'. get_string('reference_message', 'enrol_oneroster');
-            echo '<a href="https://www.imsglobal.org/oneroster-v11-final-csv-tables#_Toc480293266" target="_blank">' . get_string('csv_spec', 'enrol_oneroster') . '</a>.</p>';
+
+            echo \html_writer::tag('ul', $error_list_items);
+            $reference_message = get_string('reference_message', 'enrol_oneroster') . ' ';
+            $link = \html_writer::link('https://www.imsglobal.org/oneroster-v11-final-csv-tables#_Toc480293266', get_string('csv_spec', 'enrol_oneroster'), ['target' => '_blank']);
+            echo \html_writer::tag('p', $reference_message . $link . '.');
         }
     }
 
@@ -476,11 +491,11 @@ class OneRosterHelper {
      * Otherwise, no users will be saved
      *
      * @param array $csv_data An array containing user data, including identifiers and other relevant details.
+     * @return bool True if all users have an identifier and password, false otherwise
      */
-    public static function validate_and_save_users_to_database($csv_data): bool {
+    public static function validate_user_data(array $csv_data): bool {
         foreach ($csv_data['users'] as $user) {
-            // If any user has an empty identifier, return false
-            if (empty($user['identifier']) && empty($user['password'])) {
+            if (empty($user['identifier']) || empty($user['password'])) {
                 return false;
             }
         }
@@ -500,7 +515,7 @@ class OneRosterHelper {
         }
 
         foreach ((array)$expected_types as $expected_type) {
-            if (isset(self::$validators[$expected_type]) && call_user_func([self::class, self::$validators[$expected_type]], $value)) {
+            if (isset(self::get_validator()[$expected_type]) && call_user_func([self::class, self::get_validator()[$expected_type]], $value)) {
                 return $expected_type;
             }
         }
