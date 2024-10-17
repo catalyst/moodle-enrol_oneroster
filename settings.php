@@ -43,8 +43,6 @@ if ($ADMIN->fulltree) {
         array('style' => 'font-size: 20px;'))
     ));
 
-
-
     // Connections settings:
     // - One Roster version;
     // - OAuth version;

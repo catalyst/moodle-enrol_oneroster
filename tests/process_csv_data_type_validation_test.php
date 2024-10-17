@@ -15,20 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster\tests;
 
+use enrol_oneroster\OneRosterHelper;
+use enrol_oneroster\OneRosterConstHelper;
+
 /**
  * One Roster tests for the client_helper class.
  *
  * @package    enrol_oneroster
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers  enrol_oneroster\OneRosterHelper
+ * @covers  enrol_oneroster\OneRosterConstHelper
  */
-
- use enrol_oneroster\OneRosterHelper;
-
-require_once(__DIR__ . '/../../../config.php');
-require_once(__DIR__ . '/../classes/local/csv_client_helper.php');
-
 class process_csv_data_type_validation_test extends \advanced_testcase {
     private $test_dir;
     private $manifest_path;
@@ -39,7 +36,7 @@ class process_csv_data_type_validation_test extends \advanced_testcase {
     protected function setUp(): void
     {
         $this->test_dir = make_temp_directory('csvtest_dir');
-        $this->manifest_path = $this->test_dir . DIRECTORY_SEPARATOR . OneRosterHelper::FILE_MANIFEST;
+        $this->manifest_path = $this->test_dir . DIRECTORY_SEPARATOR . OneRosterConstHelper::FILE_MANIFEST;
         
         // Creating manifest.csv
         $manifest_content = [
@@ -57,54 +54,54 @@ class process_csv_data_type_validation_test extends \advanced_testcase {
         fclose($handle);
         
         // Creating academicSessions.csv
-        $academic_sessions_content = [OneRosterHelper::HEADER_ACADEMIC_SESSIONS, 
+        $academic_sessions_content = [OneRosterConstHelper::HEADER_ACADEMIC_SESSIONS, 
         ['as-trm-222-1234', 'active', '2023-05-01T18:25:43.511Z', 'Session Title', 'term', '2022-09-01', '2022-12-24', 'as-syr-222-2023', '2023'], 
         ['as-grp-222-2345', '', '', 'Session Title', 'gradingPeriod', '2022-10-02', '2022-12-24', 'as-trm-222-1234', '2023']];
-        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . OneRosterHelper::FILE_ACADEMIC_SESSIONS, 'w');
+        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . OneRosterConstHelper::FILE_ACADEMIC_SESSIONS, 'w');
         foreach ($academic_sessions_content as $line) {
             fputcsv($handle, $line);
         }
         fclose($handle);
 
         // Creating classes.csv
-        $classes_content = [OneRosterHelper::HEADER_CLASSES, 
+        $classes_content = [OneRosterConstHelper::HEADER_CLASSES, 
         ['cls-222-123456', 'active', '2023-05-01T18:25:43.511Z', 'Introduction to Physics', '09,10,11', 'crs-222-2023-456-12345', 'Phys 100 - 1', 'Scheduled', 'Room 2-B', 'org-sch-222-456', 'as-trm-222-1234', 'Science, Physics, Biology', 'PHY123, ASV120', '1'],
         ['cls-222-123478', 'tobedeleted', '2023-05-01T18:25:43.511Z', 'History - 2', '10', 'crs-222-2023-456-23456', '2', 'Scheduled', 'Room 18-C', 'org-sch-222-456', 'as-trm-222-1234', 'History', 'HIS123', '1,2,3']];
-        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . OneRosterHelper::FILE_CLASSES, 'w');
+        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . OneRosterConstHelper::FILE_CLASSES, 'w');
         foreach ($classes_content as $line) {
             fputcsv($handle, $line);
         }
         fclose($handle);
 
         // Creating enrollments.csv
-        $enrollments_content = [OneRosterHelper::HEADER_ENROLLMENTS,
+        $enrollments_content = [OneRosterConstHelper::HEADER_ENROLLMENTS,
             ['enr-t-222-12345-123456', 'active', '2023-05-01T18:25:43.511Z', 'cls-222-12345', 'org-sch-222-456', 'usr-222-123456', 'teacher', 'FALSE', '2022-03-15', '2022-06-15'],
             ['enr-s-222-12345-987654', '', '', 'cls-222-12345', 'org-sch-222-456', 'usr-222-987654', 'student', 'FALSE', '2022-03-16', '2022-06-16']
         ];
-        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . OneRosterHelper::FILE_ENROLLMENTS, 'w');
+        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . OneRosterConstHelper::FILE_ENROLLMENTS, 'w');
         foreach ($enrollments_content as $line) {
             fputcsv($handle, $line);
         }
         fclose($handle);
 
         // Creating orgs.csv
-        $orgs_content = [OneRosterHelper::HEADER_ORGS, 
+        $orgs_content = [OneRosterConstHelper::HEADER_ORGS, 
         ['org-sch-222-3456', 'active', '2023-05-01T18:25:43.511Z', 'Upper School', 'school', 'US', 'org-dpt-222-456'],
         ['org-sch-222-456', '', '', 'History Department', 'department', 'History', 'org-sch-222-3456'],
         ['org_sch-222-7654', 'tobedeleted', '2023-05-01T18:25:43.511Z', 'US History', 'department', 'US History', 'org-sch-222-3456']];
-        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . OneRosterHelper::FILE_ORGS, 'w');
+        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . OneRosterConstHelper::FILE_ORGS, 'w');
         foreach ($orgs_content as $line) {
             fputcsv($handle, $line);
         }
         fclose($handle);
 
         // Creating users.csv
-        $users_content = [OneRosterHelper::HEADER_USERS,  // Header
+        $users_content = [OneRosterConstHelper::HEADER_USERS,  // Header
             ['usr-222-123456', 'active', '2023-05-01', 'TRUE', 'org-sch-222-456', 'teacher', 'john.doe', '', 'John', 'Doe', 'Michael', '123456', 'john.doe@myschool.com', '6037778888', '6032221111', 'usr-222-66778900', '11', 'Password1*'],
             ['usr-222-66778899', '', '', 'TRUE', 'org-sch-222-456', 'student', 'mary.jones', '{LDAP:12}', 'Mary', 'Jones', 'Jane', '66778899', 'mary.jones@myschool.com', '6031234567', '6031234567', 'usr-222-66778900', '12', 'Password1*'],
             ['usr-222-66778900', 'active', '2023-05-01', 'TRUE', 'org-sch-222-456', 'parent', 'thomas.joness', '{LDAP:12},{LTI:15},{Fed:23}', 'Thomas', 'Jones', 'Paul', '66778900', 'thomas.jones@testemail.com', '6039876543', '6039876543', 'usr-222-66778899', '10', 'Password1*']
         ];
-        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . OneRosterHelper::FILE_USERS, 'w');
+        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . OneRosterConstHelper::FILE_USERS, 'w');
         foreach ($users_content as $line) {
             fputcsv($handle, $line);
         }
@@ -114,7 +111,7 @@ class process_csv_data_type_validation_test extends \advanced_testcase {
     /**
      * Test the validate_csv_data_types method.
      * 
-     * @covers enrol_oneroster\OneRosterHelper::validate_csv_data_types
+     * @covers enrol_oneroster\OneRosterConstHelper::validate_csv_data_types
      */
     public function test_ValidateCsvDataTypes(): void {
         $result = OneRosterHelper::validate_csv_data_types($this->test_dir);
@@ -127,41 +124,41 @@ class process_csv_data_type_validation_test extends \advanced_testcase {
     /**
  * Test the get_data_types function.
  * 
- * @covers enrol_oneroster\OneRosterHelper::get_data_types
+ * @covers enrol_oneroster\OneRosterConstHelper::get_data_types
  */
 public function test_GetDataTypes() {
     // Test academicSessions.csv data types
-    $result = OneRosterHelper::get_data_types(OneRosterHelper::FILE_ACADEMIC_SESSIONS);
+    $result = OneRosterHelper::get_data_types(OneRosterConstHelper::FILE_ACADEMIC_SESSIONS);
     $expected = [
-        OneRosterHelper::HEADER_SOURCEDID => OneRosterHelper::DATATYPE_GUID,
-        OneRosterHelper::HEADER_STATUS => [OneRosterHelper::DATATYPE_ENUM_STATUS, OneRosterHelper::DATATYPE_NULL],
-        OneRosterHelper::HEADER_DATE_LAST_MODIFIED => [OneRosterHelper::DATATYPE_DATETIME, OneRosterHelper::DATATYPE_NULL],
-        OneRosterHelper::HEADER_TITLE => OneRosterHelper::DATATYPE_STRING,
-        OneRosterHelper::HEADER_TYPE => OneRosterHelper::DATATYPE_ENUM_TYPE,
-        OneRosterHelper::HEADER_START_DATE => OneRosterHelper::DATATYPE_DATE,
-        OneRosterHelper::HEADER_END_DATE => OneRosterHelper::DATATYPE_DATE,
-        OneRosterHelper::HEADER_PARENT_SOURCEDID => [OneRosterHelper::DATATYPE_GUID, OneRosterHelper::DATATYPE_NULL],
-        OneRosterHelper::HEADER_SCHOOL_YEAR => OneRosterHelper::DATATYPE_YEAR
+        OneRosterConstHelper::HEADER_SOURCEDID => OneRosterConstHelper::DATATYPE_GUID,
+        OneRosterConstHelper::HEADER_STATUS => [OneRosterConstHelper::DATATYPE_ENUM_STATUS, OneRosterConstHelper::DATATYPE_NULL],
+        OneRosterConstHelper::HEADER_DATE_LAST_MODIFIED => [OneRosterConstHelper::DATATYPE_DATETIME, OneRosterConstHelper::DATATYPE_NULL],
+        OneRosterConstHelper::HEADER_TITLE => OneRosterConstHelper::DATATYPE_STRING,
+        OneRosterConstHelper::HEADER_TYPE => OneRosterConstHelper::DATATYPE_ENUM_TYPE,
+        OneRosterConstHelper::HEADER_START_DATE => OneRosterConstHelper::DATATYPE_DATE,
+        OneRosterConstHelper::HEADER_END_DATE => OneRosterConstHelper::DATATYPE_DATE,
+        OneRosterConstHelper::HEADER_PARENT_SOURCEDID => [OneRosterConstHelper::DATATYPE_GUID, OneRosterConstHelper::DATATYPE_NULL],
+        OneRosterConstHelper::HEADER_SCHOOL_YEAR => OneRosterConstHelper::DATATYPE_YEAR
     ];
     $this->assertEquals($expected, $result, 'The expected data types for academicSessions.csv do not match.');
 
     // Test classes.csv data types
-    $result = OneRosterHelper::get_data_types(OneRosterHelper::FILE_CLASSES);
+    $result = OneRosterHelper::get_data_types(OneRosterConstHelper::FILE_CLASSES);
     $expected = [
-        OneRosterHelper::HEADER_SOURCEDID => OneRosterHelper::DATATYPE_GUID,
-        OneRosterHelper::HEADER_STATUS => [OneRosterHelper::DATATYPE_ENUM_STATUS, OneRosterHelper::DATATYPE_NULL],
-        OneRosterHelper::HEADER_DATE_LAST_MODIFIED => [OneRosterHelper::DATATYPE_DATETIME, OneRosterHelper::DATATYPE_NULL],
-        OneRosterHelper::HEADER_TITLE => OneRosterHelper::DATATYPE_STRING,
-        OneRosterHelper::HEADER_GRADES => [OneRosterHelper::DATATYPE_ARRAY_GRADE, OneRosterHelper::DATATYPE_NULL],
-        OneRosterHelper::HEADER_COURSE_SOURCEDID => OneRosterHelper::DATATYPE_GUID,
-        OneRosterHelper::HEADER_CLASS_CODE => [OneRosterHelper::DATATYPE_STRING, OneRosterHelper::DATATYPE_NULL],
-        OneRosterHelper::HEADER_CLASS_TYPE => OneRosterHelper::DATATYPE_ENUM_CLASS_TYPE,
-        OneRosterHelper::HEADER_LOCATION => [OneRosterHelper::DATATYPE_STRING, OneRosterHelper::DATATYPE_NULL],
-        OneRosterHelper::HEADER_SCHOOL_SOURCEDID => OneRosterHelper::DATATYPE_GUID,
-        OneRosterHelper::HEADER_TERM_SOURCEDIDS => [OneRosterHelper::DATATYPE_ARRAY_GUID],
-        OneRosterHelper::HEADER_SUBJECTS => [OneRosterHelper::DATATYPE_ARRAY_SUBJECTS, OneRosterHelper::DATATYPE_NULL],
-        OneRosterHelper::HEADER_SUBJECT_CODES => [OneRosterHelper::DATATYPE_ARRAY_SUBJECT_CODES, OneRosterHelper::DATATYPE_NULL],
-        OneRosterHelper::HEADER_PERIODS => [OneRosterHelper::DATATYPE_ARRAY_PERIODS, OneRosterHelper::DATATYPE_NULL]
+        OneRosterConstHelper::HEADER_SOURCEDID => OneRosterConstHelper::DATATYPE_GUID,
+        OneRosterConstHelper::HEADER_STATUS => [OneRosterConstHelper::DATATYPE_ENUM_STATUS, OneRosterConstHelper::DATATYPE_NULL],
+        OneRosterConstHelper::HEADER_DATE_LAST_MODIFIED => [OneRosterConstHelper::DATATYPE_DATETIME, OneRosterConstHelper::DATATYPE_NULL],
+        OneRosterConstHelper::HEADER_TITLE => OneRosterConstHelper::DATATYPE_STRING,
+        OneRosterConstHelper::HEADER_GRADES => [OneRosterConstHelper::DATATYPE_ARRAY_GRADE, OneRosterConstHelper::DATATYPE_NULL],
+        OneRosterConstHelper::HEADER_COURSE_SOURCEDID => OneRosterConstHelper::DATATYPE_GUID,
+        OneRosterConstHelper::HEADER_CLASS_CODE => [OneRosterConstHelper::DATATYPE_STRING, OneRosterConstHelper::DATATYPE_NULL],
+        OneRosterConstHelper::HEADER_CLASS_TYPE => OneRosterConstHelper::DATATYPE_ENUM_CLASS_TYPE,
+        OneRosterConstHelper::HEADER_LOCATION => [OneRosterConstHelper::DATATYPE_STRING, OneRosterConstHelper::DATATYPE_NULL],
+        OneRosterConstHelper::HEADER_SCHOOL_SOURCEDID => OneRosterConstHelper::DATATYPE_GUID,
+        OneRosterConstHelper::HEADER_TERM_SOURCEDIDS => [OneRosterConstHelper::DATATYPE_ARRAY_GUID],
+        OneRosterConstHelper::HEADER_SUBJECTS => [OneRosterConstHelper::DATATYPE_ARRAY_SUBJECTS, OneRosterConstHelper::DATATYPE_NULL],
+        OneRosterConstHelper::HEADER_SUBJECT_CODES => [OneRosterConstHelper::DATATYPE_ARRAY_SUBJECT_CODES, OneRosterConstHelper::DATATYPE_NULL],
+        OneRosterConstHelper::HEADER_PERIODS => [OneRosterConstHelper::DATATYPE_ARRAY_PERIODS, OneRosterConstHelper::DATATYPE_NULL]
     ];
     $this->assertEquals($expected, $result, 'The expected data types for classes.csv do not match.');
 
@@ -174,22 +171,22 @@ public function test_GetDataTypes() {
     /**
      * Test the determine_data_type function.
      * 
-     * @covers enrol_oneroster\OneRosterHelper::determine_data_type
+     * @covers enrol_oneroster\OneRosterConstHelper::determine_data_type
      */
     public function test_DetermineDataType() {
-        $result = OneRosterHelper::determine_data_type('as-trm-222-1234', [OneRosterHelper::DATATYPE_GUID, OneRosterHelper::DATATYPE_STRING]);
-        $this->assertEquals(OneRosterHelper::DATATYPE_GUID, $result, 'The expected data type for sourcedId should be guid.');
+        $result = OneRosterHelper::determine_data_type('as-trm-222-1234', [OneRosterConstHelper::DATATYPE_GUID, OneRosterConstHelper::DATATYPE_STRING]);
+        $this->assertEquals(OneRosterConstHelper::DATATYPE_GUID, $result, 'The expected data type for sourcedId should be guid.');
 
-        $result = OneRosterHelper::determine_data_type('active', [OneRosterHelper::DATATYPE_ENUM_STATUS]);
-        $this->assertEquals(OneRosterHelper::DATATYPE_ENUM_STATUS, $result, 'The expected data type for status should be enum_status.');
+        $result = OneRosterHelper::determine_data_type('active', [OneRosterConstHelper::DATATYPE_ENUM_STATUS]);
+        $this->assertEquals(OneRosterConstHelper::DATATYPE_ENUM_STATUS, $result, 'The expected data type for status should be enum_status.');
 
-        $result = OneRosterHelper::determine_data_type('', [OneRosterHelper::DATATYPE_GUID, OneRosterHelper::DATATYPE_NULL]);
-        $this->assertEquals(OneRosterHelper::DATATYPE_NULL, $result, 'The expected data type for an empty value should be null.');
+        $result = OneRosterHelper::determine_data_type('', [OneRosterConstHelper::DATATYPE_GUID, OneRosterConstHelper::DATATYPE_NULL]);
+        $this->assertEquals(OneRosterConstHelper::DATATYPE_NULL, $result, 'The expected data type for an empty value should be null.');
 
-        $result = OneRosterHelper::determine_data_type('2023-05-01T18:25:43.511Z', [OneRosterHelper::DATATYPE_DATETIME, OneRosterHelper::DATATYPE_STRING]);
-        $this->assertEquals(OneRosterHelper::DATATYPE_DATETIME, $result, 'The expected data type for dateLastModified should be datetime.');
+        $result = OneRosterHelper::determine_data_type('2023-05-01T18:25:43.511Z', [OneRosterConstHelper::DATATYPE_DATETIME, OneRosterConstHelper::DATATYPE_STRING]);
+        $this->assertEquals(OneRosterConstHelper::DATATYPE_DATETIME, $result, 'The expected data type for dateLastModified should be datetime.');
 
-        $result = OneRosterHelper::determine_data_type('invalid_guid_@!', [OneRosterHelper::DATATYPE_GUID]);
+        $result = OneRosterHelper::determine_data_type('invalid_guid_@!', [OneRosterConstHelper::DATATYPE_GUID]);
         $this->assertEquals('unknown', $result, 'The expected data type for an invalid GUID should be unknown.');
     }
 

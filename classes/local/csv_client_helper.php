@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 namespace enrol_oneroster;
 
 /**
@@ -26,232 +25,105 @@ namespace enrol_oneroster;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class OneRosterHelper {
-    // Individual header constants
-    const HEADER_SOURCEDID = 'sourcedId';
-    const HEADER_STATUS = 'status';
-    const HEADER_DATE_LAST_MODIFIED = 'dateLastModified';
-    const HEADER_TITLE = 'title';
-    const HEADER_TYPE = 'type';
-    const HEADER_START_DATE = 'startDate';
-    const HEADER_END_DATE = 'endDate';
-    const HEADER_PARENT_SOURCEDID = 'parentSourcedId';
-    const HEADER_SCHOOL_YEAR = 'schoolYear';
-    const HEADER_GRADES = 'grades';
-    const HEADER_COURSE_SOURCEDID = 'courseSourcedId';
-    const HEADER_CLASS_CODE = 'classCode';
-    const HEADER_CLASS_TYPE = 'classType';
-    const HEADER_LOCATION = 'location';
-    const HEADER_SCHOOL_SOURCEDID = 'schoolSourcedId';
-    const HEADER_TERM_SOURCEDIDS = 'termSourcedIds';
-    const HEADER_SUBJECTS = 'subjects';
-    const HEADER_SUBJECT_CODES = 'subjectCodes';
-    const HEADER_PERIODS = 'periods';
-    const HEADER_CLASS_SOURCEDID = 'classSourcedId';
-    const HEADER_USER_SOURCEDID = 'userSourcedId';
-    const HEADER_ROLE = 'role';
-    const HEADER_PRIMARY = 'primary';
-    const HEADER_BEGIN_DATE = 'beginDate';
-    const HEADER_IDENTIFIER = 'identifier';
-    const HEADER_NAME = 'name';
-    const HEADER_ENABLED_USER = 'enabledUser';
-    const HEADER_ORG_SOURCEDIDS = 'orgSourcedIds';
-    const HEADER_USERNAME = 'username';
-    const HEADER_USERIDS = 'userIds';
-    const HEADER_GIVEN_NAME = 'givenName';
-    const HEADER_FAMILY_NAME = 'familyName';
-    const HEADER_MIDDLE_NAME = 'middleName';
-    const HEADER_EMAIL = 'email';
-    const HEADER_SMS = 'sms';
-    const HEADER_PHONE = 'phone';
-    const HEADER_AGENT_SOURCEDIDS = 'agentSourcedIds';
-    const HEADER_PASSWORD = 'password';
-
-    // CSV file names
-    const FILE_MANIFEST = 'manifest.csv';
-    const FILE_ACADEMIC_SESSIONS = 'academicSessions.csv';
-    const FILE_CLASSES = 'classes.csv';
-    const FILE_ENROLLMENTS = 'enrollments.csv';
-    const FILE_ORGS = 'orgs.csv';
-    const FILE_USERS = 'users.csv';
-
-    // Define constants for the types    
-    const DATATYPE_NULL = 'null';
-    const DATATYPE_GUID = 'guid';
-    const DATATYPE_INT = 'int';
-    const DATATYPE_DATETIME = 'datetime';
-    const DATATYPE_DATE = 'date';
-    const DATATYPE_YEAR = 'year';
-    const DATATYPE_ENUM_STATUS = 'enum_status';
-    const DATATYPE_ENUM_TYPE = 'enum_type';
-    const DATATYPE_ARRAY_GUID = 'array_guid';
-    const DATATYPE_ARRAY_GRADE = 'array_grade';
-    const DATATYPE_GRADE = 'grade';
-    const DATATYPE_STRING_EMAIL = 'string_email';
-    const DATATYPE_ARRAY_USERIDS = 'array_userIds';
-    const DATATYPE_ENUM_ROLE_USER = 'enum_role_user';
-    const DATATYPE_ENUM_TYPE_ENROL = 'enum_type_enrol';
-    const DATATYPE_ENUM_PRIMARY = 'enum_primary';
-    const DATATYPE_ENUM_CLASS_TYPE = 'enum_class_type';
-    const DATATYPE_ENUM_ORG_TYPE = 'enum_org_type';
-    const DATATYPE_ARRAY_SUBJECTS = 'array_subjects';
-    const DATATYPE_ARRAY_SUBJECT_CODES = 'array_subjectCodes';
-    const DATATYPE_ARRAY_PERIODS = 'array_periods';
-    const DATATYPE_PASSWORD = 'password';
-    const DATATYPE_STRING = 'string';
-
-    // Valid grade codes from the Common Education Data Standards (CEDS)
-    // Reference: https://ceds.ed.gov/CEDSElementDetails.aspx?TermId=7100
-    const valid_grade_codes = [
-        'IT', 'PR', 'PK', 'TK', 'KG', '01', '02', '03', '04', '05', '06',
-        '07', '08', '09', '10', '11', '12', '13', 'PS', 'UG', 'Other'
-    ];
-
-    const valid_class_types = ['homeroom', 'scheduled'];
-
-    const valid_roles = ['administrator', 'proctor', 'student', 'teacher'];
-
-    const valid_primary_values = ['true', 'false'];
-
-    const valid_org_types = ['department', 'school', 'district', 'local', 'state', 'national'];
-
-    const valid_roles_users = [
-        'administrator', 'aide', 'guardian', 'parent', 'proctor', 
-        'relative', 'student', 'teacher'
-    ];
-    // Header constants for each file
-    const HEADER_ACADEMIC_SESSIONS = [
-        self::HEADER_SOURCEDID, self::HEADER_STATUS, self::HEADER_DATE_LAST_MODIFIED, self::HEADER_TITLE,
-        self::HEADER_TYPE, self::HEADER_START_DATE, self::HEADER_END_DATE, self::HEADER_PARENT_SOURCEDID, self::HEADER_SCHOOL_YEAR
-    ];
-    const HEADER_CLASSES = [
-        self::HEADER_SOURCEDID, self::HEADER_STATUS, self::HEADER_DATE_LAST_MODIFIED, self::HEADER_TITLE, self::HEADER_GRADES,
-        self::HEADER_COURSE_SOURCEDID, self::HEADER_CLASS_CODE, self::HEADER_CLASS_TYPE, self::HEADER_LOCATION,
-        self::HEADER_SCHOOL_SOURCEDID, self::HEADER_TERM_SOURCEDIDS, self::HEADER_SUBJECTS, self::HEADER_SUBJECT_CODES, self::HEADER_PERIODS
-    ];
-    const HEADER_ENROLLMENTS = [
-        self::HEADER_SOURCEDID, self::HEADER_STATUS, self::HEADER_DATE_LAST_MODIFIED, self::HEADER_CLASS_SOURCEDID,
-        self::HEADER_SCHOOL_SOURCEDID, self::HEADER_USER_SOURCEDID, self::HEADER_ROLE, self::HEADER_PRIMARY,
-        self::HEADER_BEGIN_DATE, self::HEADER_END_DATE
-    ];
-    const HEADER_ORGS = [
-        self::HEADER_SOURCEDID, self::HEADER_STATUS, self::HEADER_DATE_LAST_MODIFIED, self::HEADER_NAME, self::HEADER_TYPE,
-        self::HEADER_IDENTIFIER, self::HEADER_PARENT_SOURCEDID
-    ];
-    const HEADER_USERS = [
-        self::HEADER_SOURCEDID, self::HEADER_STATUS, self::HEADER_DATE_LAST_MODIFIED, self::HEADER_ENABLED_USER,
-        self::HEADER_ORG_SOURCEDIDS, self::HEADER_ROLE, self::HEADER_USERNAME, self::HEADER_USERIDS,
-        self::HEADER_GIVEN_NAME, self::HEADER_FAMILY_NAME, self::HEADER_MIDDLE_NAME, self::HEADER_IDENTIFIER,
-        self::HEADER_EMAIL, self::HEADER_SMS, self::HEADER_PHONE, self::HEADER_AGENT_SOURCEDIDS, self::HEADER_GRADES, self::HEADER_PASSWORD
-    ];
-
     // Data type definitions for each file
     public static function get_file_datatypes(): array {
         return [
-            self::FILE_ACADEMIC_SESSIONS => [
-                self::HEADER_SOURCEDID => self::DATATYPE_GUID,
-                self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
-                self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
-                self::HEADER_TITLE => self::DATATYPE_STRING,
-                self::HEADER_TYPE => self::DATATYPE_ENUM_TYPE,
-                self::HEADER_START_DATE => self::DATATYPE_DATE,
-                self::HEADER_END_DATE => self::DATATYPE_DATE,
-                self::HEADER_PARENT_SOURCEDID => [self::DATATYPE_GUID, self::DATATYPE_NULL],
-                self::HEADER_SCHOOL_YEAR => self::DATATYPE_YEAR,
+            OneRosterConstHelper::FILE_ACADEMIC_SESSIONS => [
+                OneRosterConstHelper::HEADER_SOURCEDID => OneRosterConstHelper::DATATYPE_GUID,
+                OneRosterConstHelper::HEADER_STATUS => [OneRosterConstHelper::DATATYPE_ENUM_STATUS, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_DATE_LAST_MODIFIED => [OneRosterConstHelper::DATATYPE_DATETIME, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_TITLE => OneRosterConstHelper::DATATYPE_STRING,
+                OneRosterConstHelper::HEADER_TYPE => OneRosterConstHelper::DATATYPE_ENUM_TYPE,
+                OneRosterConstHelper::HEADER_START_DATE => OneRosterConstHelper::DATATYPE_DATE,
+                OneRosterConstHelper::HEADER_END_DATE => OneRosterConstHelper::DATATYPE_DATE,
+                OneRosterConstHelper::HEADER_PARENT_SOURCEDID => [OneRosterConstHelper::DATATYPE_GUID, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_SCHOOL_YEAR => OneRosterConstHelper::DATATYPE_YEAR,
             ],
-            self::FILE_CLASSES => [
-                self::HEADER_SOURCEDID => self::DATATYPE_GUID,
-                self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
-                self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
-                self::HEADER_TITLE => self::DATATYPE_STRING,
-                self::HEADER_GRADES => [self::DATATYPE_ARRAY_GRADE, self::DATATYPE_NULL],
-                self::HEADER_COURSE_SOURCEDID => self::DATATYPE_GUID,
-                self::HEADER_CLASS_CODE => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-                self::HEADER_CLASS_TYPE => self::DATATYPE_ENUM_CLASS_TYPE,
-                self::HEADER_LOCATION => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-                self::HEADER_SCHOOL_SOURCEDID => self::DATATYPE_GUID,
-                self::HEADER_TERM_SOURCEDIDS => [self::DATATYPE_ARRAY_GUID],
-                self::HEADER_SUBJECTS => [self::DATATYPE_ARRAY_SUBJECTS, self::DATATYPE_NULL],
-                self::HEADER_SUBJECT_CODES => [self::DATATYPE_ARRAY_SUBJECT_CODES, self::DATATYPE_NULL],
-                self::HEADER_PERIODS => [self::DATATYPE_ARRAY_PERIODS, self::DATATYPE_NULL],
+            OneRosterConstHelper::FILE_CLASSES => [
+                OneRosterConstHelper::HEADER_SOURCEDID => OneRosterConstHelper::DATATYPE_GUID,
+                OneRosterConstHelper::HEADER_STATUS => [OneRosterConstHelper::DATATYPE_ENUM_STATUS, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_DATE_LAST_MODIFIED => [OneRosterConstHelper::DATATYPE_DATETIME, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_TITLE => OneRosterConstHelper::DATATYPE_STRING,
+                OneRosterConstHelper::HEADER_GRADES => [OneRosterConstHelper::DATATYPE_ARRAY_GRADE, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_COURSE_SOURCEDID => OneRosterConstHelper::DATATYPE_GUID,
+                OneRosterConstHelper::HEADER_CLASS_CODE => [OneRosterConstHelper::DATATYPE_STRING, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_CLASS_TYPE => OneRosterConstHelper::DATATYPE_ENUM_CLASS_TYPE,
+                OneRosterConstHelper::HEADER_LOCATION => [OneRosterConstHelper::DATATYPE_STRING, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_SCHOOL_SOURCEDID => OneRosterConstHelper::DATATYPE_GUID,
+                OneRosterConstHelper::HEADER_TERM_SOURCEDIDS => [OneRosterConstHelper::DATATYPE_ARRAY_GUID],
+                OneRosterConstHelper::HEADER_SUBJECTS => [OneRosterConstHelper::DATATYPE_ARRAY_SUBJECTS, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_SUBJECT_CODES => [OneRosterConstHelper::DATATYPE_ARRAY_SUBJECT_CODES, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_PERIODS => [OneRosterConstHelper::DATATYPE_ARRAY_PERIODS, OneRosterConstHelper::DATATYPE_NULL],
             ],
-            self::FILE_ENROLLMENTS => [
-                self::HEADER_SOURCEDID => self::DATATYPE_GUID,
-                self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
-                self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
-                self::HEADER_CLASS_SOURCEDID => self::DATATYPE_GUID,
-                self::HEADER_SCHOOL_SOURCEDID => self::DATATYPE_GUID,
-                self::HEADER_USER_SOURCEDID => self::DATATYPE_GUID,
-                self::HEADER_ROLE => self::DATATYPE_ENUM_TYPE_ENROL,
-                self::HEADER_PRIMARY => [self::DATATYPE_ENUM_PRIMARY, self::DATATYPE_NULL],
-                self::HEADER_BEGIN_DATE => [self::DATATYPE_DATE, self::DATATYPE_NULL],
-                self::HEADER_END_DATE => [self::DATATYPE_DATE, self::DATATYPE_NULL],
+            OneRosterConstHelper::FILE_ENROLLMENTS => [
+                OneRosterConstHelper::HEADER_SOURCEDID => OneRosterConstHelper::DATATYPE_GUID,
+                OneRosterConstHelper::HEADER_STATUS => [OneRosterConstHelper::DATATYPE_ENUM_STATUS, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_DATE_LAST_MODIFIED => [OneRosterConstHelper::DATATYPE_DATETIME, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_CLASS_SOURCEDID => OneRosterConstHelper::DATATYPE_GUID,
+                OneRosterConstHelper::HEADER_SCHOOL_SOURCEDID => OneRosterConstHelper::DATATYPE_GUID,
+                OneRosterConstHelper::HEADER_USER_SOURCEDID => OneRosterConstHelper::DATATYPE_GUID,
+                OneRosterConstHelper::HEADER_ROLE => OneRosterConstHelper::DATATYPE_ENUM_TYPE_ENROL,
+                OneRosterConstHelper::HEADER_PRIMARY => [OneRosterConstHelper::DATATYPE_ENUM_PRIMARY, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_BEGIN_DATE => [OneRosterConstHelper::DATATYPE_DATE, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_END_DATE => [OneRosterConstHelper::DATATYPE_DATE, OneRosterConstHelper::DATATYPE_NULL],
             ],
-            self::FILE_ORGS => [
-                self::HEADER_SOURCEDID => self::DATATYPE_GUID,
-                self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
-                self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
-                self::HEADER_NAME => self::DATATYPE_STRING,
-                self::HEADER_TYPE => self::DATATYPE_ENUM_ORG_TYPE,
-                self::HEADER_IDENTIFIER => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-                self::HEADER_PARENT_SOURCEDID => [self::DATATYPE_GUID, self::DATATYPE_NULL],
+            OneRosterConstHelper::FILE_ORGS => [
+                OneRosterConstHelper::HEADER_SOURCEDID => OneRosterConstHelper::DATATYPE_GUID,
+                OneRosterConstHelper::HEADER_STATUS => [OneRosterConstHelper::DATATYPE_ENUM_STATUS, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_DATE_LAST_MODIFIED => [OneRosterConstHelper::DATATYPE_DATETIME, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_NAME => OneRosterConstHelper::DATATYPE_STRING,
+                OneRosterConstHelper::HEADER_TYPE => OneRosterConstHelper::DATATYPE_ENUM_ORG_TYPE,
+                OneRosterConstHelper::HEADER_IDENTIFIER => [OneRosterConstHelper::DATATYPE_STRING, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_PARENT_SOURCEDID => [OneRosterConstHelper::DATATYPE_GUID, OneRosterConstHelper::DATATYPE_NULL],
             ],
-            self::FILE_USERS => [
-                self::HEADER_SOURCEDID => self::DATATYPE_GUID,
-                self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
-                self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
-                self::HEADER_ENABLED_USER => self::DATATYPE_ENUM_PRIMARY,
-                self::HEADER_ORG_SOURCEDIDS => self::DATATYPE_ARRAY_GUID,
-                self::HEADER_ROLE => self::DATATYPE_ENUM_ROLE_USER,
-                self::HEADER_USERNAME => self::DATATYPE_STRING,
-                self::HEADER_USERIDS => [self::DATATYPE_ARRAY_USERIDS, self::DATATYPE_NULL],
-                self::HEADER_GIVEN_NAME => self::DATATYPE_STRING,
-                self::HEADER_FAMILY_NAME => self::DATATYPE_STRING,
-                self::HEADER_MIDDLE_NAME => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-                self::HEADER_IDENTIFIER => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-                self::HEADER_EMAIL => [self::DATATYPE_STRING_EMAIL, self::DATATYPE_NULL],
-                self::HEADER_SMS => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-                self::HEADER_PHONE => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-                self::HEADER_AGENT_SOURCEDIDS => [self::DATATYPE_ARRAY_GUID, self::DATATYPE_NULL],
-                self::HEADER_GRADES => [self::DATATYPE_GRADE, self::DATATYPE_NULL],
-                self::HEADER_PASSWORD => [self::DATATYPE_PASSWORD, self::DATATYPE_NULL],
+            OneRosterConstHelper::FILE_USERS => [
+                OneRosterConstHelper::HEADER_SOURCEDID => OneRosterConstHelper::DATATYPE_GUID,
+                OneRosterConstHelper::HEADER_STATUS => [OneRosterConstHelper::DATATYPE_ENUM_STATUS, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_DATE_LAST_MODIFIED => [OneRosterConstHelper::DATATYPE_DATETIME, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_ENABLED_USER => OneRosterConstHelper::DATATYPE_ENUM_PRIMARY,
+                OneRosterConstHelper::HEADER_ORG_SOURCEDIDS => OneRosterConstHelper::DATATYPE_ARRAY_GUID,
+                OneRosterConstHelper::HEADER_ROLE => OneRosterConstHelper::DATATYPE_ENUM_ROLE_USER,
+                OneRosterConstHelper::HEADER_USERNAME => OneRosterConstHelper::DATATYPE_STRING,
+                OneRosterConstHelper::HEADER_USERIDS => [OneRosterConstHelper::DATATYPE_ARRAY_USERIDS, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_GIVEN_NAME => OneRosterConstHelper::DATATYPE_STRING,
+                OneRosterConstHelper::HEADER_FAMILY_NAME => OneRosterConstHelper::DATATYPE_STRING,
+                OneRosterConstHelper::HEADER_MIDDLE_NAME => [OneRosterConstHelper::DATATYPE_STRING, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_IDENTIFIER => [OneRosterConstHelper::DATATYPE_STRING, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_EMAIL => [OneRosterConstHelper::DATATYPE_STRING_EMAIL, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_SMS => [OneRosterConstHelper::DATATYPE_STRING, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_PHONE => [OneRosterConstHelper::DATATYPE_STRING, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_AGENT_SOURCEDIDS => [OneRosterConstHelper::DATATYPE_ARRAY_GUID, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_GRADES => [OneRosterConstHelper::DATATYPE_GRADE, OneRosterConstHelper::DATATYPE_NULL],
+                OneRosterConstHelper::HEADER_PASSWORD => [OneRosterConstHelper::DATATYPE_PASSWORD, OneRosterConstHelper::DATATYPE_NULL],
             ],
         ];
     }
 
-    // Required files and their headers
-    const REQUIRED_FILES = [
-        self::FILE_ACADEMIC_SESSIONS => self::HEADER_ACADEMIC_SESSIONS,
-        self::FILE_CLASSES => self::HEADER_CLASSES,
-        self::FILE_ENROLLMENTS => self::HEADER_ENROLLMENTS,
-        self::FILE_ORGS => self::HEADER_ORGS,
-        self::FILE_USERS => self::HEADER_USERS,
-    ];
-
     // Validators for each data type
     public static function get_validator(): array {
         return [
-            self::DATATYPE_GUID => 'is_guid_type',
-            self::DATATYPE_INT => 'is_int_type',
-            self::DATATYPE_DATETIME => 'is_datetime_type',
-            self::DATATYPE_DATE => 'is_date_type',
-            self::DATATYPE_YEAR => 'is_year_type',
-            self::DATATYPE_ENUM_STATUS => 'is_status_enum_type',
-            self::DATATYPE_ENUM_TYPE => 'is_type_enum',
-            self::DATATYPE_ARRAY_GUID => 'is_valid_guid_list',
-            self::DATATYPE_ARRAY_GRADE => 'is_valid_grades',
-            self::DATATYPE_GRADE => 'is_valid_grade',
-            self::DATATYPE_STRING_EMAIL => 'is_email_type',
-            self::DATATYPE_ARRAY_USERIDS => 'is_valid_user_id',
-            self::DATATYPE_ENUM_ROLE_USER => 'is_role_user_enum',
-            self::DATATYPE_ENUM_TYPE_ENROL => 'is_role_enum',
-            self::DATATYPE_ENUM_PRIMARY => 'is_primary_enum',
-            self::DATATYPE_ENUM_CLASS_TYPE => 'is_class_type_enum',
-            self::DATATYPE_ENUM_ORG_TYPE => 'is_org_type_enum',
-            self::DATATYPE_ARRAY_SUBJECTS => 'is_list_of_strings',
-            self::DATATYPE_ARRAY_SUBJECT_CODES => 'is_valid_subject_codes',
-            self::DATATYPE_PASSWORD => 'is_valid_password',
-            self::DATATYPE_ARRAY_PERIODS => 'is_valid_periods',
-            self::DATATYPE_STRING => 'is_valid_human_readable_string',
+            OneRosterConstHelper::DATATYPE_GUID => 'is_guid_type',
+            OneRosterConstHelper::DATATYPE_INT => 'is_int_type',
+            OneRosterConstHelper::DATATYPE_DATETIME => 'is_datetime_type',
+            OneRosterConstHelper::DATATYPE_DATE => 'is_date_type',
+            OneRosterConstHelper::DATATYPE_YEAR => 'is_year_type',
+            OneRosterConstHelper::DATATYPE_ENUM_STATUS => 'is_status_enum_type',
+            OneRosterConstHelper::DATATYPE_ENUM_TYPE => 'is_type_enum',
+            OneRosterConstHelper::DATATYPE_ARRAY_GUID => 'is_valid_guid_list',
+            OneRosterConstHelper::DATATYPE_ARRAY_GRADE => 'is_valid_grades',
+            OneRosterConstHelper::DATATYPE_GRADE => 'is_valid_grade',
+            OneRosterConstHelper::DATATYPE_STRING_EMAIL => 'is_email_type',
+            OneRosterConstHelper::DATATYPE_ARRAY_USERIDS => 'is_valid_user_id',
+            OneRosterConstHelper::DATATYPE_ENUM_ROLE_USER => 'is_role_user_enum',
+            OneRosterConstHelper::DATATYPE_ENUM_TYPE_ENROL => 'is_role_enum',
+            OneRosterConstHelper::DATATYPE_ENUM_PRIMARY => 'is_primary_enum',
+            OneRosterConstHelper::DATATYPE_ENUM_CLASS_TYPE => 'is_class_type_enum',
+            OneRosterConstHelper::DATATYPE_ENUM_ORG_TYPE => 'is_org_type_enum',
+            OneRosterConstHelper::DATATYPE_ARRAY_SUBJECTS => 'is_list_of_strings',
+            OneRosterConstHelper::DATATYPE_ARRAY_SUBJECT_CODES => 'is_valid_subject_codes',
+            OneRosterConstHelper::DATATYPE_PASSWORD => 'is_valid_password',
+            OneRosterConstHelper::DATATYPE_ARRAY_PERIODS => 'is_valid_periods',
+            OneRosterConstHelper::DATATYPE_STRING => 'is_valid_human_readable_string',
         ];
     }
 
@@ -348,7 +220,7 @@ class OneRosterHelper {
      * @param array $missing_files An array containing the missing files and invalid headers
      */
     public static function display_missing_and_invalid_files($missing_files) {
-        $critical_files = [self::FILE_ACADEMIC_SESSIONS, self::FILE_CLASSES, self::FILE_ENROLLMENTS, self::FILE_ORGS, self::FILE_USERS];
+        $critical_files = [OneRosterConstHelper::FILE_ACADEMIC_SESSIONS, OneRosterConstHelper::FILE_CLASSES, OneRosterConstHelper::FILE_ENROLLMENTS, OneRosterConstHelper::FILE_ORGS, OneRosterConstHelper::FILE_USERS];
     
         if (!empty($missing_files['missing_files'])) {
             $critical_missing_files = [];
@@ -386,16 +258,16 @@ class OneRosterHelper {
      */
     public static function getHeader($file_name) {
         switch ($file_name) {
-            case self::FILE_ACADEMIC_SESSIONS:
-                return self::HEADER_ACADEMIC_SESSIONS;
-            case self::FILE_CLASSES:
-                return self::HEADER_CLASSES;
-            case self::FILE_ENROLLMENTS:
-                return self::HEADER_ENROLLMENTS;
-            case self::FILE_ORGS:
-                return self::HEADER_ORGS;
-            case self::FILE_USERS:
-                return self::HEADER_USERS;
+            case OneRosterConstHelper::FILE_ACADEMIC_SESSIONS:
+                return OneRosterConstHelper::HEADER_ACADEMIC_SESSIONS;
+            case OneRosterConstHelper::FILE_CLASSES:
+                return OneRosterConstHelper::HEADER_CLASSES;
+            case OneRosterConstHelper::FILE_ENROLLMENTS:
+                return OneRosterConstHelper::HEADER_ENROLLMENTS;
+            case OneRosterConstHelper::FILE_ORGS:
+                return OneRosterConstHelper::HEADER_ORGS;
+            case OneRosterConstHelper::FILE_USERS:
+                return OneRosterConstHelper::HEADER_USERS;
             default:
                 return [];
         }
@@ -425,7 +297,7 @@ class OneRosterHelper {
         $files = scandir($directory);
 
         foreach ($files as $file) {
-            if ($file === '.' || $file === '..' || pathinfo($file, PATHINFO_EXTENSION) !== 'csv' || $file === self::FILE_MANIFEST) {
+            if ($file === '.' || $file === '..' || pathinfo($file, PATHINFO_EXTENSION) !== 'csv' || $file === OneRosterConstHelper::FILE_MANIFEST) {
                 continue;
             }
 
@@ -450,7 +322,7 @@ class OneRosterHelper {
                         if (isset($headers[$index])) {
                             $detected_type = self::determine_data_type($value, $expected_data_types[$headers[$index]] ?? []);
                             
-                            if ($detected_data_types[$index] === 'unknown' || $detected_data_types[$index] === self::DATATYPE_NULL || $detected_data_types[$index] !== false) {
+                            if ($detected_data_types[$index] === 'unknown' || $detected_data_types[$index] === OneRosterConstHelper::DATATYPE_NULL || $detected_data_types[$index] !== false) {
                                 $detected_data_types[$index] = $detected_type;
                             }
                         }
@@ -530,7 +402,7 @@ class OneRosterHelper {
      */
     public static function determine_data_type($value, $expected_types) {
         if (trim($value) === '') {
-            return self::DATATYPE_NULL;
+            return OneRosterConstHelper::DATATYPE_NULL;
         }
 
         foreach ((array)$expected_types as $expected_type) {
@@ -755,7 +627,7 @@ class OneRosterHelper {
      */
     public static function is_valid_grade(string $value): bool {
         $value = trim($value);
-        return in_array($value, self::valid_grade_codes, true);
+        return in_array($value, OneRosterConstHelper::valid_grade_codes, true);
     }
 
     /**
@@ -765,7 +637,7 @@ class OneRosterHelper {
      * @return bool True if the value is of type class type enum, false otherwise
      */
     public static function is_class_type_enum($value): bool {        
-        return in_array(strtolower($value), self::valid_class_types, true);
+        return in_array(strtolower($value), OneRosterConstHelper::valid_class_types, true);
     }
 
     /**
@@ -792,7 +664,7 @@ class OneRosterHelper {
      * @return bool True if the value is of type role enum, false otherwise
      */
     public static function is_role_enum(string $value): bool {
-        return in_array(strtolower($value), self::valid_roles, true);
+        return in_array(strtolower($value), OneRosterConstHelper::valid_roles, true);
     }
 
     /**
@@ -802,7 +674,7 @@ class OneRosterHelper {
      * @return bool True if the value is of type primary enum, false otherwise
      */
     public static function is_primary_enum($value): bool {
-        return in_array(strtolower($value), self::valid_primary_values, true);
+        return in_array(strtolower($value), OneRosterConstHelper::valid_primary_values, true);
     }
 
     /**
@@ -812,7 +684,7 @@ class OneRosterHelper {
      * @return bool True if the value is of type org type enum, false otherwise
      */
     public static function is_org_type_enum($value): bool {
-        return in_array(strtolower($value), self::valid_org_types, true);
+        return in_array(strtolower($value), OneRosterConstHelper::valid_org_types, true);
     }
 
     /**
@@ -844,7 +716,6 @@ class OneRosterHelper {
         return true;
     }
 
-
     /**
      * Check if a value is of type role user enum
      *
@@ -852,6 +723,6 @@ class OneRosterHelper {
      * @return bool True if the value is of type role user enum, false otherwise
      */
     public static function is_role_user_enum($value): bool {
-        return in_array(strtolower($value), self::valid_roles_users, true);
+        return in_array(strtolower($value), OneRosterConstHelper::valid_roles_users, true);
     }
 }
