@@ -80,7 +80,7 @@ class client_csv_testcase extends \advanced_testcase {
             set_config('datasync_schools',  $selected_org_sourcedId, 'enrol_oneroster');
         }
 
-        $csvclient->set_orgid($selected_org_sourcedId);
+        $csvclient->set_org_id($selected_org_sourcedId);
         
         $manifest = $csv_data['manifest'] ?? [];
         $users = $csv_data['users'] ?? [];
@@ -160,7 +160,7 @@ class client_csv_testcase extends \advanced_testcase {
 
         $csvclient = client_helper::get_csv_client();
 
-        $csvclient->set_orgid($selected_org_sourcedId);
+        $csvclient->set_org_id($selected_org_sourcedId);
         
         $manifest = $csv_data['manifest'] ?? [];
         $users = $csv_data['users'] ?? [];
