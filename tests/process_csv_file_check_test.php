@@ -23,7 +23,7 @@ namespace enrol_oneroster\tests;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers  enrol_oneroster\OneRosterHelper
  */
-class process_csv_file_check_test extends advanced_testcase {
+class process_csv_file_check_test extends \advanced_testcase {
     private $test_dir;
     private $manifest_path;
     
