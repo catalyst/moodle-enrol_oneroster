@@ -15,11 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster\tests;
 
-use enrol_oneroster\OneRosterHelper;
-
-require_once(__DIR__ . '/../../../config.php');
-require_once(__DIR__ . '/../classes/local/csv_client_helper.php');
-
 /**
  * One Roster tests for the client_helper class.
  *
@@ -29,19 +24,16 @@ require_once(__DIR__ . '/../classes/local/csv_client_helper.php');
  * @covers  enrol_oneroster\OneRosterHelper
  */
 class process_csv_data_type_test extends \advanced_testcase {
-    private $testDir;
-    private $manifestPath;
+    private $test_dir;
+    private $manifest_path;
     
     /**
      * Set up the test environment.
      */
     protected function setUp(): void
     {
-        $this->testDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'csvTestDir';
-        if (!file_exists($this->testDir)) {
-            mkdir($this->testDir);
-        }
-        $this->manifestPath = $this->testDir . DIRECTORY_SEPARATOR . 'manifest.csv';
+        $this->test_dir = make_temp_directory('csvtest_dir');
+        $this->manifest_path = $this->test_dir . DIRECTORY_SEPARATOR . OneRosterHelper::FILE_MANIFEST;
         
         // Creating manifest.csv
         $manifest_content = [
@@ -52,18 +44,18 @@ class process_csv_data_type_test extends \advanced_testcase {
             ['file.orgs', 'bulk'],
             ['file.users', 'bulk'],
         ];
-        $handle = fopen($this->manifestPath, 'w');
+        $handle = fopen($this->manifest_path, 'w');
         foreach ($manifest_content as $line) {
             fputcsv($handle, $line);
         }
         fclose($handle);
         
         // Creating academicSessions.csv
-        $academicSessions_content = [OneRosterHelper::HEADER_ACADEMIC_SESSIONS, 
+        $academic_sessions_content = [OneRosterHelper::HEADER_ACADEMIC_SESSIONS, 
         ['as-trm-222-1234', 'active', '2023-05-01T18:25:43.511Z', 'Session Title', 'term', '2022-09-01', '2022-12-24', 'as-syr-222-2023', '2023'], 
         ['as-grp-222-2345', '', '', 'Session Title', 'gradingPeriod', '2022-10-02', '2022-12-24', 'as-trm-222-1234', '2023']];
-        $handle = fopen($this->testDir . DIRECTORY_SEPARATOR . OneRosterHelper::FILE_ACADEMIC_SESSIONS, 'w');
-        foreach ($academicSessions_content as $line) {
+        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . OneRosterHelper::FILE_ACADEMIC_SESSIONS, 'w');
+        foreach ($academic_sessions_content as $line) {
             fputcsv($handle, $line);
         }
         fclose($handle);
@@ -72,7 +64,7 @@ class process_csv_data_type_test extends \advanced_testcase {
         $classes_content = [OneRosterHelper::HEADER_CLASSES, 
         ['cls-222-123456', 'active', '2023-05-01T18:25:43.511Z', 'Introduction to Physics', '09,10,11', 'crs-222-2023-456-12345', 'Phys 100 - 1', 'Scheduled', 'Room 2-B', 'org-sch-222-456', 'as-trm-222-1234', 'Science, Physics, Biology', 'PHY123, ASV120', '1'],
         ['cls-222-123478', 'tobedeleted', '2023-05-01T18:25:43.511Z', 'History - 2', '10', 'crs-222-2023-456-23456', '2', 'Scheduled', 'Room 18-C', 'org-sch-222-456', 'as-trm-222-1234', 'History', 'HIS123', '1,2,3']];
-        $handle = fopen($this->testDir . DIRECTORY_SEPARATOR . OneRosterHelper::FILE_CLASSES, 'w');
+        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . OneRosterHelper::FILE_CLASSES, 'w');
         foreach ($classes_content as $line) {
             fputcsv($handle, $line);
         }
@@ -83,7 +75,7 @@ class process_csv_data_type_test extends \advanced_testcase {
             ['enr-t-222-12345-123456', 'active', '2023-05-01T18:25:43.511Z', 'cls-222-12345', 'org-sch-222-456', 'usr-222-123456', 'teacher', 'FALSE', '2022-03-15', '2022-06-15'],
             ['enr-s-222-12345-987654', '', '', 'cls-222-12345', 'org-sch-222-456', 'usr-222-987654', 'student', 'FALSE', '2022-03-16', '2022-06-16']
         ];
-        $handle = fopen($this->testDir . DIRECTORY_SEPARATOR . 'enrollments.csv', 'w');
+        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . OneRosterHelper::FILE_ENROLLMENTS, 'w');
         foreach ($enrollments_content as $line) {
             fputcsv($handle, $line);
         }
@@ -94,7 +86,7 @@ class process_csv_data_type_test extends \advanced_testcase {
         ['org-sch-222-3456', 'active', '2023-05-01T18:25:43.511Z', 'Upper School', 'school', 'US', 'org-dpt-222-456'],
         ['org-sch-222-456', '', '', 'History Department', 'department', 'History', 'org-sch-222-3456'],
         ['org_sch-222-7654', 'tobedeleted', '2023-05-01T18:25:43.511Z', 'US History', 'department', 'US History', 'org-sch-222-3456']];
-        $handle = fopen($this->testDir . DIRECTORY_SEPARATOR . 'orgs.csv', 'w');
+        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . OneRosterHelper::FILE_ORGS, 'w');
         foreach ($orgs_content as $line) {
             fputcsv($handle, $line);
         }
@@ -106,7 +98,7 @@ class process_csv_data_type_test extends \advanced_testcase {
             ['usr-222-66778899', '', '', 'TRUE', 'org-sch-222-456', 'student', 'mary.jones', '{LDAP:12}', 'Mary', 'Jones', 'Jane', '66778899', 'mary.jones@myschool.com', '6031234567', '6031234567', 'usr-222-66778900', '12', 'Password1*'],
             ['usr-222-66778900', 'active', '2023-05-01', 'TRUE', 'org-sch-222-456', 'parent', 'thomas.joness', '{LDAP:12},{LTI:15},{Fed:23}', 'Thomas', 'Jones', 'Paul', '66778900', 'thomas.jones@testemail.com', '6039876543', '6039876543', 'usr-222-66778899', '10', 'Password1*']
         ];
-        $handle = fopen($this->testDir . DIRECTORY_SEPARATOR . 'users.csv', 'w');
+        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . OneRosterHelper::FILE_USERS, 'w');
         foreach ($users_content as $line) {
             fputcsv($handle, $line);
         }
@@ -114,21 +106,12 @@ class process_csv_data_type_test extends \advanced_testcase {
     }
 
     /**
-     * Tear down the test environment.
-     */
-    protected function tearDown(): void
-    {
-        if (file_exists($this->testDir)) {
-            array_map('unlink', glob($this->testDir . DIRECTORY_SEPARATOR . '*')); 
-            rmdir($this->testDir);
-        }
-    }
-
-    /**
      * Test the validate_csv_data_types method.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::validate_csv_data_types
      */
     public function test_ValidateCsvDataTypes(): void {
-        $result = OneRosterHelper::validate_csv_data_types($this->testDir);
+        $result = OneRosterHelper::validate_csv_data_types($this->test_dir);
 
         $this->assertArrayHasKey('isValid', $result);
         $this->assertTrue($result['isValid']);
@@ -137,6 +120,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the get_data_types function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::get_data_types
      */
     public function test_GetDataTypes() {
         OneRosterHelper::$datatype_files = [
@@ -212,6 +197,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the determine_data_type function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::determine_data_type
      */
     public function test_DetermineDataType() {
         $result = OneRosterHelper::determine_data_type('as-trm-222-1234', [OneRosterHelper::DATATYPE_GUID, OneRosterHelper::DATATYPE_STRING]);
@@ -232,6 +219,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_valid_human_readable_string function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_valid_human_readable_string
      */
     public function test_is_valid_human_readable_string() {
         $result = OneRosterHelper::is_valid_human_readable_string('John Doe');
@@ -252,6 +241,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_int_type function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_int_type
      */
     public function test_is_int_type() {
         $result = OneRosterHelper::is_int_type('123');
@@ -269,6 +260,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_list_of_strings function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_list_of_strings
      */
     public function test_is_list_of_strings() {
         $result = OneRosterHelper::is_list_of_strings('Math, Science, History');
@@ -281,6 +274,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_valid_subject_codes function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_valid_subject_codes
      */
     public function test_is_valid_subject_codes() {
         $result = OneRosterHelper::is_valid_subject_codes('Math123, Science123, History123');
@@ -292,6 +287,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_valid_periods function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_valid_periods
      */
     public function test_is_valid_periods() {
         $result = OneRosterHelper::is_valid_periods('1, 2, 3');
@@ -309,6 +306,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_datetime_type function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_datetime_type
      */
     public function test_is_datetime_type() {
         $result = OneRosterHelper::is_datetime_type('2023-05-01T18:25:43.511Z');
@@ -338,6 +337,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_date_type function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_date_type
      */
     public function test_is_date_type() {
         $result = OneRosterHelper::is_date_type('2023-05-01');
@@ -367,6 +368,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_guid_type function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_guid_type
      */
     public function test_is_guid_type() {
         $result = OneRosterHelper::is_guid_type('usr-222-123456');
@@ -381,6 +384,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_status_enum_type function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_status_enum_type
      */
     public function test_is_status_enum_type() {
         $result = OneRosterHelper::is_status_enum_type('active');
@@ -398,6 +403,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_type_enum function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_type_enum
      */
     public function test_is_type_enum() {
         $result = OneRosterHelper::is_type_enum('gradingPeriod');
@@ -418,6 +425,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_year_type function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_year_type
      */
     public function test_is_year_type() {
         $result = OneRosterHelper::is_year_type('2023');
@@ -435,6 +444,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_valid_grades function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_valid_grades
      */
     public function test_is_valid_grades() {
         $results = OneRosterHelper::is_valid_grades('09');
@@ -446,6 +457,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_valid_grade function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_valid_grade
      */
     public function test_is_valid_grade() {
         $results = OneRosterHelper::is_valid_grade('09');
@@ -457,6 +470,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_class_type_enum function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_class_type_enum
      */
     public function test_is_class_type_enum() {
         $result = OneRosterHelper::is_class_type_enum('Scheduled');
@@ -471,6 +486,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_valid_guid_list function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_valid_guid_list
      */
     public function test_is_valid_guid_list() {
         $result = OneRosterHelper::is_valid_guid_list('usr-222-123456, usr-222-123456');
@@ -485,6 +502,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_role_enum function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_role_enum
      */
     public function test_is_role_enum() {
         $result = OneRosterHelper::is_role_enum('teacher');
@@ -505,6 +524,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_primary_enum function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_primary_enum
      */
     public function test_is_primary_enum(){
         $result = OneRosterHelper::is_primary_enum('TRUE');
@@ -522,6 +543,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_org_type_enum function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_org_type_enum
      */
     public function test_is_org_type_enum() {
         $result = OneRosterHelper::is_org_type_enum('school');
@@ -548,6 +571,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_email_type function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_email_type
      */
     public function test_is_email_type() {
         $result = OneRosterHelper::is_email_type('josh@example.com');
@@ -562,6 +587,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_user_id function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_valid_user_id
      */
     public function test_is_user_id() {
         $result = OneRosterHelper::is_valid_user_id('{LDAP:12},{LTI:15},{Fed:23}');
@@ -579,6 +606,8 @@ class process_csv_data_type_test extends \advanced_testcase {
 
     /**
      * Test the is_role_user_enum function.
+     * 
+     * @covers enrol_oneroster\OneRosterHelper::is_role_user_enum
      */
     public function test_is_role_user_enum() {
         $result = OneRosterHelper::is_role_user_enum('teacher');

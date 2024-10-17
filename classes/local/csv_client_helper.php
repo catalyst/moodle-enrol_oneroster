@@ -325,12 +325,23 @@ class OneRosterHelper {
         $critical_files = [self::FILE_ACADEMIC_SESSIONS, self::FILE_CLASSES, self::FILE_ENROLLMENTS, self::FILE_ORGS, self::FILE_USERS];
     
         if (!empty($missing_files['missing_files'])) {
+            $critical_missing_files = [];
+            $non_critical_files = [];
+
             foreach ($missing_files['missing_files'] as $missing_file) {
                 if (in_array($missing_file, $critical_files, true)) {
-                    echo get_string('missingfiles', 'enrol_oneroster') . implode(', ', $missing_files['missing_files']) . '<br>';
+                    $critical_missing_files[] = $missing_file;
                 } else {
-                    echo $missing_file . get_string('invalid_manifest_selection', 'enrol_oneroster') .'<br>';
+                    $non_critical_files[] = $missing_file;
                 }
+            }
+
+            if (!empty($critical_missing_files)) {
+                echo get_string('missingfiles', 'enrol_oneroster') . implode(', ', $critical_missing_files) . '<br>';
+            }
+
+            foreach ($non_critical_files as $non_critical_file) {
+                echo $non_critical_file . get_string('invalid_manifest_selection', 'enrol_oneroster') .'<br>';
             }
         }
     

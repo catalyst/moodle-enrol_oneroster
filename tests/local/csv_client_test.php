@@ -20,12 +20,7 @@
  * @package    enrol_oneroster
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  */
-
 namespace enrol_oneroster;
-
-use advanced_testcase;
-use enrol_oneroster\client_helper;
-require_once(__DIR__ . '/../../classes/local/csv_client_helper.php');
 
 /**
  * One Roster tests for the client_helper class.
@@ -38,11 +33,18 @@ require_once(__DIR__ . '/../../classes/local/csv_client_helper.php');
  * @covers  enrol_oneroster\local\v1p1\oneroster_client
  * @covers  enrol_oneroster\local\csv_client
  */
-
-class client_csv_testcase extends advanced_testcase {
+class client_csv_testcase extends \advanced_testcase {
     /**
      * Test Synchronise method to check the data is inserted into the database.
      * This test uses the full data set.
+     * 
+     * @covers enrol_oneroster\local\csv_client::synchronise
+     * @covers enrol_oneroster\local\csv_client::set_data
+     * @covers enrol_oneroster\local\csv_client::set_orgid
+     * @covers enrol_oneroster\OneRosterHelper::check_manifest_and_files
+     * @covers enrol_oneroster\OneRosterHelper::validate_csv_data_types
+     * @covers enrol_oneroster\OneRosterHelper::extract_csvs_to_arrays
+     * @covers enrol_oneroster\OneRosterHelper::validate_and_save_users_to_database
      */
     public function test_execute_full_data(){
         global $DB;
@@ -174,7 +176,6 @@ class client_csv_testcase extends advanced_testcase {
         $course_records = $DB->get_records('course');
         $user_records = $DB->get_records('user');
         $enrol_records = $DB->get_records('enrol');
-
 
         foreach ($course_records as $course) {
             $this->assertArrayHasKey('id', (array)$course);
