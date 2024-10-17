@@ -189,7 +189,7 @@ function process_selected_organization($selected_org_sourcedId, $tempdir, $csv_d
 
     $csvclient = client_helper::get_csv_client();
 
-    $csvclient->set_orgid($selected_org_sourcedId);
+    $csvclient->set_org_id($selected_org_sourcedId);
 
     if (OneRosterHelper::validate_and_save_users_to_database($csv_data) === true) {
         set_config('datasync_schools', $selected_org_sourcedId, 'enrol_oneroster');
