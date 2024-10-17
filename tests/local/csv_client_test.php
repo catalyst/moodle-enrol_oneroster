@@ -34,7 +34,7 @@ namespace enrol_oneroster;
  * @covers  enrol_oneroster\local\csv_client
  */
 
- use enrol_oneroster\OneRosterHelper;
+ use enrol_oneroster\csv_client_helper;
 
 require_once(__DIR__ . '/../../../../config.php');
 require_once(__DIR__ . '/../../classes/local/csv_client_helper.php');
@@ -47,10 +47,10 @@ class csv_client_test extends \advanced_testcase {
      * @covers enrol_oneroster\local\csv_client::synchronise
      * @covers enrol_oneroster\local\csv_client::set_data
      * @covers enrol_oneroster\local\csv_client::set_orgid
-     * @covers enrol_oneroster\OneRosterHelper::check_manifest_and_files
-     * @covers enrol_oneroster\OneRosterHelper::validate_csv_data_types
-     * @covers enrol_oneroster\OneRosterHelper::extract_csvs_to_arrays
-     * @covers enrol_oneroster\OneRosterHelper::validate_user_data
+     * @covers enrol_oneroster\csv_client_helper::check_manifest_and_files
+     * @covers enrol_oneroster\csv_client_helper::validate_csv_data_types
+     * @covers enrol_oneroster\csv_client_helper::extract_csvs_to_arrays
+     * @covers enrol_oneroster\csv_client_helper::validate_user_data
      */
     public function test_execute_full_data(){
         global $DB;
@@ -69,20 +69,20 @@ class csv_client_test extends \advanced_testcase {
 
         $manifest_path = $tempdir . '/manifest.csv';
 
-        $missing_files = OneRosterHelper::check_manifest_and_files($manifest_path, $tempdir);
+        $missing_files = csv_client_helper::check_manifest_and_files($manifest_path, $tempdir);
         $this->assertEmpty($missing_files['missing_files'], 'There should be no missing files according to the manifest.');
         $this->assertEmpty($missing_files['invalid_headers'], 'There should be no invalid headers in the extracted CSV files.');
 
-        $is_valid_data = OneRosterHelper::validate_csv_data_types($tempdir);
+        $is_valid_data = csv_client_helper::validate_csv_data_types($tempdir);
         $this->assertArrayHasKey('is_valid', $is_valid_data);
         $this->assertTrue($is_valid_data['is_valid']);
 
-        $csv_data = OneRosterHelper::extract_csvs_to_arrays($tempdir);
+        $csv_data = csv_client_helper::extract_csvs_to_arrays($tempdir);
         $this->assertNotEmpty($csv_data, 'The extracted CSV data should not be empty.');
 
         $csvclient = client_helper::get_csv_client();
 
-        if (OneRosterHelper::validate_user_data($csv_data) === true) {
+        if (csv_client_helper::validate_user_data($csv_data) === true) {
             set_config('datasync_schools',  $selected_org_sourcedId, 'enrol_oneroster');
         }
 
@@ -149,18 +149,18 @@ class csv_client_test extends \advanced_testcase {
 
         $manifest_path = $tempdir . '/manifest.csv';
 
-        $missing_files = OneRosterHelper::check_manifest_and_files($manifest_path, $tempdir);
+        $missing_files = csv_client_helper::check_manifest_and_files($manifest_path, $tempdir);
         $this->assertEmpty($missing_files['missing_files'], 'There should be no missing files according to the manifest.');
         $this->assertEmpty($missing_files['invalid_headers'], 'There should be no invalid headers in the extracted CSV files.');
 
-        $is_valid_data = OneRosterHelper::validate_csv_data_types($tempdir);
+        $is_valid_data = csv_client_helper::validate_csv_data_types($tempdir);
         $this->assertArrayHasKey('is_valid', $is_valid_data);
         $this->assertTrue($is_valid_data['is_valid']);
 
-        $csv_data = OneRosterHelper::extract_csvs_to_arrays($tempdir);
+        $csv_data = csv_client_helper::extract_csvs_to_arrays($tempdir);
         $this->assertNotEmpty($csv_data, 'The extracted CSV data should not be empty.');
 
-        if (OneRosterHelper::validate_user_data($csv_data) === true) {
+        if (csv_client_helper::validate_user_data($csv_data) === true) {
             set_config('datasync_schools',  $selected_org_sourcedId, 'enrol_oneroster');
         }
 

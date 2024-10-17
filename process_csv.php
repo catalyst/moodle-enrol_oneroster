@@ -18,12 +18,14 @@ namespace enrol_oneroster;
 
 use enrol_oneroster\classes\form\oneroster_org_selection_form;
 use enrol_oneroster\classes\form\oneroster_csv_form;
-use enrol_oneroster\classes\local\csv_client_helper as OneRosterHelper;
-
+use enrol_oneroster\classes\local\csv_client_helper;
 
 require_once('../../config.php');
 require_once(__DIR__ . '/classes/form/oneroster_csv_form.php');
 require_once(__DIR__ . '/classes/form/oneroster_org_selection_form.php');
+require_once(__DIR__ . '/classes/local/csv_client_helper.php');
+require_once(__DIR__ . '/classes/local/csv_client_const_helper.php');
+require_once($CFG->libdir . '/adminlib.php');
 
 /**
  * One Roster Client
@@ -34,16 +36,19 @@ require_once(__DIR__ . '/classes/form/oneroster_org_selection_form.php');
  * 
  */
 
-$PAGE->set_url('/enrol/oneroster/process_csv.php');
+admin_externalpage_setup('enrol_oneroster_csv_upload');
+
+$PAGE->set_url(get_string('set_url', 'enrol_oneroster'));
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_title('Process OneRoster CSV');
-$PAGE->set_heading('Process OneRoster CSV');
-global $DB;
+$PAGE->set_title(get_string('process_oneroster_csv', 'enrol_oneroster'));
+$PAGE->set_heading(get_string('process_oneroster_csv', 'enrol_oneroster'));
+
 $mform = new oneroster_csv_form();
 
 const TEMPDIR = 'oneroster_csv';
 
 $step = optional_param('step', 1, PARAM_INT);
+global $SESSION;
 
 if ($step == 1) {
     // Step 1: Upload CSV ZIP file.
@@ -52,6 +57,7 @@ if ($step == 1) {
     if ($mform->is_cancelled()) {
         redirect(new \moodle_url('/admin/settings.php', ['section' => 'enrolsettingsoneroster']));
     } 
+    
     else if ($data = $mform->get_data()) {
         $uniqueid = $USER->id . '_' . time();
         $tempdir = make_temp_directory('oneroster_csv/' . $uniqueid);
@@ -65,23 +71,23 @@ if ($step == 1) {
                 $zip->close();
                 $manifest_path = $tempdir . '/manifest.csv';
                 if (file_exists($manifest_path)) {
-                    $missing_files = OneRosterHelper::check_manifest_and_files($manifest_path, $tempdir);
+                    $missing_files = csv_client_helper::check_manifest_and_files($manifest_path, $tempdir);
                     if (!empty($missing_files['missing_files']) && !empty($missing_files['invalid_headers'])) {
                         echo $OUTPUT->header();
-                        OneRosterHelper::display_missing_and_invalid_files($missing_files);
+                        csv_client_helper::display_missing_and_invalid_files($missing_files);
                         echo $OUTPUT->footer();
                         exit;
                     } 
 
-                    $datatype = OneRosterHelper::validate_csv_data_types($tempdir);
+                    $datatype = csv_client_helper::validate_csv_data_types($tempdir);
                     if (!$datatype['is_valid']) {
                         echo $OUTPUT->header();
-                        OneRosterHelper::display_validation_errors($datatype);
+                        csv_client_helper::display_validation_errors($datatype);
                         echo $OUTPUT->footer();
                         exit;
                     }
 
-                    $csv_data = OneRosterHelper::extract_csvs_to_arrays($tempdir);
+                    $csv_data = csv_client_helper::extract_csvs_to_arrays($tempdir);
                     $orgs = $csv_data['orgs'] ?? [];
                     // Prepare organization options
                     $orgoptions = [];
@@ -96,7 +102,7 @@ if ($step == 1) {
                         exit;
                     } else {
                         // Display the organization selection form
-                        $_SESSION['oneroster_csv']['orgoptions'] = $orgoptions;
+                        $SESSION->oneroster_csv['orgoptions'] = $orgoptions;
                         $orgform = new oneroster_org_selection_form(null, ['orgoptions' => $orgoptions, 'tempdir' => $tempdir]);
                         echo $OUTPUT->header();
                         $orgform->display();
@@ -133,8 +139,8 @@ if ($step == 1) {
 } 
 else if ($step == 2) {
     // Step 2: Select Organization.
-    $tempdir = required_param('tempdir', PARAM_RAW); // Retrieve tempdir from submitted data
-    $orgoptions = $_SESSION['oneroster_csv']['orgoptions']; // Retrieve orgoptions from session
+    $tempdir = required_param('tempdir', PARAM_PATH); // Retrieve tempdir from submitted data
+    $orgoptions = $SESSION->oneroster_csv['orgoptions']; // Retrieve orgoptions from session
     $orgform = new oneroster_org_selection_form(null, ['orgoptions' => $orgoptions, 'tempdir' => $tempdir]);
 
     if ($orgform->is_cancelled()) {
@@ -146,7 +152,6 @@ else if ($step == 2) {
     
         // Proceed to process the selected organization
         process_selected_organization($selected_org_sourcedId, $tempdir);
-        exit;
     } 
     else {
         echo $OUTPUT->header();
@@ -162,7 +167,7 @@ else if ($step == 2) {
  * @param string $tempdir The temporary directory where files are extracted.
  * @param array|null $csv_data Optional CSV data if already extracted.
  */
-function process_selected_organization($selected_org_sourcedId, $tempdir, $csv_data = null) {
+function process_selected_organization(string $selected_org_sourcedId, string $tempdir, array$csv_data = null) {
     global $OUTPUT;
 
     $zipfilepath = $tempdir . '/uploadedzip.zip';
@@ -177,7 +182,7 @@ function process_selected_organization($selected_org_sourcedId, $tempdir, $csv_d
 
     $zip->extractTo($tempdir);
     $zip->close();
-    $csv_data = OneRosterHelper::extract_csvs_to_arrays($tempdir);
+    $csv_data = csv_client_helper::extract_csvs_to_arrays($tempdir);
 
     $manifest = $csv_data['manifest'] ?? [];
     $users = $csv_data['users'] ?? [];
@@ -190,7 +195,7 @@ function process_selected_organization($selected_org_sourcedId, $tempdir, $csv_d
 
     $csvclient->set_org_id($selected_org_sourcedId);
 
-    if (OneRosterHelper::validate_user_data($csv_data) === true) {
+    if (csv_client_helper::validate_user_data($csv_data) === true) {
         set_config('datasync_schools', $selected_org_sourcedId, 'enrol_oneroster');
     }
 
@@ -209,7 +214,5 @@ function process_selected_organization($selected_org_sourcedId, $tempdir, $csv_d
     echo get_string('successful_upload', 'enrol_oneroster') . ' <br>';
     echo $OUTPUT->footer();
 
-    // Clean up temp directory
-    remove_dir($tempdir);
-    unset($_SESSION['oneroster_csv']);
+    unset($SESSION->oneroster_csv);
 }

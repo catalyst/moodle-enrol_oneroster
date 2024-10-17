@@ -13,10 +13,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-namespace enrol_oneroster;
+namespace enrol_oneroster\classes\local;
 
 /**
- * Class OneRosterConstHelper
+ * Class csv_client_const_helper
  *
  * This class contains constants that are used throughout the OneRoster CSV client.
  *
@@ -24,7 +24,7 @@ namespace enrol_oneroster;
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class OneRosterConstHelper {
+class csv_client_const_helper {
     // Individual header constants
     const HEADER_SOURCEDID = 'sourcedId';
     const HEADER_STATUS = 'status';

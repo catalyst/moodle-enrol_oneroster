@@ -277,4 +277,12 @@ if ($hassiteconfig) {
             true
         )
     );
+    $ADMIN->add(
+        'enrolments', 
+        new admin_externalpage(
+            'enrol_oneroster_csv_upload',
+            get_string('csv_upload_process', 'enrol_oneroster'),
+            new moodle_url('/enrol/oneroster/process_csv.php'),
+            'moodle/site:config'
+    ));
 }

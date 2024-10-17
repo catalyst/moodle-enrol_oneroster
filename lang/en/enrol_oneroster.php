@@ -91,3 +91,5 @@ $string['reference_message'] = 'For more details, please refer to the specificat
 $string['csv_spec'] = 'OneRoster CSV Table Specifications';
 $string['datatype_error_messages'] = 'Data Type Error Messages';
 $string['upload_zip_label'] = 'Upload Zip File';
+$string['process_oneroster_csv'] = 'Process OneRoster CSV';
+$string['set_url'] = '/enrol/oneroster/process_csv.php';
