@@ -16,15 +16,14 @@
 
 namespace enrol_oneroster;
 
-use enrol_oneroster\client_helper;
-use enrol_oneroster\form\oneroster_org_selection_form;
+use enrol_oneroster\classes\form\oneroster_org_selection_form;
+use enrol_oneroster\classes\form\oneroster_csv_form;
+use enrol_oneroster\classes\local\csv_client_helper as OneRosterHelper;
+
 
 require_once('../../config.php');
-require_once('classes/client_helper.php');
-require_once(__DIR__ . '/form/oneroster_csv_form.php');
-require_once(__DIR__ . '/form/oneroster_org_selection_form.php');
-require_once('classes/local/csv_client.php');
-require_once(__DIR__ . '/classes/local/csv_client_helper.php');
+require_once(__DIR__ . '/classes/form/oneroster_csv_form.php');
+require_once(__DIR__ . '/classes/form/oneroster_org_selection_form.php');
 
 /**
  * One Roster Client

@@ -90,3 +90,4 @@ $string['invalid_form'] = 'Invalid form submission.';
 $string['reference_message'] = 'For more details, please refer to the specification: ';
 $string['csv_spec'] = 'OneRoster CSV Table Specifications';
 $string['datatype_error_messages'] = 'Data Type Error Messages';
+$string['upload_zip_label'] = 'Upload Zip File';

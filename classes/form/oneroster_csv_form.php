@@ -13,9 +13,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-namespace enrol_oneroster\form;
+namespace enrol_oneroster\classes\form;
 
-require_once("$CFG->libdir/formslib.php");
+require_once($CFG->libdir . '/formslib.php');
 
 /**
  * One Roster Enrollment Client.
@@ -24,23 +24,24 @@ require_once("$CFG->libdir/formslib.php");
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class oneroster_org_selection_form extends \moodleform {
-    public function definition() {
+class oneroster_csv_form extends \moodleform {
+    protected function definition() {
         $mform = $this->_form;
 
-        $orgoptions = $this->_customdata['orgoptions'];
-        $tempdir = $this->_customdata['tempdir'];
+        // File picker for uploading the CSV file.
+        $mform->addElement(
+            'filepicker', 
+            'uploadedzip', 
+            get_string('upload_zip_label', 'enrol_oneroster'), 
+            null, 
+            array('accepted_types' => '.zip')
+        );
+        $mform->addRule('uploadedzip', null, 'required', null, 'client');
 
-        $mform->addElement('select', 'organization', get_string('selectorganization', 'enrol_oneroster'), $orgoptions);
-        $mform->setType('organization', PARAM_RAW);
-        $mform->addRule('organization', null, 'required', null, 'client');
-
-        $mform->addElement('hidden', 'tempdir', $tempdir);
-        $mform->setType('tempdir', PARAM_RAW);
-
-        $mform->addElement('hidden', 'step', 2);
-        $mform->setType('step', PARAM_INT);
-
-        $this->add_action_buttons(true, get_string('submit'));
+        // Submit button.
+        $this->add_action_buttons(
+            true, 
+            'Upload'
+        );
     }
 }
