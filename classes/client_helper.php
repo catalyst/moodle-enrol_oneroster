@@ -81,4 +81,13 @@ class client_helper {
 
         return new $classname($tokenurl, $server, $clientid, $clientsecret);
     }
+
+    /**
+     * Get an instance of the CSV client.
+     *
+     * @return client
+     */
+    public static function get_csv_client(): client_interface {
+        return new \enrol_oneroster\local\csv_client();
+    }
 }

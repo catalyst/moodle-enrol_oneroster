@@ -31,7 +31,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_heading(
         'enrol_oneroster',
         '',
-        get_string('pluginname_desc', 'enrol_database')
+        get_string('options', 'enrol_oneroster')
     ));
 
     // Connections settings:
@@ -268,4 +268,12 @@ if ($hassiteconfig) {
             true
         )
     );
+    $ADMIN->add(
+        'enrolments', 
+        new admin_externalpage(
+            'enrol_oneroster_csv_upload',
+            get_string('csv_upload_process', 'enrol_oneroster'),
+            new moodle_url('/enrol/oneroster/process_csv.php'),
+            'moodle/site:config'
+    ));
 }
