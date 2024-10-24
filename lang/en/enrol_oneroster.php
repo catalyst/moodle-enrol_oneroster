@@ -93,3 +93,6 @@ $string['datatype_error_messages'] = 'Data Type Error Messages';
 $string['upload_zip_label'] = 'Upload Zip File';
 $string['process_oneroster_csv'] = 'Process OneRoster CSV';
 $string['set_url'] = '/enrol/oneroster/process_csv.php';
+$string['upload'] = 'Upload';
+$string['na'] = 'N/A';
+$string['validation'] = "Validation failed for header '{$a->header}' in file '{$a->file}'.";

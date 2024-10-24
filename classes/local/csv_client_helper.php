@@ -26,10 +26,9 @@ namespace enrol_oneroster\classes\local;
  */
 class csv_client_helper {
     /**
-     * Get the expected data types for each file
+     * Get the expected data types for each file.
      * 
-     * @return array An array containing the expected data types for each file
-     * @covers enrol_oneroster/classes/local/csv_client_const_helper
+     * @return array An array containing the expected data types for each file.
      */
     public static function get_file_datatypes(): array {
         return [
@@ -104,10 +103,9 @@ class csv_client_helper {
         ];
     }
     /**
-     * Get the validator functions for each data type
+     * Get the validator functions for each data type.
      * 
      * @return array An array containing the validator functions for each data type
-     * @covers enrol_oneroster/classes/local/csv_client_const_helper
      */
     public static function get_validator(): array {
         return [
@@ -137,7 +135,7 @@ class csv_client_helper {
     }
 
     /**
-     * Function to validate CSV headers
+     * Function to validate CSV headers.
      *
      * @param string $file_path Path to the CSV file
      * @return bool True if the headers are valid, false otherwise
@@ -156,13 +154,13 @@ class csv_client_helper {
     }
 
     /**
-     * Function to check if the manifest and required files are present
+     * Function to check if the manifest and required files are present.
      *
      * @param string $manifest_path Path to the manifest file
      * @param string $tempdir Path to the temporary directory
      * @return array An array containing the missing files and invalid headers
      */
-    public static function check_manifest_and_files($manifest_path, $tempdir) {
+    public static function check_manifest_and_files(string $manifest_path, string $tempdir): array {
         $invalid_headers = [];
         $required_files = [];
 
@@ -197,12 +195,12 @@ class csv_client_helper {
     }
 
     /**
-     * Function to extract CSV files to arrays
+     * Function to extract CSV files to arrays.
      *
      * @param string $directory Path to the directory containing the CSV files
      * @return array An associative array containing the CSV data
      */
-    public static function extract_csvs_to_arrays($directory) {
+    public static function extract_csvs_to_arrays(string $directory): array {
         $csv_data = [];
         $files = scandir($directory);
     
@@ -224,11 +222,11 @@ class csv_client_helper {
     }
 
     /**
-     * Function to display missing and invalid files
+     * Function to display missing and invalid files.
      *
      * @param array $missing_files An array containing the missing files and invalid headers
      */
-    public static function display_missing_and_invalid_files($missing_files) {
+    public static function display_missing_and_invalid_files(array $missing_files): void {
         $critical_files = [csv_client_const_helper::FILE_ACADEMIC_SESSIONS, csv_client_const_helper::FILE_CLASSES, csv_client_const_helper::FILE_ENROLLMENTS, csv_client_const_helper::FILE_ORGS, csv_client_const_helper::FILE_USERS];
     
         if (!empty($missing_files['missing_files'])) {
@@ -260,12 +258,12 @@ class csv_client_helper {
     }
     
     /**
-     * Function to get the header for a given file
+     * Function to get the header for a given file.
      *
      * @param string $file_name The name of the file
      * @return array The header for the given file
      */
-    public static function getHeader($file_name) {
+    public static function getHeader(string $file_name): array {
         switch ($file_name) {
             case csv_client_const_helper::FILE_ACADEMIC_SESSIONS:
                 return csv_client_const_helper::HEADER_ACADEMIC_SESSIONS;
@@ -283,22 +281,22 @@ class csv_client_helper {
     }
 
     /**
-     * Get the expected data types for a given file
+     * Get the expected data types for a given file.
      *
-     * @param string $file_name The name of the file
+     * @param mixed $file_name The name of the file
      * @return array The expected data types for the given file
      */
-    public static function get_data_types($file_name) {
+    public static function get_data_types(string $file_name): array {
         return self::get_file_datatypes()[$file_name] ?? [];
     }
 
     /**
-     * Validate the data types of the CSV files
+     * Validate the data types of the CSV files.
      *
-     * @param string $directory The directory containing the CSV files
+     * @param array $directory The directory containing the CSV files
      * @return array An array containing the validity of the files, the invalid files, and error messages
      */
-    public static function validate_csv_data_types($directory) {
+    public static function validate_csv_data_types(array $directory): array {
         $is_valid = true;
         $invalid_files = [];
         $error_messages = [];
@@ -342,10 +340,10 @@ class csv_client_helper {
 
                 $file_is_valid = true;
                 foreach ($headers as $index => $header) {
-                    $expected_types = $expected_data_types[$header] ?? ['N/A'];
+                    $expected_types = $expected_data_types[$header] ?? [get_string('na', 'enrol_oneroster')];
                     $detected_type = $detected_data_types[$index];
                     if (!in_array($detected_type, (array)$expected_types, true)) {
-                        $error_messages[] = "Validation failed for header '$header' in file '$file'.";
+                        $error_messages[] = get_string('validation', 'enrol_oneroster', (object)[ 'header' => $header, 'file' => $file]);
                         $is_valid = false;
                         $file_is_valid = false;
                     }
@@ -365,11 +363,11 @@ class csv_client_helper {
     }
 
     /**
-     * Function to display errors for CSV data type validation
+     * Function to display errors for CSV data type validation.
      *
      * @param array $validation_result An array containing the validity of the files, the invalid files, and error messages
      */
-    public static function display_validation_errors($validation_result) {
+    public static function display_validation_errors(array $validation_result): void {
         if (!empty($validation_result['error_messages'])) {
             echo \html_writer::tag('h3', get_string('datatype_error_messages', 'enrol_oneroster'));
 
@@ -386,9 +384,9 @@ class csv_client_helper {
     }
 
     /**
-     * Function to validate users and configure settings for database entry
-     * If all users have an identifier, the users will be saved to the database
-     * Otherwise, no users will be saved
+     * Function to validate users and configure settings for database entry.
+     * If all users have an identifier, the users will be saved to the database.
+     * Otherwise, no users will be saved.
      *
      * @param array $csv_data An array containing user data, including identifiers and other relevant details.
      * @return bool True if all users have an identifier and password, false otherwise
@@ -403,13 +401,13 @@ class csv_client_helper {
     }
 
     /**
-     * Determine the data type of a value
+     * Determine the data type of a value.
      *
      * @param string $value The value to determine the data type of
      * @param array $expected_types The expected data types for the value
      * @return string The detected data type
      */
-    public static function determine_data_type($value, $expected_types) {
+    public static function determine_data_type($value, $expected_types): mixed {
         if (trim($value) === '') {
             return csv_client_const_helper::DATATYPE_NULL;
         }
@@ -423,12 +421,12 @@ class csv_client_helper {
     }
 
     /**
-     * Check if a value is a valid password
+     * Check if a value is a valid password.
      *
      * @param mixed $value The value to check
      * @return bool True if the value is a valid password, false otherwise
      */
-    public static function is_valid_password($value) {
+    public static function is_valid_password($value): mixed {
         return check_password_policy($value, $errormsg);
     }
 
@@ -450,7 +448,7 @@ class csv_client_helper {
     }
 
     /**
-     * Check if a value is of type int
+     * Check if a value is of type int.
      *
      * @param mixed $value The value to check
      * @return bool True if the value is of type int, false otherwise
@@ -460,7 +458,7 @@ class csv_client_helper {
     }
 
    /**
-    * Check if a value is of type list (array of strings)
+    * Check if a value is of type list (array of strings).
     *
     * @param mixed $value The value to check
     * @return bool True if the value is of type list of strings, false otherwise
@@ -483,7 +481,7 @@ class csv_client_helper {
     }
 
     /**
-     * Validate and parse subject codes
+     * Validate and parse subject codes.
      * Subject codes can be a single string or a list of strings separated by commas
      *
      * @param string $value The value to check
@@ -536,8 +534,8 @@ class csv_client_helper {
     }
  
     /**
-     * Check if a value is of type datetime
-     * Regular expression for ISO 8601 datetime format (YYYY-MM-DDTHH:MM:SS.SSSZ)
+     * Check if a value is of type datetime.
+     * Regular expression for ISO 8601 datetime format (YYYY-MM-DDTHH:MM:SS.SSSZ).
      *
      * If the value is in the old format (YYYY-MM-DD), it transforms to the new format (YYYY-MM-DDT23:59:59.999Z).
      *
@@ -557,8 +555,8 @@ class csv_client_helper {
     }
 
     /**
-     * Check if a value is of type date
-     * Regular expression for ISO 8601 date format (YYYY-MM-DD)
+     * Check if a value is of type date.
+     * Regular expression for ISO 8601 date format (YYYY-MM-DD).
      *
      * @param mixed $value The value to check
      * @return bool True if the value is of type date, false otherwise
@@ -568,8 +566,8 @@ class csv_client_helper {
     }
 
     /**
-     * Check if a value is of type 
-     * Regular expression for GUID (characters: 0-9, a-z, A-Z, ., -, _, /, @)
+     * Check if a value is of type GUID.
+     * Regular expression for GUID (characters: 0-9, a-z, A-Z, ., -, _, /, @).
      *
      * @param mixed $value The value to check
      * @return bool True if the value is of type GUID, false otherwise
@@ -579,7 +577,7 @@ class csv_client_helper {
     }
 
     /**
-     * Check if a value is of type status enum
+     * Check if a value is of type status enum.
      *
      * @param mixed $value The value to check
      * @return bool True if the value is of type status enum, false otherwise
@@ -590,7 +588,7 @@ class csv_client_helper {
     }
 
     /**
-     * Check if a value is of type type enum
+     * Check if a value is of type enum.
      *
      * @param mixed $value The value to check
      * @return bool True if the value is of type type enum, false otherwise
@@ -601,8 +599,8 @@ class csv_client_helper {
     }
 
     /**
-     * Check if a value is of type year
-     * Regular expression for year format (YYYY)
+     * Check if a value is of type year.
+     * Regular expression for year format (YYYY).
      *
      * @param mixed $value The value to check
      * @return bool True if the value is of type year, false otherwise
@@ -612,7 +610,7 @@ class csv_client_helper {
     }
 
     /**
-     * Check if a value is of type grade
+     * Check if a value is of type grade.
      *
      * @param mixed $value The value to check
      * @return bool True if the value is of type grade, false otherwise
@@ -629,7 +627,7 @@ class csv_client_helper {
     }
 
     /**
-     * Check if a value is of type grade
+     * Check if a value is of type grade.
      *
      * @param string $value The value to check
      * @return bool True if the value is of type grade, false otherwise
@@ -640,7 +638,7 @@ class csv_client_helper {
     }
 
     /**
-     * Check if a value is of type class type enum
+     * Check if a value is of type class type enum.
      *
      * @param mixed $value The value to check
      * @return bool True if the value is of type class type enum, false otherwise
@@ -650,7 +648,7 @@ class csv_client_helper {
     }
 
     /**
-     * Check if a value is of type GUID list
+     * Check if a value is of type GUID list.
      *
      * @param mixed $value The value to check
      * @return bool True if the value is of type GUID list, false otherwise
@@ -667,7 +665,7 @@ class csv_client_helper {
     }
 
     /**
-     * Check if a value is of type role enum
+     * Check if a value is of type role enum.
      *
      * @param string $value The value to check
      * @return bool True if the value is of type role enum, false otherwise
@@ -677,7 +675,7 @@ class csv_client_helper {
     }
 
     /**
-     * Check if a value is of type primary enum
+     * Check if a value is of type primary enum.
      *
      * @param mixed $value The value to check
      * @return bool True if the value is of type primary enum, false otherwise
@@ -687,7 +685,7 @@ class csv_client_helper {
     }
 
     /**
-     * Check if a value is of type org type enum
+     * Check if a value is of type org type enum.
      *
      * @param mixed $value The value to check
      * @return bool True if the value is of type org type enum, false otherwise
@@ -697,7 +695,7 @@ class csv_client_helper {
     }
 
     /**
-     * Check if a value is of type email
+     * Check if a value is of type email.
      *
      * @param mixed $value The value to check
      * @return bool True if the value is of type email, false otherwise
@@ -726,7 +724,7 @@ class csv_client_helper {
     }
 
     /**
-     * Check if a value is of type role user enum
+     * Check if a value is of type role user enum.
      *
      * @param mixed $value The value to check
      * @return bool True if the value is of type role user enum, false otherwise

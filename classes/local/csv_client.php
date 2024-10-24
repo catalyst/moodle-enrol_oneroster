@@ -37,25 +37,21 @@ class csv_client implements client_interface  {
     use root_oneroster_client;
     use versioned_client;
 
-    // Define constants for the base paths and types
-    const basepath_orgs = 'orgs';
-    const basepath_schools = 'schools';
-    const type_terms = 'terms';
-    const type_classes = 'classes';
-    const type_enrollments = 'enrollments';
-    const basepath_users = 'users';
+    // Define constants for the base paths and types.
+    const BASEPATH_ORGS = 'orgs';
+    const BASEPATH_SCHOOLS = 'schools';
+    const TYPE_TERMS = 'terms';
+    const TYPE_CLASSES = 'classes';
+    const TYPE_ENROLLMENTS = 'enrollments';
+    const BASEPATH_USERS = 'users';
     private $org_id; 
 
-    // Define constants for keys
-    const academic_sessions_key = 'academicSessions';
-    const orgs_key = 'orgs';
-    const classes_key = 'classes';
-    const enrollments_key = 'enrollments';
-    const users_key = 'users';
-    const periods_key = 'periods';
-    const subjects_key = 'subjects';
-    const subject_codes_key = 'subjectCodes';
-    const grades_key = 'grades';
+    // Define constants for keys.
+    const ACADEMIC_SESSIONS_KEY = 'academicSessions';
+    const PERIODS_KEY = 'periods';
+    const SUBJECTS_KEYS = 'subjects';
+    const SUBJECT_CODES_KEY = 'subjectCodes';
+    const GRADES_KEY = 'grades';
 
     /**
      * Authenticate the client. This is a no-op for the CSV client.
@@ -112,15 +108,15 @@ class csv_client implements client_interface  {
      */
     public function execute(command $command, ?filter $filter = null): stdClass {
         $url = $command->get_url('');
-        // Split the URL into tokens using '/' as the delimiter (eg. /schools/org-sch-222-456/terms)
+        // Split the URL into tokens using '/' as the delimiter (eg. /schools/org-sch-222-456/terms).
         $tokens = explode('/', $url); 
-        // The second token represents the base path ('users', 'orgs', 'schools')
+        // The second token represents the base path ('users', 'orgs', 'schools').
         $basepath = $tokens[1];
-        // The third token represents the Organisation ID
+        // The third token represents the Organisation ID.
         $param = $tokens[2] ?? '';
-        // The fourth token represents the type of data to fetch ('terms', 'classes', 'enrollments')
+        // The fourth token represents the type of data to fetch ('terms', 'classes', 'enrollments').
         $type = $tokens[3] ?? '';
-        // Get the organisation ID
+        // Get the organisation ID.
         $org_id = $this->org_id ?? null;
 
         if ($org_id == null) {
@@ -128,21 +124,21 @@ class csv_client implements client_interface  {
         }
 
         switch ($basepath) {
-            case self::basepath_orgs:
-                // The endpoint getAllOrgs is called to fetch all organisations
+            case self::BASEPATH_ORGS:
+                // The endpoint getAllOrgs is called to fetch all organisations.
                 if ($param === $org_id || $param === '') {
-                    $orgdata = $this->data[self::orgs_key];
+                    $orgdata = $this->data[self::BASEPATH_ORGS];
                     $keys = array_map(function($orgs) { return $orgs['sourcedId']; }, $orgdata);
-                    // Combine keys and organization data into an associative array
+                    // Combine keys and organization data into an associative array.
                     $mapped_data = array_combine($keys, $orgdata);
                     if (isset($mapped_data[$org_id])) {
                         $org = (object) $mapped_data[$org_id];
-                        // If status and dateLastModified are not set, set them to active and the current date
+                        // If status and dateLastModified are not set, set them to active and the current date.
                         if ($org->status == null && $org->dateLastModified == null) {
                             $org->status = 'active'; 
                             $org->dateLastModified = date('Y-m-d');
                         }
-                        // To ensure compatibility with v1.0, set the status to 'tobedeleted' if it is 'inactive'
+                        // To ensure compatibility with v1.0, set the status to 'tobedeleted' if it is 'inactive'.
                         if ($org->status === 'inactive') {
                             $org->status = 'tobedeleted';
                         }
@@ -157,10 +153,10 @@ class csv_client implements client_interface  {
                     ];
                 }
 
-            case self::basepath_schools:
-                // The endpoint getTermsForSchool is called to fetch a list of classes in a term 
-                if ($type === self::type_terms) {
-                    $academicsessiondata = $this->data[self::academic_sessions_key];
+            case self::BASEPATH_SCHOOLS:
+                // The endpoint getTermsForSchool is called to fetch a list of classes in a term.
+                if ($type === self::TYPE_TERMS) {
+                    $academicsessiondata = $this->data[self::ACADEMIC_SESSIONS_KEY];
                     $keys = array_map(function ($schools) { return $schools['sourcedId']; }, $academicsessiondata);
                     $mapped_data = array_combine($keys, $academicsessiondata);
                     $academicSession = [];
@@ -182,9 +178,9 @@ class csv_client implements client_interface  {
                     ];
                 }
 
-                if ($type === self::type_classes) {
-                    // The endpoint getClassesForSchool is called to fetch all students for a class 
-                    $classdata = $this->data[self::classes_key];
+                if ($type === self::TYPE_CLASSES) {
+                    // The endpoint getClassesForSchool is called to fetch all students for a class.
+                    $classdata = $this->data[self::TYPE_CLASSES];
                     $keys = array_map(function($schools) { return $schools['sourcedId']; }, $classdata);
                     $mapped_data = array_combine($keys, $classdata);
                     $classes = [];
@@ -212,7 +208,7 @@ class csv_client implements client_interface  {
                                 $class->periods = [];
                             }
 
-                            $objs = [self::periods_key, self::subjects_key, self::subject_codes_key, self::grades_key];
+                            $objs = [self::PERIODS_KEY, self::SUBJECTS_KEYS, self::SUBJECT_CODES_KEY, self::GRADES_KEY];
 
                             foreach ($objs as $obj) {
                                 if (!empty($class->$obj)) {
@@ -239,9 +235,9 @@ class csv_client implements client_interface  {
                     ];
                 }
 
-                if ($type === self::type_enrollments) {
-                    // The endpoint getEnrollmentsForSchool is called to fetch all enrollments in a school 
-                    $enrollmentdata = $this->data[self::enrollments_key];
+                if ($type === self::TYPE_ENROLLMENTS) {
+                    // The endpoint getEnrollmentsForSchool is called to fetch all enrollments in a school.
+                    $enrollmentdata = $this->data[self::TYPE_ENROLLMENTS];
                     $keys = array_map(function($schools) { return $schools['sourcedId']; }, $enrollmentdata);
                     $mapped_data = array_combine($keys, $enrollmentdata);
                     $enrollments = [];
@@ -266,9 +262,9 @@ class csv_client implements client_interface  {
                     ];
                 }
 
-            case self::basepath_users:
-                // The endpoint getAllUsers is called to fetch all users in a school
-                $usersData = $this->data[self::users_key];
+            case self::BASEPATH_USERS:
+                // The endpoint getAllUsers is called to fetch all users in a school.
+                $usersData = $this->data[self::BASEPATH_USERS];
                 $keys = array_map(function($user) {return $user['sourcedId']; }, $usersData);
                 $mapped_data = array_combine($keys, $usersData);
                 $users = [];

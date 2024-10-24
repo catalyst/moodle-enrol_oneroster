@@ -41,7 +41,7 @@ class oneroster_csv_form extends \moodleform {
         // Submit button.
         $this->add_action_buttons(
             true, 
-            'Upload'
+            get_string('upload', 'enrol_oneroster')
         );
     }
 }
