@@ -41,9 +41,9 @@ use ReflectionClass;
  * @copyright  Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers  enrol_oneroster\local\endpoints\rostering
+ * @covers  \enrol_oneroster\local\endpoints\rostering
  */
-class rostering_testcase extends oneroster_testcase {
+class rostering_test extends oneroster_testcase {
 
     /**
      * Ensure that instantiation works correctly.

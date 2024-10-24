@@ -20,13 +20,13 @@ This implementation currently supports the following features:
   - Start date
   - End date
 - Creation, Update, and Removal of Enrolment records for students, and teachers to each course
+- Provides support for CSV Import Syncronisation via the OneRoster v1p1 CSV specification
 
 The following features are currently not implemented but are planned for future development:
 
 - Support for the OneRoster Gradebook Consumer/Provider specification
 - OneRoster Version 1.2
 
-There are currently no plans to add support for the CSV Implementation of the OneRoster specification.
 
 ## Important information
 

@@ -33,9 +33,9 @@ use advanced_testcase;
  * @copyright  Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers  enrol_oneroster\plugin
+ * @covers  \enrol_oneroster\plugin
  */
-class plugin_testcase extends advanced_testcase {
+class plugin_test extends advanced_testcase {
     /**
      * Ensure that the name of the plugin is correctly determined.
      */

@@ -33,9 +33,9 @@ use advanced_testcase;
  * @copyright  Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers  enrol_oneroster\local\converter
+ * @covers  \enrol_oneroster\local\converter
  */
-class converter_testcase extends advanced_testcase {
+class converter_test extends advanced_testcase {
 
     /**
      * Ensure that the `from_date_to_unix` function.
