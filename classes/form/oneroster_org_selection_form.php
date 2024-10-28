@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-namespace enrol_oneroster\classes\form;
+namespace enrol_oneroster\form;
 
 require_once("$CFG->libdir/formslib.php");
 
