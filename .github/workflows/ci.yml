@@ -48,6 +48,7 @@ jobs:
           php-version: ${{ matrix.php-versions }}
           extensions: mbstring, pgsql, mysqli
           tools: phpunit
+          ini-values: max_input_vars=5000
 
       - name: Deploy moodle-plugin-ci
         run: |
