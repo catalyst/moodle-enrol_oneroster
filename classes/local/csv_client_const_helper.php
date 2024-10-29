@@ -104,7 +104,7 @@ class csv_client_const_helper {
     const valid_primary_values = ['true', 'false'];
     const valid_org_types = ['department', 'school', 'district', 'local', 'state', 'national'];
     const valid_roles_users = [
-        'administrator', 'aide', 'guardian', 'parent', 'proctor', 
+        'administrator', 'aide', 'guardian', 'parent', 'proctor',
         'relative', 'student', 'teacher'
     ];
     // Valid grade codes from the Common Education Data Standards (CEDS).

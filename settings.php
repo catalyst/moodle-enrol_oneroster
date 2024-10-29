@@ -269,7 +269,7 @@ if ($hassiteconfig) {
         )
     );
     $ADMIN->add(
-        'enrolments', 
+        'enrolments',
         new admin_externalpage(
             'enrol_oneroster_csv_upload',
             get_string('csv_upload_process', 'enrol_oneroster'),
