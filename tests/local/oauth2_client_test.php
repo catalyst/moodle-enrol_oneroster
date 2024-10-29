@@ -35,7 +35,7 @@ use enrol_oneroster\local\oneroster_testcase;
  * @copyright  Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers  enrol_oneroster\local\oauth2_client
+ * @covers  \enrol_oneroster\local\oauth2_client
  */
 class oauth2_client_test extends oneroster_testcase {
 
