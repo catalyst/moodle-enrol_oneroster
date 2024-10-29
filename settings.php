@@ -31,7 +31,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_heading(
         'enrol_oneroster',
         '',
-        get_string('options', 'enrol_oneroster')
+        get_string('pluginname_desc', 'enrol_database')
     ));
 
     // Connections settings:

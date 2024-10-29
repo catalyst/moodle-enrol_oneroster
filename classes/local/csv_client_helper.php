@@ -225,10 +225,19 @@ class csv_client_helper {
      * Function to display missing and invalid files.
      *
      * @param array $missing_files An array containing the missing files and invalid headers
+     * @return string The error messages to be displayed
      */
-    public static function display_missing_and_invalid_files(array $missing_files): void {
-        $critical_files = [csv_client_const_helper::FILE_ACADEMIC_SESSIONS, csv_client_const_helper::FILE_CLASSES, csv_client_const_helper::FILE_ENROLLMENTS, csv_client_const_helper::FILE_ORGS, csv_client_const_helper::FILE_USERS];
-    
+    public static function display_missing_and_invalid_files(array $missing_files): string {
+        $critical_files = [
+            csv_client_const_helper::FILE_ACADEMIC_SESSIONS,
+            csv_client_const_helper::FILE_CLASSES,
+            csv_client_const_helper::FILE_ENROLLMENTS,
+            csv_client_const_helper::FILE_ORGS,
+            csv_client_const_helper::FILE_USERS
+        ];
+
+        $error_message = '';
+
         if (!empty($missing_files['missing_files'])) {
             $critical_missing_files = [];
             $non_critical_files = [];
@@ -243,18 +252,20 @@ class csv_client_helper {
 
             if (!empty($critical_missing_files)) {
                 $critical_files_list = implode(', ', $critical_missing_files);
-                echo get_string('missingfiles', 'enrol_oneroster', ['a' => $critical_files_list]) . '<br>';
+                $error_message .= get_string('missingfiles', 'enrol_oneroster', (object)['files' => $critical_files_list]) . '<br>';
             }
 
             foreach ($non_critical_files as $non_critical_file) {
-                echo get_string('invalid_manifest_selection', 'enrol_oneroster', ['a' => $non_critical_file]) . '<br>';
+                $error_message .= get_string('invalid_manifest_selection', 'enrol_oneroster', (object)['manifest' => $non_critical_file]) . '<br>';
             }
         }
 
         if (!empty($missing_files['invalid_headers'])) {
             $invalid_headers_list = implode(', ', $missing_files['invalid_headers']);
-            echo get_string('invalidheaders', 'enrol_oneroster', ['a' => $invalid_headers_list]) . '<br>';
+            $error_message .= get_string('invalidheaders', 'enrol_oneroster', (object)['headers' => $invalid_headers_list]) . '<br>';
         }
+
+        return $error_message;
     }
     
     /**
@@ -293,10 +304,10 @@ class csv_client_helper {
     /**
      * Validate the data types of the CSV files.
      *
-     * @param array $directory The directory containing the CSV files
+     * @param string $directory The directory containing the CSV files
      * @return array An array containing the validity of the files, the invalid files, and error messages
      */
-    public static function validate_csv_data_types(array $directory): array {
+    public static function validate_csv_data_types(string $directory): array {
         $is_valid = true;
         $invalid_files = [];
         $error_messages = [];
@@ -366,21 +377,31 @@ class csv_client_helper {
      * Function to display errors for CSV data type validation.
      *
      * @param array $validation_result An array containing the validity of the files, the invalid files, and error messages
+     * @return string The error messages to be displayed
      */
-    public static function display_validation_errors(array $validation_result): void {
+    public static function display_validation_errors(array $validation_result): string {
+        $error_message = '';
+
         if (!empty($validation_result['error_messages'])) {
-            echo \html_writer::tag('h3', get_string('datatype_error_messages', 'enrol_oneroster'));
+            $error_message .= \html_writer::tag('h3', get_string('datatype_error_messages', 'enrol_oneroster'));
 
             $error_list_items = '';
             foreach ($validation_result['error_messages'] as $message) {
                 $error_list_items .= \html_writer::tag('li', $message);
             }
 
-            echo \html_writer::tag('ul', $error_list_items);
+            $error_message .= \html_writer::tag('ul', $error_list_items);
+
             $reference_message = get_string('reference_message', 'enrol_oneroster') . ' ';
-            $link = \html_writer::link('https://www.imsglobal.org/oneroster-v11-final-csv-tables#_Toc480293266', get_string('csv_spec', 'enrol_oneroster'), ['target' => '_blank']);
-            echo \html_writer::tag('p', $reference_message . $link . '.');
+            $link = \html_writer::link(
+                'https://www.imsglobal.org/oneroster-v11-final-csv-tables#_Toc480293266',
+                get_string('csv_spec', 'enrol_oneroster'),
+                ['target' => '_blank']
+            );
+            $error_message .= \html_writer::tag('p', $reference_message . $link . '.');
         }
+
+        return $error_message;
     }
 
     /**
@@ -407,7 +428,7 @@ class csv_client_helper {
      * @param array $expected_types The expected data types for the value
      * @return string The detected data type
      */
-    public static function determine_data_type($value, $expected_types): mixed {
+    public static function determine_data_type($value, $expected_types): string {
         if (trim($value) === '') {
             return csv_client_const_helper::DATATYPE_NULL;
         }
@@ -426,7 +447,7 @@ class csv_client_helper {
      * @param mixed $value The value to check
      * @return bool True if the value is a valid password, false otherwise
      */
-    public static function is_valid_password($value): mixed {
+    public static function is_valid_password($value): bool {
         return check_password_policy($value, $errormsg);
     }
 

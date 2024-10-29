@@ -19,7 +19,6 @@ namespace enrol_oneroster;
 use enrol_oneroster\form\oneroster_org_selection_form;
 use enrol_oneroster\form\oneroster_csv_form;
 use enrol_oneroster\local\csv_client_helper;
-use enrol_oneroster\local\csv_client_const_helper;
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
@@ -76,13 +75,13 @@ if ($step == 1) {
 
         $missing_files = csv_client_helper::check_manifest_and_files($manifest_path, $tempdir);
         if (!empty($missing_files['missing_files']) || !empty($missing_files['invalid_headers'])) {
-            $error_message = csv_client_helper::get_missing_and_invalid_files_message($missing_files);
+            $error_message = csv_client_helper::display_missing_and_invalid_files($missing_files);
             redirect($PAGE->url, $error_message);
         }
 
         $datatype = csv_client_helper::validate_csv_data_types($tempdir);
         if (!$datatype['is_valid']) {
-            $error_message = csv_client_helper::get_validation_errors_message($datatype);
+            $error_message = csv_client_helper::display_validation_errors($datatype);
             redirect($PAGE->url, $error_message);
         }
 
@@ -184,9 +183,10 @@ function process_selected_organization(string $selected_org_sourcedId, string $t
 
     try {
         $csvclient->synchronise();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         echo $OUTPUT->header();
-        echo $e->getMessage() . ' <br>';
+        echo $e->getMessage() . ' <br><br>';
+        echo get_string('synchronise_failure', 'enrol_oneroster') . ' <br>';
         echo $OUTPUT->footer();
         exit;
     }
