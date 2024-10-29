@@ -40,7 +40,7 @@ use enrol_oneroster\local\v1p1\endpoints\rostering as rostering_endpoint;
  * @covers  \enrol_oneroster\local\v1p1\oauth2_client
  * @covers  \enrol_oneroster\local\v1p1\oneroster_client
  */
-class oauth2_client_testcase extends v1p1_testcase {
+class oauth2_client_test extends v1p1_testcase {
 
     /**
      * Ensure that the `get_rostering_endpoint` function returns a v1p1 rostering endpoint.
