@@ -29,7 +29,7 @@ use \enrol_oneroster\csv_test_helper;
  */
 class process_csv_data_type_validation_test extends \advanced_testcase {
     /**
-     * Path to the test directory.
+     * The path to the test directory.
      *
      * @var string
      */
