@@ -33,7 +33,7 @@ use advanced_testcase;
  * @copyright  Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers  enrol_oneroster\plugin
+ * @covers  \enrol_oneroster\plugin
  */
 class plugin_testcase extends advanced_testcase {
     /**

@@ -16,7 +16,6 @@
 namespace enrol_oneroster\tests;
 
 use \enrol_oneroster\local\csv_client_helper;
-use \enrol_oneroster\local\csv_client_helper;
 
 /**
  * One Roster tests for the client_helper class.
@@ -26,7 +25,7 @@ use \enrol_oneroster\local\csv_client_helper;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers  \enrol_oneroster\local\csv_client_helper
  */
-class process_csv_data_type_validation_testcase extends \advanced_testcase { 
+class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Path to the test directory.
      *
