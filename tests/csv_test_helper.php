@@ -16,7 +16,7 @@
 namespace enrol_oneroster;
 use \enrol_oneroster\local\csv_client_const_helper;
 
-/** 
+/**
  * Helper class for tests that involve CSV files.
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -29,7 +29,7 @@ class csv_test_helper {
      * @param string $filepath The path where the CSV file will be created.
      * @param array $content An array of arrays representing CSV rows.
      */
-    public static function createCsvFile(string $filepath, array $content): void {
+    public static function createcsvfiles(string $filepath, array $content): void {
         $handle = fopen($filepath, 'w');
         foreach ($content as $line) {
             fputcsv($handle, $line);
@@ -42,7 +42,7 @@ class csv_test_helper {
      *
      * @param string $testdir The directory where the CSV files will be created.
      */
-    public static function setUpCsvFiles(string $testdir): void {
+    public static function setupcsvfiles(string $testdir): void {
         // Creating manifest.csv.
         $manifestcontent = [
             ['propertyName', 'value'],
@@ -52,7 +52,7 @@ class csv_test_helper {
             ['file.orgs', 'bulk'],
             ['file.users', 'bulk'],
         ];
-        self::createCsvFile($testdir . DIRECTORY_SEPARATOR . 'manifest.csv', $manifestcontent);
+        self::createcsvfiles($testdir . DIRECTORY_SEPARATOR . 'manifest.csv', $manifestcontent);
 
         // Creating academicSessions.csv.
         $academicsessionscontent = [
@@ -66,7 +66,7 @@ class csv_test_helper {
                 '2022-10-02', '2022-12-24', 'as-trm-222-1234', '2023'
             ]
         ];
-        self::createCsvFile($testdir . DIRECTORY_SEPARATOR . 'academicSessions.csv', $academicsessionscontent);
+        self::createcsvfiles($testdir . DIRECTORY_SEPARATOR . 'academicSessions.csv', $academicsessionscontent);
 
         // Creating classes.csv.
         $classecontent = [
@@ -84,7 +84,7 @@ class csv_test_helper {
                 'History', 'HIS123', '1,2,3'
             ]
         ];
-        self::createCsvFile($testdir . DIRECTORY_SEPARATOR . 'classes.csv', $classecontent);
+        self::createcsvfiles($testdir . DIRECTORY_SEPARATOR . 'classes.csv', $classecontent);
 
         // Creating enrollments.csv.
         $enrollmentscontent = [
@@ -99,7 +99,7 @@ class csv_test_helper {
                 'usr-222-987654', 'student', 'FALSE', '2022-03-16', '2022-06-16'
             ]
         ];
-        self::createCsvFile($testdir . DIRECTORY_SEPARATOR . 'enrollments.csv', $enrollmentscontent);
+        self::createcsvfiles($testdir . DIRECTORY_SEPARATOR . 'enrollments.csv', $enrollmentscontent);
 
         // Creating orgs.csv.
         $orgscontent = [
@@ -117,7 +117,7 @@ class csv_test_helper {
                 'department', 'US History', 'org-sch-222-3456'
             ]
         ];
-        self::createCsvFile($testdir . DIRECTORY_SEPARATOR . 'orgs.csv', $orgscontent);
+        self::createcsvfiles($testdir . DIRECTORY_SEPARATOR . 'orgs.csv', $orgscontent);
 
         // Creating users.csv.
         $userscontent = [
@@ -141,6 +141,6 @@ class csv_test_helper {
                 '6039876543', '6039876543', 'usr-222-66778899', '10', 'Password1*'
             ]
         ];
-        self::createCsvFile($testdir . DIRECTORY_SEPARATOR . 'users.csv', $userscontent);
+        self::createcsvfiles($testdir . DIRECTORY_SEPARATOR . 'users.csv', $userscontent);
     }
 }

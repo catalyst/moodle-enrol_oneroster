@@ -45,7 +45,7 @@ class process_csv_data_type_validation_test extends \advanced_testcase {
         $this->testdir = make_temp_directory('csvtest_dir');
 
         // Use the helper class to set up CSV files.
-        csv_test_helper::setUpCsvFiles($this->testdir);
+        csv_test_helper::setupcsvfiles($this->testdir);
     }
 
     /**
