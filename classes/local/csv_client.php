@@ -33,12 +33,12 @@ use enrol_oneroster\local\v1p1\oneroster_client as versioned_client;
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class csv_client implements client_interface  {
+class csv_client implements client_interface {
     use root_oneroster_client;
     use versioned_client;
-    
+
     /**
-     * Constants for the base path and types
+     * Constants for the base path and types.
      */
     const BASEPATH_ORGS = 'orgs';
     const BASEPATH_SCHOOLS = 'schools';
@@ -48,12 +48,12 @@ class csv_client implements client_interface  {
     const BASEPATH_USERS = 'users';
 
     /**
-     * Stores organisation ID
+     * Stores organisation ID.
      */
-    private $org_id; 
-    
+    private $orgid;
+
     /**
-     * Define key constants
+     * Define key constants.
      */
     const ACADEMIC_SESSIONS_KEY = 'academicSessions';
     const PERIODS_KEY = 'periods';
@@ -63,7 +63,7 @@ class csv_client implements client_interface  {
 
     /**
      * Authenticate the client. This is a no-op for the CSV client.
-     * 
+     *
      * @return void
      */
     public function authenticate(): void {
@@ -73,20 +73,20 @@ class csv_client implements client_interface  {
     /**
      * Set the data retrieved from the CSV file.
      *
-     * @param array $manifest The manifest data
-     * @param array $users The users data
-     * @param array $classes The classes data
-     * @param array $orgs The orgs data
-     * @param array $enrollments The enrollments data
-     * @param array $academic_sessions The academic sessions data
+     * @param array $manifest The manifest data.
+     * @param array $users The users data.
+     * @param array $classes The classes data.
+     * @param array $orgs The orgs data.
+     * @param array $enrollments The enrollments data.
+     * @param array $academicSessions The academic sessions data.
      */
     public function set_data(
-        array $manifest, 
-        array $users, 
-        array $classes, 
-        array $orgs, 
-        array $enrollments, 
-        array $academic_sessions
+        array $manifest,
+        array $users,
+        array $classes,
+        array $orgs,
+        array $enrollments,
+        array $academicSessions
     ): void {
         $this->data = [
             'manifest' => $manifest,
@@ -94,30 +94,30 @@ class csv_client implements client_interface  {
             'classes' => $classes,
             'orgs' => $orgs,
             'enrollments' => $enrollments,
-            'academicSessions' => $academic_sessions,
+            'academicSessions' => $academicSessions,
         ];
     }
 
     /**
      * Set the organisation ID.
      *
-     * @param string $org_id The organisation ID
+     * @param string $orgid The organisation ID.
      */
-    public function set_org_id($org_id) {
-        $this->org_id = $org_id;
+    public function set_org_id($orgid) {
+        $this->orgid = $orgid;
     }
-   
+
     /**
      * Execute the supplied command.
      *
-     * @param   command $command The command to execute
+     * @param   command $command The command to execute.
      * @param   filter $filter
      * @return  stdClass
      */
     public function execute(command $command, ?filter $filter = null): stdClass {
         $url = $command->get_url('');
-        // Split the URL into tokens using '/' as the delimiter (eg. /schools/org-sch-222-456/terms).
-        $tokens = explode('/', $url); 
+        // Split the URL into tokens using '/' as the delimiter (e.g., /schools/org-sch-222-456/terms).
+        $tokens = explode('/', $url);
         // The second token represents the base path ('users', 'orgs', 'schools').
         $basepath = $tokens[1];
         // The third token represents the Organisation ID.
@@ -125,25 +125,27 @@ class csv_client implements client_interface  {
         // The fourth token represents the type of data to fetch ('terms', 'classes', 'enrollments').
         $type = $tokens[3] ?? '';
         // Get the organisation ID.
-        $org_id = $this->org_id ?? null;
+        $orgid = $this->orgid ?? null;
 
-        if ($org_id == null) {
+        if ($orgid == null) {
             throw new \Exception('Organization ID is not set.');
         }
 
         switch ($basepath) {
             case self::BASEPATH_ORGS:
                 // The endpoint getAllOrgs is called to fetch all organisations.
-                if ($param === $org_id || $param === '') {
+                if ($param === $orgid || $param === '') {
                     $orgdata = $this->data[self::BASEPATH_ORGS];
-                    $keys = array_map(function($orgs) { return $orgs['sourcedId']; }, $orgdata);
+                    $keys = array_map(function($orgs) {
+                        return $orgs['sourcedId'];
+                    }, $orgdata);
                     // Combine keys and organization data into an associative array.
-                    $mapped_data = array_combine($keys, $orgdata);
-                    if (isset($mapped_data[$org_id])) {
-                        $org = (object) $mapped_data[$org_id];
+                    $mappeddata = array_combine($keys, $orgdata);
+                    if (isset($mappeddata[$orgid])) {
+                        $org = (object) $mappeddata[$orgid];
                         // If status and dateLastModified are not set, set them to active and the current date.
                         if ($org->status == null && $org->dateLastModified == null) {
-                            $org->status = 'active'; 
+                            $org->status = 'active';
                             $org->dateLastModified = date('Y-m-d');
                         }
                         // To ensure compatibility with v1.0, set the status to 'tobedeleted' if it is 'inactive'.
@@ -160,52 +162,62 @@ class csv_client implements client_interface  {
                         ]
                     ];
                 }
+                break;
 
             case self::BASEPATH_SCHOOLS:
                 // The endpoint getTermsForSchool is called to fetch a list of classes in a term.
                 if ($type === self::TYPE_TERMS) {
-                    $academicsessiondata = $this->data[self::ACADEMIC_SESSIONS_KEY];
-                    $keys = array_map(function ($schools) { return $schools['sourcedId']; }, $academicsessiondata);
-                    $mapped_data = array_combine($keys, $academicsessiondata);
-                    $academicSession = [];
-                    foreach ($mapped_data as $academicId => $academicdata) {
+                    $academicSessionData = $this->data[self::ACADEMIC_SESSIONS_KEY];
+                    $keys = array_map(function ($schools) {
+                        return $schools['sourcedId'];
+                    }, $academicSessionData);
+                    $mappeddata = array_combine($keys, $academicSessionData);
+                    $academicsession = [];
+                    foreach ($mappeddata as $academicid => $academicdata) {
                         $academic = (object) $academicdata;
                         if ($academic->status === 'inactive') {
                             $academic->status = 'tobedeleted';
                         }
-                        
+
                         $academic->parent = (object)['sourcedId' => $academicdata['parentSourcedId']];
                         unset($academic->parentSourcedId);
-                        $academicSession[$academicId] = $academic;
+                        $academicsession[$academicid] = $academic;
                     }
                     return (object) [
                         'response' => (object) [
-                            'academicSessions' => $academicSession,
-                            'terms' => $academicSession
+                            'academicSessions' => $academicsession,
+                            'terms' => $academicsession
                         ]
                     ];
                 }
 
                 if ($type === self::TYPE_CLASSES) {
                     // The endpoint getClassesForSchool is called to fetch all students for a class.
-                    $classdata = $this->data[self::TYPE_CLASSES];
-                    $keys = array_map(function($schools) { return $schools['sourcedId']; }, $classdata);
-                    $mapped_data = array_combine($keys, $classdata);
+                    $classData = $this->data[self::TYPE_CLASSES];
+                    $keys = array_map(function($schools) {
+                        return $schools['sourcedId'];
+                    }, $classData);
+                    $mappeddata = array_combine($keys, $classData);
                     $classes = [];
-                    foreach ($mapped_data as $classId => $classData) {
-                        $class = (object) $classData;
-                        if (isset($class->schoolSourcedId) && $class->schoolSourcedId == $org_id) {
+                    foreach ($mappeddata as $classid => $classdata) {
+                        $class = (object) $classdata;
+                        if (isset($class->schoolSourcedId) && $class->schoolSourcedId == $orgid) {
                             if ($class->status === 'inactive') {
                                 $class->status = 'tobedeleted';
                             }
 
                             if (!empty($class->termSourcedIds)) {
-                                $termIds = explode(',', $class->termSourcedIds);
-                                $class->terms = array_map(function ($termId) { return (object) ['sourcedId' => trim($termId), 'type' => 'academicSession']; }, $termIds);
+                                $termids = explode(',', $class->termSourcedIds);
+                                $class->terms = array_map(function ($termid) {
+                                    return (object) [
+                                        'sourcedId' => trim($termid),
+                                        'type' => 'academicSession'
+                                    ];
+                                }, $termids);
                             } else {
                                 $class->terms = [];
                             }
-                
+
                             if (!empty($class->periods)) {
                                 if (is_string($class->periods)) {
                                     $class->periods = array_map('trim', explode(',', $class->periods));
@@ -216,7 +228,12 @@ class csv_client implements client_interface  {
                                 $class->periods = [];
                             }
 
-                            $objs = [self::PERIODS_KEY, self::SUBJECTS_KEYS, self::SUBJECT_CODES_KEY, self::GRADES_KEY];
+                            $objs = [
+                                self::PERIODS_KEY,
+                                self::SUBJECTS_KEYS,
+                                self::SUBJECT_CODES_KEY,
+                                self::GRADES_KEY
+                            ];
 
                             foreach ($objs as $obj) {
                                 if (!empty($class->$obj)) {
@@ -230,11 +247,17 @@ class csv_client implements client_interface  {
                                 }
                             }
 
-                            $class->school = (object) ['sourcedId' => $class->schoolSourcedId, 'type' => 'school'];
-                            $class->course = (object) ['sourcedId' => $class->courseSourcedId, 'type' => 'course'];
+                            $class->school = (object) [
+                                'sourcedId' => $class->schoolSourcedId,
+                                'type' => 'school'
+                            ];
+                            $class->course = (object) [
+                                'sourcedId' => $class->courseSourcedId,
+                                'type' => 'course'
+                            ];
                             unset($class->schoolSourcedId, $class->courseSourcedId, $class->termSourcedIds);
                         }
-                        $classes[$classId] = $class;
+                        $classes[$classid] = $class;
                     }
                     return (object) [
                         'response' => (object) [
@@ -245,23 +268,38 @@ class csv_client implements client_interface  {
 
                 if ($type === self::TYPE_ENROLLMENTS) {
                     // The endpoint getEnrollmentsForSchool is called to fetch all enrollments in a school.
-                    $enrollmentdata = $this->data[self::TYPE_ENROLLMENTS];
-                    $keys = array_map(function($schools) { return $schools['sourcedId']; }, $enrollmentdata);
-                    $mapped_data = array_combine($keys, $enrollmentdata);
+                    $enrollmentData = $this->data[self::TYPE_ENROLLMENTS];
+                    $keys = array_map(function($schools) {
+                        return $schools['sourcedId'];
+                    }, $enrollmentData);
+                    $mappeddata = array_combine($keys, $enrollmentData);
                     $enrollments = [];
-                    foreach ($mapped_data as $enrollmentId => $enrollmentData) {
-                        $enrollment = (object) $enrollmentData;
-                        if (isset($enrollment->schoolSourcedId) && $enrollment->schoolSourcedId == $org_id) {
+                    foreach ($mappeddata as $enrollmentid => $enrollmentdata) {
+                        $enrollment = (object) $enrollmentdata;
+                        if (isset($enrollment->schoolSourcedId) && $enrollment->schoolSourcedId == $orgid) {
                             if ($enrollment->status === 'inactive') {
                                 $enrollment->status = 'tobedeleted';
                             }
 
-                            $enrollment->user = (object) ['sourcedId' => $enrollmentData['userSourcedId'], 'type' => 'user'];
-                            $enrollment->school = (object) ['sourcedId' => $enrollmentData['schoolSourcedId'], 'type' => 'school'];
-                            $enrollment->class = (object) ['sourcedId' => $enrollmentData['classSourcedId'], 'type' => 'class'];
-                            unset($enrollment->schoolSourcedId, $enrollment->classSourcedId, $enrollment->userSourcedId);
+                            $enrollment->user = (object) [
+                                'sourcedId' => $enrollmentdata['userSourcedId'],
+                                'type' => 'user'
+                            ];
+                            $enrollment->school = (object) [
+                                'sourcedId' => $enrollmentdata['schoolSourcedId'],
+                                'type' => 'school'
+                            ];
+                            $enrollment->class = (object) [
+                                'sourcedId' => $enrollmentdata['classSourcedId'],
+                                'type' => 'class'
+                            ];
+                            unset(
+                                $enrollment->schoolSourcedId,
+                                $enrollment->classSourcedId,
+                                $enrollment->userSourcedId
+                            );
                         }
-                        $enrollments[$enrollmentId] = $enrollment;
+                        $enrollments[$enrollmentid] = $enrollment;
                     }
                     return (object) [
                         'response' => (object) [
@@ -269,57 +307,73 @@ class csv_client implements client_interface  {
                         ]
                     ];
                 }
+                break;
 
             case self::BASEPATH_USERS:
                 // The endpoint getAllUsers is called to fetch all users in a school.
-                $usersData = $this->data[self::BASEPATH_USERS];
-                $keys = array_map(function($user) {return $user['sourcedId']; }, $usersData);
-                $mapped_data = array_combine($keys, $usersData);
+                $usersdata = $this->data[self::BASEPATH_USERS];
+                $keys = array_map(function($user) {
+                    return $user['sourcedId'];
+                }, $usersdata);
+                $mappeddata = array_combine($keys, $usersdata);
                 $users = [];
-                foreach ($mapped_data as $userId => $userData) {
-                    $user = (object) $userData;
+                foreach ($mappeddata as $userid => $userdata) {
+                    $user = (object) $userdata;
                     if ($user->status === 'inactive') {
                         $user->status = 'tobedeleted';
                     }
 
                     if (!empty($user->agentSourcedIds)) {
-                        $agentIds = explode(',', $user->agentSourcedIds);
-                        $user->agents = array_map(function ($agentId) { return (object) ['sourcedId' => trim($agentId), 'type' => 'user']; }, $agentIds);
+                        $agentids = explode(',', $user->agentSourcedIds);
+                        $user->agents = array_map(function ($agentid) {
+                            return (object) [
+                                'sourcedId' => trim($agentid),
+                                'type' => 'user'
+                            ];
+                        }, $agentids);
                     } else {
                         $user->agents = [];
                     }
-                    
+
                     if (!empty($user->orgSourcedIds)) {
-                        $org_ids = explode(',', $user->orgSourcedIds);
-                        $user->orgs = array_map(function ($org_id) { return (object) ['sourcedId' => trim($org_id), 'type' => 'org']; }, $org_ids);
+                        $orgids = explode(',', $user->orgSourcedIds);
+                        $user->orgs = array_map(function ($orgiditem) {
+                            return (object) [
+                                'sourcedId' => trim($orgiditem),
+                                'type' => 'org'
+                            ];
+                        }, $orgids);
                     } else {
                         $user->orgs = [];
                     }
 
                     if (!empty($user->userIds)) {
-                        $userIds = explode(',', str_replace(['{', '}'], '', $user->userIds));
-                        $user->userIds = array_map(function ($userId) { 
-                            list($type, $identifier) = explode(':', $userId); 
-                            return (object) [ 'type' => trim($type), 'identifier' => trim($identifier) ]; 
-                        }, $userIds);
+                        $useridslist = explode(',', str_replace(['{', '}'], '', $user->userIds));
+                        $user->userIds = array_map(function ($useriditem) {
+                            list($type, $identifier) = explode(':', $useriditem);
+                            return (object) [
+                                'type' => trim($type),
+                                'identifier' => trim($identifier)
+                            ];
+                        }, $useridslist);
                     } else {
                         $user->userIds = [];
                     }
 
                     unset($user->orgSourcedIds, $user->agentSourcedIds);
                     foreach ($user->orgs as $org) {
-                        if ($org->sourcedId == $org_id) {
-                            $users[$userId] = $user;
+                        if ($org->sourcedId == $orgid) {
+                            $users[$userid] = $user;
                         }
                     }
                 }
                 return (object) [
                     'response' => (object) [
-                        'users' => $users 
+                        'users' => $users
                     ]
                 ];
             default:
                 return new stdClass();
-        };
+        }
     }
 }

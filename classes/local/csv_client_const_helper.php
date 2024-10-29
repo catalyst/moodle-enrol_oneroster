@@ -67,9 +67,9 @@ class csv_client_const_helper {
     const HEADER_PHONE = 'phone';
     const HEADER_AGENT_SOURCEDIDS = 'agentSourcedIds';
     const HEADER_PASSWORD = 'password';
-    
+
     /**
-     * Supported CSV file names that contain specific data sets.     
+     * Supported CSV file names that contain specific data sets.
      */
     const FILE_MANIFEST = 'manifest.csv';
     const FILE_ACADEMIC_SESSIONS = 'academicSessions.csv';
@@ -77,7 +77,7 @@ class csv_client_const_helper {
     const FILE_ENROLLMENTS = 'enrollments.csv';
     const FILE_ORGS = 'orgs.csv';
     const FILE_USERS = 'users.csv';
-   
+
     /**
      * Datatype constants used for validation.
      */
@@ -104,7 +104,7 @@ class csv_client_const_helper {
     const DATATYPE_ARRAY_PERIODS = 'array_periods';
     const DATATYPE_PASSWORD = 'password';
     const DATATYPE_STRING = 'string';
-    
+
     /**
      * Enum constants used for validation
      */
@@ -116,7 +116,7 @@ class csv_client_const_helper {
         'administrator', 'aide', 'guardian', 'parent', 'proctor',
         'relative', 'student', 'teacher'
     ];
-    
+
     /**
      * Valid grade codes from the Common Education Data Standards
      * Reference: https://ceds.ed.gov/CEDSElementDetails.aspx?TermId=7100.
@@ -125,7 +125,7 @@ class csv_client_const_helper {
         'IT', 'PR', 'PK', 'TK', 'KG', '01', '02', '03', '04', '05', '06',
         '07', '08', '09', '10', '11', '12', '13', 'PS', 'UG', 'Other'
     ];
-    
+
     /**
      * Header constants for each file
      */
@@ -153,7 +153,7 @@ class csv_client_const_helper {
         self::HEADER_GIVEN_NAME, self::HEADER_FAMILY_NAME, self::HEADER_MIDDLE_NAME, self::HEADER_IDENTIFIER,
         self::HEADER_EMAIL, self::HEADER_SMS, self::HEADER_PHONE, self::HEADER_AGENT_SOURCEDIDS, self::HEADER_GRADES, self::HEADER_PASSWORD
     ];
-    
+
     /**
      * Required files and headers
      */

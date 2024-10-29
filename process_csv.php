@@ -20,7 +20,7 @@
  * @package    enrol_oneroster
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * 
+ *
  */
 namespace enrol_oneroster;
 
@@ -40,7 +40,7 @@ $PAGE->set_url('/enrol/oneroster/process_csv.php');
 $PAGE->set_title('Process OneRoster CSV');
 $PAGE->set_heading('Process OneRoster CSV');
 
-$mform = new oneroster_csv_form();      
+$mform = new oneroster_csv_form();
 
 $step = optional_param('step', 1, PARAM_INT);
 global $SESSION;

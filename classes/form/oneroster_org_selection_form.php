@@ -13,9 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-defined('MOODLE_INTERNAL') || die();
-
 namespace enrol_oneroster\form;
 
 /**
@@ -28,9 +25,9 @@ namespace enrol_oneroster\form;
 class oneroster_org_selection_form extends \moodleform {
     /**
      * Creates a form with fields to select an organisation, a hidden field for the temp directory and a step field
-     * 
+     *
      * Also adds a submit button with validation rules
-     * 
+     *
      * @return void
      */
     public function definition() {

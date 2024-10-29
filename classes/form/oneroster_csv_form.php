@@ -13,9 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-defined('MOODLE_INTERNAL') || die();
-
 namespace enrol_oneroster\form;
 
 /**
@@ -28,8 +25,6 @@ namespace enrol_oneroster\form;
 class oneroster_csv_form extends \moodleform {
     /**
      * Defines form elements for uploading oneroster CSV ZIP files.
-     * 
-     * @return void
      */
     protected function definition() {
         $mform = $this->_form;
