@@ -14,15 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * One Roster Client.
- *
- * This plugin synchronizes enrolment and roles with an uploaded OneRoster CSV file.
- *
- * @package    enrol_oneroster
- * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 namespace enrol_oneroster\local;
 
 use enrol_oneroster\local\interfaces\client as client_interface;
@@ -33,20 +24,37 @@ use stdClass;
 use DateTime;
 use enrol_oneroster\local\v1p1\oneroster_client as versioned_client;
 
+/**
+ * One Roster Client.
+ *
+ * This plugin synchronizes enrolment and roles with an uploaded OneRoster CSV file.
+ *
+ * @package    enrol_oneroster
+ * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class csv_client implements client_interface  {
     use root_oneroster_client;
     use versioned_client;
-
-    // Define constants for the base paths and types.
+    
+    /**
+     * Constants for the base path and types
+     */
     const BASEPATH_ORGS = 'orgs';
     const BASEPATH_SCHOOLS = 'schools';
     const TYPE_TERMS = 'terms';
     const TYPE_CLASSES = 'classes';
     const TYPE_ENROLLMENTS = 'enrollments';
     const BASEPATH_USERS = 'users';
-    private $org_id; 
 
-    // Define constants for keys.
+    /**
+     * Stores organisation ID
+     */
+    private $org_id; 
+    
+    /**
+     * Define key constants
+     */
     const ACADEMIC_SESSIONS_KEY = 'academicSessions';
     const PERIODS_KEY = 'periods';
     const SUBJECTS_KEYS = 'subjects';
