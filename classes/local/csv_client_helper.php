@@ -294,7 +294,7 @@ class csv_client_helper {
     /**
      * Get the expected data types for a given file.
      *
-     * @param mixed $file_name The name of the file
+     * @param string $file_name The name of the file
      * @return array The expected data types for the given file
      */
     public static function get_data_types(string $file_name): array {

@@ -19,8 +19,14 @@
  *
  * @package    enrol_oneroster
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace enrol_oneroster;
+
+use enrol_oneroster\csv_client_helper;
+
+require_once(__DIR__ . '/../../../../config.php');
+require_once(__DIR__ . '/../../classes/local/csv_client_helper.php');
 
 /**
  * One Roster tests for the client_helper class.
@@ -33,11 +39,6 @@ namespace enrol_oneroster;
  * @covers  enrol_oneroster\local\v1p1\oneroster_client
  * @covers  enrol_oneroster\local\csv_client
  */
-
- use enrol_oneroster\csv_client_helper;
-
-require_once(__DIR__ . '/../../../../config.php');
-require_once(__DIR__ . '/../../classes/local/csv_client_helper.php');
  
 class csv_client_test extends \advanced_testcase {
     /**

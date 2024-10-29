@@ -25,7 +25,10 @@ namespace enrol_oneroster\local;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class csv_client_const_helper {
-    // Individual header constants.
+    /**
+     * Individual header constants.
+     * Represents expected fields in CSV files.
+     */
     const HEADER_SOURCEDID = 'sourcedId';
     const HEADER_STATUS = 'status';
     const HEADER_DATE_LAST_MODIFIED = 'dateLastModified';
@@ -64,16 +67,20 @@ class csv_client_const_helper {
     const HEADER_PHONE = 'phone';
     const HEADER_AGENT_SOURCEDIDS = 'agentSourcedIds';
     const HEADER_PASSWORD = 'password';
-
-    // CSV file names.
+    
+    /**
+     * Supported CSV file names that contain specific data sets.     
+     */
     const FILE_MANIFEST = 'manifest.csv';
     const FILE_ACADEMIC_SESSIONS = 'academicSessions.csv';
     const FILE_CLASSES = 'classes.csv';
     const FILE_ENROLLMENTS = 'enrollments.csv';
     const FILE_ORGS = 'orgs.csv';
     const FILE_USERS = 'users.csv';
-
-    // Define constants for the types.
+   
+    /**
+     * Datatype constants used for validation.
+     */
     const DATATYPE_NULL = 'null';
     const DATATYPE_GUID = 'guid';
     const DATATYPE_INT = 'int';
@@ -97,8 +104,10 @@ class csv_client_const_helper {
     const DATATYPE_ARRAY_PERIODS = 'array_periods';
     const DATATYPE_PASSWORD = 'password';
     const DATATYPE_STRING = 'string';
-
-    // Valid Enum values.
+    
+    /**
+     * Enum constants used for validation
+     */
     const valid_class_types = ['homeroom', 'scheduled'];
     const valid_roles = ['administrator', 'proctor', 'student', 'teacher'];
     const valid_primary_values = ['true', 'false'];
@@ -107,14 +116,19 @@ class csv_client_const_helper {
         'administrator', 'aide', 'guardian', 'parent', 'proctor', 
         'relative', 'student', 'teacher'
     ];
-    // Valid grade codes from the Common Education Data Standards (CEDS).
-    // Reference: https://ceds.ed.gov/CEDSElementDetails.aspx?TermId=7100.
+    
+    /**
+     * Valid grade codes from the Common Education Data Standards
+     * Reference: https://ceds.ed.gov/CEDSElementDetails.aspx?TermId=7100.
+     */
     const valid_grade_codes = [
         'IT', 'PR', 'PK', 'TK', 'KG', '01', '02', '03', '04', '05', '06',
         '07', '08', '09', '10', '11', '12', '13', 'PS', 'UG', 'Other'
     ];
-
-    // Header constants for each file.
+    
+    /**
+     * Header constants for each file
+     */
     const HEADER_ACADEMIC_SESSIONS = [
         self::HEADER_SOURCEDID, self::HEADER_STATUS, self::HEADER_DATE_LAST_MODIFIED, self::HEADER_TITLE,
         self::HEADER_TYPE, self::HEADER_START_DATE, self::HEADER_END_DATE, self::HEADER_PARENT_SOURCEDID, self::HEADER_SCHOOL_YEAR
@@ -139,8 +153,10 @@ class csv_client_const_helper {
         self::HEADER_GIVEN_NAME, self::HEADER_FAMILY_NAME, self::HEADER_MIDDLE_NAME, self::HEADER_IDENTIFIER,
         self::HEADER_EMAIL, self::HEADER_SMS, self::HEADER_PHONE, self::HEADER_AGENT_SOURCEDIDS, self::HEADER_GRADES, self::HEADER_PASSWORD
     ];
-
-    // Required files and their headers.
+    
+    /**
+     * Required files and headers
+     */
     const REQUIRED_FILES = [
         self::FILE_ACADEMIC_SESSIONS => self::HEADER_ACADEMIC_SESSIONS,
         self::FILE_CLASSES => self::HEADER_CLASSES,

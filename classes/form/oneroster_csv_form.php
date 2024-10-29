@@ -25,6 +25,11 @@ require_once($CFG->libdir . '/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class oneroster_csv_form extends \moodleform {
+    /**
+     * Defines form elements for uploading oneroster CSV ZIP files.
+     * 
+     * @return void
+     */
     protected function definition() {
         $mform = $this->_form;
 

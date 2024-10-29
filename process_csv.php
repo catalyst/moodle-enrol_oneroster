@@ -14,6 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * One Roster Client.
+ *
+ * @package    enrol_oneroster
+ * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * 
+ */
 namespace enrol_oneroster;
 
 use enrol_oneroster\form\oneroster_org_selection_form;
@@ -23,23 +31,13 @@ use enrol_oneroster\local\csv_client_helper;
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
-/**
- * One Roster Client.
- *
- * @package    enrol_oneroster
- * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * 
- */
 admin_externalpage_setup('enrol_oneroster_csv_upload');
 
 $PAGE->set_url('/enrol/oneroster/process_csv.php');
 $PAGE->set_title('Process OneRoster CSV');
 $PAGE->set_heading('Process OneRoster CSV');
 
-$mform = new oneroster_csv_form();
-
-const TEMPDIR = 'oneroster_csv';
+$mform = new oneroster_csv_form();      
 
 $step = optional_param('step', 1, PARAM_INT);
 global $SESSION;

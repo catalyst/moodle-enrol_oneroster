@@ -24,10 +24,20 @@ use enrol_oneroster\csv_client_const_helper;
  * @package    enrol_oneroster
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers  enrol_oneroster\csv_client_const_helper
+ * @covers     enrol_oneroster\csv_client_const_helper
  */
 class process_csv_file_check_test extends \advanced_testcase {
+    /**
+     * Directory path for storing temporary test files.
+     * 
+     * @var string
+     */
     private $test_dir;
+    /**
+     * Full file path to the test manifest CSV file.
+     * 
+     * @var string
+     */
     private $manifest_path;
     
     /**
