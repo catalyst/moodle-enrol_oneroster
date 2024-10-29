@@ -36,16 +36,16 @@ class oneroster_csv_form extends \moodleform {
         // File picker for uploading the CSV file.
         $mform->addElement(
             'filepicker', 
-            'uploadedzip', 
-            get_string('upload_zip_label', 'enrol_oneroster'), 
-            null, 
+            'uploadedzip',
+            get_string('upload_zip_label', 'enrol_oneroster'),
+            null,
             array('accepted_types' => '.zip')
         );
         $mform->addRule('uploadedzip', null, 'required', null, 'client');
 
         // Submit button.
         $this->add_action_buttons(
-            true, 
+            true,
             get_string('upload', 'enrol_oneroster')
         );
     }

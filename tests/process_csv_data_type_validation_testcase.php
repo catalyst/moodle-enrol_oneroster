@@ -24,32 +24,21 @@ use enrol_oneroster\csv_client_const_helper;
  * @package    enrol_oneroster
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     enrol_oneroster\csv_client_const_helper
+ * @covers  enrol_oneroster\csv_client_const_helper
  */
-class process_csv_data_type_validation_test extends \advanced_testcase {
-    /**
-     * Directory path for storing temporary test files.
-     * 
-     * @var string
-     */
-    private $test_dir;
-    /**
-     * Full file path to the test manifest CSV file.
-     * 
-     * @var string 
-     */
-    private $manifest_path;
-    
+class process_csv_data_type_validation_testcase extends \advanced_testcase {
+    private $testdir;
+    private $manifestpath;
+
     /**
      * Set up the test environment.
      */
-    protected function setUp(): void
-    {
-        $this->test_dir = make_temp_directory('csvtest_dir');
-        $this->manifest_path = $this->test_dir . DIRECTORY_SEPARATOR . csv_client_const_helper::FILE_MANIFEST;
-        
+    protected function setUp(): void {
+        $this->testdir = make_temp_directory('csvtest_dir');
+        $this->manifestpath = $this->testdir . DIRECTORY_SEPARATOR . 'manifest.csv';
+
         // Creating manifest.csv.
-        $manifest_content = [
+        $manifestcontent = [
             ['propertyName', 'value'],
             ['file.academicSessions', 'bulk'],
             ['file.classes', 'bulk'],
@@ -57,62 +46,117 @@ class process_csv_data_type_validation_test extends \advanced_testcase {
             ['file.orgs', 'bulk'],
             ['file.users', 'bulk'],
         ];
-        $handle = fopen($this->manifest_path, 'w');
-        foreach ($manifest_content as $line) {
+        $handle = fopen($this->manifestpath, 'w');
+        foreach ($manifestcontent as $line) {
             fputcsv($handle, $line);
         }
         fclose($handle);
-        
+
         // Creating academicSessions.csv.
-        $academic_sessions_content = [csv_client_const_helper::HEADER_ACADEMIC_SESSIONS, 
-        ['as-trm-222-1234', 'active', '2023-05-01T18:25:43.511Z', 'Session Title', 'term', '2022-09-01', '2022-12-24', 'as-syr-222-2023', '2023'], 
-        ['as-grp-222-2345', '', '', 'Session Title', 'gradingPeriod', '2022-10-02', '2022-12-24', 'as-trm-222-1234', '2023']];
-        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . csv_client_const_helper::FILE_ACADEMIC_SESSIONS, 'w');
-        foreach ($academic_sessions_content as $line) {
+        $academicsessionscontent = [
+            csv_client_const_helper::HEADER_ACADEMIC_SESSIONS,
+            [
+                'as-trm-222-1234', 'active', '2023-05-01T18:25:43.511Z', 'Session Title',
+                'term', '2022-09-01', '2022-12-24', 'as-syr-222-2023', '2023'
+            ],
+            [
+                'as-grp-222-2345', '', '', 'Session Title', 'gradingPeriod',
+                '2022-10-02', '2022-12-24', 'as-trm-222-1234', '2023'
+            ]
+        ];
+        $handle = fopen($this->testdir . DIRECTORY_SEPARATOR . 'academicSessions.csv', 'w');
+        foreach ($academicsessionscontent as $line) {
             fputcsv($handle, $line);
         }
         fclose($handle);
 
         // Creating classes.csv.
-        $classes_content = [csv_client_const_helper::HEADER_CLASSES, 
-        ['cls-222-123456', 'active', '2023-05-01T18:25:43.511Z', 'Introduction to Physics', '09,10,11', 'crs-222-2023-456-12345', 'Phys 100 - 1', 'Scheduled', 'Room 2-B', 'org-sch-222-456', 'as-trm-222-1234', 'Science, Physics, Biology', 'PHY123, ASV120', '1'],
-        ['cls-222-123478', 'tobedeleted', '2023-05-01T18:25:43.511Z', 'History - 2', '10', 'crs-222-2023-456-23456', '2', 'Scheduled', 'Room 18-C', 'org-sch-222-456', 'as-trm-222-1234', 'History', 'HIS123', '1,2,3']];
-        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . csv_client_const_helper::FILE_CLASSES, 'w');
-        foreach ($classes_content as $line) {
+        $classescontent = [
+            csv_client_const_helper::HEADER_CLASSES,
+            [
+                'cls-222-123456', 'active', '2023-05-01T18:25:43.511Z', 'Introduction to Physics',
+                '09,10,11', 'crs-222-2023-456-12345', 'Phys 100 - 1', 'Scheduled',
+                'Room 2-B', 'org-sch-222-456', 'as-trm-222-1234',
+                'Science, Physics, Biology', 'PHY123, ASV120', '1'
+            ],
+            [
+                'cls-222-123478', 'tobedeleted', '2023-05-01T18:25:43.511Z', 'History - 2',
+                '10', 'crs-222-2023-456-23456', '2', 'Scheduled',
+                'Room 18-C', 'org-sch-222-456', 'as-trm-222-1234',
+                'History', 'HIS123', '1,2,3'
+            ]
+        ];
+        $handle = fopen($this->testdir . DIRECTORY_SEPARATOR . 'classes.csv', 'w');
+        foreach ($classescontent as $line) {
             fputcsv($handle, $line);
         }
         fclose($handle);
 
         // Creating enrollments.csv.
-        $enrollments_content = [csv_client_const_helper::HEADER_ENROLLMENTS,
-            ['enr-t-222-12345-123456', 'active', '2023-05-01T18:25:43.511Z', 'cls-222-12345', 'org-sch-222-456', 'usr-222-123456', 'teacher', 'FALSE', '2022-03-15', '2022-06-15'],
-            ['enr-s-222-12345-987654', '', '', 'cls-222-12345', 'org-sch-222-456', 'usr-222-987654', 'student', 'FALSE', '2022-03-16', '2022-06-16']
+        $enrollmentscontent = [
+            csv_client_const_helper::HEADER_ENROLLMENTS,
+            [
+                'enr-t-222-12345-123456', 'active', '2023-05-01T18:25:43.511Z', 'cls-222-12345',
+                'org-sch-222-456', 'usr-222-123456', 'teacher', 'FALSE',
+                '2022-03-15', '2022-06-15'
+            ],
+            [
+                'enr-s-222-12345-987654', '', '', 'cls-222-12345', 'org-sch-222-456',
+                'usr-222-987654', 'student', 'FALSE', '2022-03-16', '2022-06-16'
+            ]
         ];
-        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . csv_client_const_helper::FILE_ENROLLMENTS, 'w');
-        foreach ($enrollments_content as $line) {
+        $handle = fopen($this->testdir . DIRECTORY_SEPARATOR . 'enrollments.csv', 'w');
+        foreach ($enrollmentscontent as $line) {
             fputcsv($handle, $line);
         }
         fclose($handle);
 
         // Creating orgs.csv.
-        $orgs_content = [csv_client_const_helper::HEADER_ORGS, 
-        ['org-sch-222-3456', 'active', '2023-05-01T18:25:43.511Z', 'Upper School', 'school', 'US', 'org-dpt-222-456'],
-        ['org-sch-222-456', '', '', 'History Department', 'department', 'History', 'org-sch-222-3456'],
-        ['org_sch-222-7654', 'tobedeleted', '2023-05-01T18:25:43.511Z', 'US History', 'department', 'US History', 'org-sch-222-3456']];
-        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . csv_client_const_helper::FILE_ORGS, 'w');
-        foreach ($orgs_content as $line) {
+        $orgscontent = [
+            csv_client_const_helper::HEADER_ORGS,
+            [
+                'org-sch-222-3456', 'active', '2023-05-01T18:25:43.511Z', 'Upper School',
+                'school', 'US', 'org-dpt-222-456'
+            ],
+            [
+                'org-sch-222-456', '', '', 'History Department', 'department',
+                'History', 'org-sch-222-3456'
+            ],
+            [
+                'org-sch-222-7654', 'tobedeleted', '2023-05-01T18:25:43.511Z', 'US History',
+                'department', 'US History', 'org-sch-222-3456'
+            ]
+        ];
+        $handle = fopen($this->testdir . DIRECTORY_SEPARATOR . 'orgs.csv', 'w');
+        foreach ($orgscontent as $line) {
             fputcsv($handle, $line);
         }
         fclose($handle);
 
         // Creating users.csv.
-        $users_content = [csv_client_const_helper::HEADER_USERS,
-            ['usr-222-123456', 'active', '2023-05-01', 'TRUE', 'org-sch-222-456', 'teacher', 'john.doe', '', 'John', 'Doe', 'Michael', '123456', 'john.doe@myschool.com', '6037778888', '6032221111', 'usr-222-66778900', '11', 'Password1*'],
-            ['usr-222-66778899', '', '', 'TRUE', 'org-sch-222-456', 'student', 'mary.jones', '{LDAP:12}', 'Mary', 'Jones', 'Jane', '66778899', 'mary.jones@myschool.com', '6031234567', '6031234567', 'usr-222-66778900', '12', 'Password1*'],
-            ['usr-222-66778900', 'active', '2023-05-01', 'TRUE', 'org-sch-222-456', 'parent', 'thomas.joness', '{LDAP:12},{LTI:15},{Fed:23}', 'Thomas', 'Jones', 'Paul', '66778900', 'thomas.jones@testemail.com', '6039876543', '6039876543', 'usr-222-66778899', '10', 'Password1*']
+        $userscontent = [
+            csv_client_const_helper::HEADER_USERS,
+            [
+                'usr-222-123456', 'active', '2023-05-01', 'TRUE', 'org-sch-222-456',
+                'teacher', 'john.doe', '', 'John', 'Doe', 'Michael', '123456',
+                'john.doe@myschool.com', '6037778888', '6032221111', 'usr-222-66778900',
+                '11', 'Password1*'
+            ],
+            [
+                'usr-222-66778899', '', '', 'TRUE', 'org-sch-222-456',
+                'student', 'mary.jones', '{LDAP:12}', 'Mary', 'Jones', 'Jane',
+                '66778899', 'mary.jones@myschool.com', '6031234567', '6031234567',
+                'usr-222-66778900', '12', 'Password1*'
+            ],
+            [
+                'usr-222-66778900', 'active', '2023-05-01', 'TRUE', 'org-sch-222-456',
+                'parent', 'thomas.joness', '{LDAP:12},{LTI:15},{Fed:23}', 'Thomas',
+                'Jones', 'Paul', '66778900', 'thomas.jones@testemail.com',
+                '6039876543', '6039876543', 'usr-222-66778899', '10', 'Password1*'
+            ]
         ];
-        $handle = fopen($this->test_dir . DIRECTORY_SEPARATOR . csv_client_const_helper::FILE_USERS, 'w');
-        foreach ($users_content as $line) {
+        $handle = fopen($this->testdir . DIRECTORY_SEPARATOR . 'users.csv', 'w');
+        foreach ($userscontent as $line) {
             fputcsv($handle, $line);
         }
         fclose($handle);
@@ -120,11 +164,11 @@ class process_csv_data_type_validation_test extends \advanced_testcase {
 
     /**
      * Test the validate_csv_data_types method.
-     * 
-     * @covers enrol_oneroster\csv_client_const_helper::validate_csv_data_types
+     *
+     * @covers \enrol_oneroster\csv_client_const_helper::validate_csv_data_types
      */
-    public function test_ValidateCsvDataTypes(): void {
-        $result = csv_client_helper::validate_csv_data_types($this->test_dir);
+    public function test_validatecsvdatatypes(): void {
+        $result = csv_client_helper::validate_csv_data_types($this->testdir);
 
         $this->assertArrayHasKey('is_valid', $result);
         $this->assertTrue($result['is_valid']);
@@ -132,58 +176,93 @@ class process_csv_data_type_validation_test extends \advanced_testcase {
     }
 
     /**
- * Test the get_data_types function.
- * 
- * @covers enrol_oneroster\csv_client_const_helper::get_data_types
- */
-public function test_GetDataTypes() {
-    // Test academicSessions.csv data types.
-    $result = csv_client_helper::get_data_types(csv_client_const_helper::FILE_ACADEMIC_SESSIONS);
-    $expected = [
-        csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
-        csv_client_const_helper::HEADER_STATUS => [csv_client_const_helper::DATATYPE_ENUM_STATUS, csv_client_const_helper::DATATYPE_NULL],
-        csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [csv_client_const_helper::DATATYPE_DATETIME, csv_client_const_helper::DATATYPE_NULL],
-        csv_client_const_helper::HEADER_TITLE => csv_client_const_helper::DATATYPE_STRING,
-        csv_client_const_helper::HEADER_TYPE => csv_client_const_helper::DATATYPE_ENUM_TYPE,
-        csv_client_const_helper::HEADER_START_DATE => csv_client_const_helper::DATATYPE_DATE,
-        csv_client_const_helper::HEADER_END_DATE => csv_client_const_helper::DATATYPE_DATE,
-        csv_client_const_helper::HEADER_PARENT_SOURCEDID => [csv_client_const_helper::DATATYPE_GUID, csv_client_const_helper::DATATYPE_NULL],
-        csv_client_const_helper::HEADER_SCHOOL_YEAR => csv_client_const_helper::DATATYPE_YEAR
-    ];
-    $this->assertEquals($expected, $result, 'The expected data types for academicSessions.csv do not match.');
+     * Test the get_data_types function.
+     *
+     * @covers \enrol_oneroster\csv_client_const_helper::get_data_types
+     */
+    public function test_getdatatypes() {
+        // Test academicSessions.csv data types.
+        $result = csv_client_helper::get_data_types(csv_client_const_helper::FILE_ACADEMIC_SESSIONS);
+        $expected = [
+            csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+            csv_client_const_helper::HEADER_STATUS => [
+                csv_client_const_helper::DATATYPE_ENUM_STATUS,
+                csv_client_const_helper::DATATYPE_NULL
+            ],
+            csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
+                csv_client_const_helper::DATATYPE_DATETIME,
+                csv_client_const_helper::DATATYPE_NULL
+            ],
+            csv_client_const_helper::HEADER_TITLE => csv_client_const_helper::DATATYPE_STRING,
+            csv_client_const_helper::HEADER_TYPE => csv_client_const_helper::DATATYPE_ENUM_TYPE,
+            csv_client_const_helper::HEADER_START_DATE => csv_client_const_helper::DATATYPE_DATE,
+            csv_client_const_helper::HEADER_END_DATE => csv_client_const_helper::DATATYPE_DATE,
+            csv_client_const_helper::HEADER_PARENT_SOURCEDID => [
+                csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::DATATYPE_NULL
+            ],
+            csv_client_const_helper::HEADER_SCHOOL_YEAR => csv_client_const_helper::DATATYPE_YEAR
+        ];
+        $this->assertEquals($expected, $result, 'The expected data types for academicSessions.csv do not match.');
 
-    // Test classes.csv data types.
-    $result = csv_client_helper::get_data_types(csv_client_const_helper::FILE_CLASSES);
-    $expected = [
-        csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
-        csv_client_const_helper::HEADER_STATUS => [csv_client_const_helper::DATATYPE_ENUM_STATUS, csv_client_const_helper::DATATYPE_NULL],
-        csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [csv_client_const_helper::DATATYPE_DATETIME, csv_client_const_helper::DATATYPE_NULL],
-        csv_client_const_helper::HEADER_TITLE => csv_client_const_helper::DATATYPE_STRING,
-        csv_client_const_helper::HEADER_GRADES => [csv_client_const_helper::DATATYPE_ARRAY_GRADE, csv_client_const_helper::DATATYPE_NULL],
-        csv_client_const_helper::HEADER_COURSE_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
-        csv_client_const_helper::HEADER_CLASS_CODE => [csv_client_const_helper::DATATYPE_STRING, csv_client_const_helper::DATATYPE_NULL],
-        csv_client_const_helper::HEADER_CLASS_TYPE => csv_client_const_helper::DATATYPE_ENUM_CLASS_TYPE,
-        csv_client_const_helper::HEADER_LOCATION => [csv_client_const_helper::DATATYPE_STRING, csv_client_const_helper::DATATYPE_NULL],
-        csv_client_const_helper::HEADER_SCHOOL_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
-        csv_client_const_helper::HEADER_TERM_SOURCEDIDS => [csv_client_const_helper::DATATYPE_ARRAY_GUID],
-        csv_client_const_helper::HEADER_SUBJECTS => [csv_client_const_helper::DATATYPE_ARRAY_SUBJECTS, csv_client_const_helper::DATATYPE_NULL],
-        csv_client_const_helper::HEADER_SUBJECT_CODES => [csv_client_const_helper::DATATYPE_ARRAY_SUBJECT_CODES, csv_client_const_helper::DATATYPE_NULL],
-        csv_client_const_helper::HEADER_PERIODS => [csv_client_const_helper::DATATYPE_ARRAY_PERIODS, csv_client_const_helper::DATATYPE_NULL]
-    ];
-    $this->assertEquals($expected, $result, 'The expected data types for classes.csv do not match.');
+        // Test classes.csv data types.
+        $result = csv_client_helper::get_data_types(csv_client_const_helper::FILE_CLASSES);
+        $expected = [
+            csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+            csv_client_const_helper::HEADER_STATUS => [
+                csv_client_const_helper::DATATYPE_ENUM_STATUS,
+                csv_client_const_helper::DATATYPE_NULL
+            ],
+            csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
+                csv_client_const_helper::DATATYPE_DATETIME,
+                csv_client_const_helper::DATATYPE_NULL
+            ],
+            csv_client_const_helper::HEADER_TITLE => csv_client_const_helper::DATATYPE_STRING,
+            csv_client_const_helper::HEADER_GRADES => [
+                csv_client_const_helper::DATATYPE_ARRAY_GRADE,
+                csv_client_const_helper::DATATYPE_NULL
+            ],
+            csv_client_const_helper::HEADER_COURSE_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+            csv_client_const_helper::HEADER_CLASS_CODE => [
+                csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::DATATYPE_NULL
+            ],
+            csv_client_const_helper::HEADER_CLASS_TYPE => csv_client_const_helper::DATATYPE_ENUM_CLASS_TYPE,
+            csv_client_const_helper::HEADER_LOCATION => [
+                csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::DATATYPE_NULL
+            ],
+            csv_client_const_helper::HEADER_SCHOOL_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+            csv_client_const_helper::HEADER_TERM_SOURCEDIDS => [
+                csv_client_const_helper::DATATYPE_ARRAY_GUID
+            ],
+            csv_client_const_helper::HEADER_SUBJECTS => [
+                csv_client_const_helper::DATATYPE_ARRAY_SUBJECTS,
+                csv_client_const_helper::DATATYPE_NULL
+            ],
+            csv_client_const_helper::HEADER_SUBJECT_CODES => [
+                csv_client_const_helper::DATATYPE_ARRAY_SUBJECT_CODES,
+                csv_client_const_helper::DATATYPE_NULL
+            ],
+            csv_client_const_helper::HEADER_PERIODS => [
+                csv_client_const_helper::DATATYPE_ARRAY_PERIODS,
+                csv_client_const_helper::DATATYPE_NULL
+            ]
+        ];
+        $this->assertEquals($expected, $result, 'The expected data types for classes.csv do not match.');
 
-    // Test file with no data types defined.
-    $result = csv_client_helper::get_data_types('unknown.csv');
-    $expected = [];
-    $this->assertEquals($expected, $result, 'The expected data types for unknown.csv should be an empty array.');
-}
+        // Test file with no data types defined.
+        $result = csv_client_helper::get_data_types('unknown.csv');
+        $expected = [];
+        $this->assertEquals($expected, $result, 'The expected data types for unknown.csv should be an empty array.');
+    }
 
     /**
      * Test the determine_data_type function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_const_helper::determine_data_type
      */
-    public function test_DetermineDataType() {
+    public function test_determinedatatype() {
         $result = csv_client_helper::determine_data_type('as-trm-222-1234', [csv_client_const_helper::DATATYPE_GUID, csv_client_const_helper::DATATYPE_STRING]);
         $this->assertEquals(csv_client_const_helper::DATATYPE_GUID, $result, 'The expected data type for sourcedId should be guid.');
 
@@ -202,7 +281,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_valid_human_readable_string function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_valid_human_readable_string
      */
     public function test_is_valid_human_readable_string() {
@@ -224,7 +303,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_int_type function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_int_type
      */
     public function test_is_int_type() {
@@ -243,7 +322,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_list_of_strings function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_list_of_strings
      */
     public function test_is_list_of_strings() {
@@ -257,7 +336,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_valid_subject_codes function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_valid_subject_codes
      */
     public function test_is_valid_subject_codes() {
@@ -270,7 +349,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_valid_periods function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_valid_periods
      */
     public function test_is_valid_periods() {
@@ -289,7 +368,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_datetime_type function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_datetime_type
      */
     public function test_is_datetime_type() {
@@ -320,7 +399,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_date_type function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_date_type
      */
     public function test_is_date_type() {
@@ -351,7 +430,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_guid_type function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_guid_type
      */
     public function test_is_guid_type() {
@@ -367,7 +446,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_status_enum_type function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_status_enum_type
      */
     public function test_is_status_enum_type() {
@@ -386,7 +465,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_type_enum function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_type_enum
      */
     public function test_is_type_enum() {
@@ -408,7 +487,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_year_type function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_year_type
      */
     public function test_is_year_type() {
@@ -427,7 +506,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_valid_grades function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_valid_grades
      */
     public function test_is_valid_grades() {
@@ -440,7 +519,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_valid_grade function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_valid_grade
      */
     public function test_is_valid_grade() {
@@ -453,7 +532,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_class_type_enum function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_class_type_enum
      */
     public function test_is_class_type_enum() {
@@ -469,7 +548,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_valid_guid_list function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_valid_guid_list
      */
     public function test_is_valid_guid_list() {
@@ -485,7 +564,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_role_enum function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_role_enum
      */
     public function test_is_role_enum() {
@@ -507,10 +586,10 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_primary_enum function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_primary_enum
      */
-    public function test_is_primary_enum(){
+    public function test_is_primary_enum() {
         $result = csv_client_helper::is_primary_enum('TRUE');
         $this->assertTrue($result, 'The string "TRUE" should be a valid primary enum.');
 
@@ -526,7 +605,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_org_type_enum function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_org_type_enum
      */
     public function test_is_org_type_enum() {
@@ -554,7 +633,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_email_type function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_email_type
      */
     public function test_is_email_type() {
@@ -570,7 +649,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_user_id function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_valid_user_id
      */
     public function test_is_user_id() {
@@ -589,7 +668,7 @@ public function test_GetDataTypes() {
 
     /**
      * Test the is_role_user_enum function.
-     * 
+     *
      * @covers enrol_oneroster\csv_client_helper::is_role_user_enum
      */
     public function test_is_role_user_enum() {
