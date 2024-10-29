@@ -194,14 +194,14 @@ class process_csv_data_type_validation_test extends \advanced_testcase {
     public function test_getdatatypes() {
         // Test academicSessions.csv data types.
         $result = csv_client_helper::get_data_types(csv_client_const_helper::FILE_ACADEMIC_SESSIONS);
-        $expectedDataTypes = csv_client_helper::get_file_datatypes();
-        $expected = $expectedDataTypes[csv_client_const_helper::FILE_ACADEMIC_SESSIONS];
+        $expecteddatatypes = csv_client_helper::get_file_datatypes();
+        $expected = $expecteddatatypes[csv_client_const_helper::FILE_ACADEMIC_SESSIONS];
         $this->assertEquals($expected, $result, 'The expected data types for academicSessions.csv do not match.');
 
         // Test classes.csv data types.
         $result = csv_client_helper::get_data_types(csv_client_const_helper::FILE_CLASSES);
-        $expectedDataTypes = csv_client_helper::get_file_datatypes();
-        $expected = $expectedDataTypes[csv_client_const_helper::FILE_CLASSES];
+        $expecteddatatypes = csv_client_helper::get_file_datatypes();
+        $expected = $expecteddatatypes[csv_client_const_helper::FILE_CLASSES];
         $this->assertEquals($expected, $result, 'The expected data types for classes.csv do not match.');
 
         // Test file with no data types defined.
