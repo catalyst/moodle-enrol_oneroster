@@ -23,8 +23,6 @@
 namespace enrol_oneroster;
 use enrol_oneroster\csv_client_helper;
 
-require_once(__DIR__ . '/../../../../config.php');
- 
 /**
  * One Roster tests for the client_helper class.
  *
@@ -32,9 +30,7 @@ require_once(__DIR__ . '/../../../../config.php');
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * 
- * @covers  enrol_oneroster\client_helper
- * @covers  enrol_oneroster\local\v1p1\oneroster_client
- * @covers  enrol_oneroster\local\csv_client
+ * @covers  \enrol_oneroster\local\csv_client_helper
  */
 class csv_client_test extends \advanced_testcase {
     /**
@@ -60,14 +56,13 @@ class csv_client_test extends \advanced_testcase {
 
         $manifestpath = $tempdir . '/manifest.csv';
 
-        // Update variable naming convention to camelCase
         $missingfiles = csv_client_helper::check_manifest_and_files($manifestpath, $tempdir);
         $this->assertEmpty($missingfiles['missing_files'], 'There should be no missing files according to the manifest.');
         $this->assertEmpty($missingfiles['invalid_headers'], 'There should be no invalid headers in the extracted CSV files.');
 
-        $isValid = csv_client_helper::validate_csv_data_types($tempdir);
-        $this->assertArrayHasKey('is_valid', $isValid);
-        $this->assertTrue($isValid['is_valid']);
+        $isvalid = csv_client_helper::validate_csv_data_types($tempdir);
+        $this->assertArrayHasKey('is_valid', $isvalid);
+        $this->assertTrue($isvalid['is_valid']);
 
         $csvdata = csv_client_helper::extract_csvs_to_arrays($tempdir);
         $this->assertNotEmpty($csvdata, 'The extracted CSV data should not be empty.');
@@ -80,7 +75,7 @@ class csv_client_test extends \advanced_testcase {
 
         $csvclient->set_org_id($selectedorg);
 
-        // Set CSV data
+        // Set CSV data.
         $manifest = $csvdata['manifest'] ?? [];
         $users = $csvdata['users'] ?? [];
         $classes = $csvdata['classes'] ?? [];
@@ -96,21 +91,21 @@ class csv_client_test extends \advanced_testcase {
         $user = $DB->get_records('user');
         $enrol = $DB->get_records('enrol');
 
-        // Check courses
+        // Check courses.
         foreach ($course as $course) {
             $this->assertArrayHasKey('id', (array)$course);
             $this->assertArrayHasKey('fullname', (array)$course);
             $this->assertIsString($course->fullname, 'Course fullname should be a string.');
         }
 
-        // Check users
+        // Check users.
         foreach ($user as $user) {
             $this->assertArrayHasKey('id', (array)$user);
             $this->assertArrayHasKey('username', (array)$user);
             $this->assertIsString($user->username, 'Username should be a string.');
         }
 
-        // Check enrollments
+        // Check enrollments.
         foreach ($enrol as $enrol) {
             $this->assertArrayHasKey('courseid', (array)$enrol);
             $this->assertArrayHasKey('enrol', (array)$enrol);
@@ -118,7 +113,7 @@ class csv_client_test extends \advanced_testcase {
             $this->assertIsInt($courseid, 'Course ID should be an integer.');
         }
 
-        // Assertions for record counts
+        // Assertions for record counts.
         $this->assertCount(3, $course, 'There should be exactly 3 course records.');
         $this->assertCount(8, $user, 'There should be exactly 7 user records.');
         $this->assertCount(8, $enrol, 'There should be exactly 8 enrolment records.');
@@ -147,14 +142,13 @@ class csv_client_test extends \advanced_testcase {
 
         $manifestpath = $tempdir . '/manifest.csv';
 
-        // Update variable naming convention to camelCase
         $missingfiles = csv_client_helper::check_manifest_and_files($manifestpath, $tempdir);
         $this->assertEmpty($missingfiles['missing_files'], 'There should be no missing files according to the manifest.');
         $this->assertEmpty($missingfiles['invalid_headers'], 'There should be no invalid headers in the extracted CSV files.');
 
-        $isValid = csv_client_helper::validate_csv_data_types($tempdir);
-        $this->assertArrayHasKey('is_valid', $isValid);
-        $this->assertTrue($isValid['is_valid']);
+        $isvalid = csv_client_helper::validate_csv_data_types($tempdir);
+        $this->assertArrayHasKey('is_valid', $isvalid);
+        $this->assertTrue($isvalid['is_valid']);
 
         $csvdata = csv_client_helper::extract_csvs_to_arrays($tempdir);
         $this->assertNotEmpty($csvdata, 'The extracted CSV data should not be empty.');
@@ -167,7 +161,7 @@ class csv_client_test extends \advanced_testcase {
 
         $csvclient->set_org_id($selectedorg);
 
-        // Set CSV data
+        // Set CSV data.
         $manifest = $csvdata['manifest'] ?? [];
         $users = $csvdata['users'] ?? [];
         $classes = $csvdata['classes'] ?? [];
@@ -183,21 +177,21 @@ class csv_client_test extends \advanced_testcase {
         $user = $DB->get_records('user');
         $enrol = $DB->get_records('enrol');
 
-        // Check courses
+        // Check courses.
         foreach ($course as $course) {
             $this->assertArrayHasKey('id', (array)$course);
             $this->assertArrayHasKey('fullname', (array)$course);
             $this->assertIsString($course->fullname, 'Course fullname should be a string.');
         }
 
-        // Check users
+        // Check users.
         foreach ($user as $user) {
             $this->assertArrayHasKey('id', (array)$user);
             $this->assertArrayHasKey('username', (array)$user);
             $this->assertIsString($user->username, 'Username should be a string.');
         }
 
-        // Check enrollments
+        // Check enrollments.
         foreach ($enrol as $enrol) {
             $this->assertArrayHasKey('courseid', (array)$enrol);
             $this->assertArrayHasKey('enrol', (array)$enrol);
