@@ -33,107 +33,61 @@ use enrol_oneroster\csv_client_helper;
  * @covers  \enrol_oneroster\local\csv_client_helper
  */
 class csv_client_test extends \advanced_testcase {
+
     /**
-     * Test Synchronise method to check the data is inserted into the database.
-     * This test uses the full data set.
+     * Test the synchronise method with the full data set.
      *
      * @covers \enrol_oneroster\local\csv_client
      */
     public function test_execute_full_data() {
-        global $DB;
         $this->resetAfterTest(true);
         $selectedorg = 'org-sch-222-456';
-
-        $uniqueid = uniqid();
-        $tempdir = make_temp_directory('oneroster_csv/' . $uniqueid);
         $zipfilepath = 'enrol/oneroster/tests/fixtures/csv_data/Test_full_data_set.zip';
 
-        $zip = new \ZipArchive();
-        $res = $zip->open($zipfilepath);
-        $this->assertTrue($res === true, 'The ZIP file should open successfully.');
-        $zip->extractTo($tempdir);
-        $zip->close();
+        // Prepare the test environment.
+        $csvclient = $this->prepare_test_environment($selectedorg, $zipfilepath);
 
-        $manifestpath = $tempdir . '/manifest.csv';
-
-        $missingfiles = csv_client_helper::check_manifest_and_files($manifestpath, $tempdir);
-        $this->assertEmpty($missingfiles['missing_files'], 'There should be no missing files according to the manifest.');
-        $this->assertEmpty($missingfiles['invalid_headers'], 'There should be no invalid headers in the extracted CSV files.');
-
-        $isvalid = csv_client_helper::validate_csv_data_types($tempdir);
-        $this->assertArrayHasKey('is_valid', $isvalid);
-        $this->assertTrue($isvalid['is_valid']);
-
-        $csvdata = csv_client_helper::extract_csvs_to_arrays($tempdir);
-        $this->assertNotEmpty($csvdata, 'The extracted CSV data should not be empty.');
-
-        if (csv_client_helper::validate_user_data($csvdata) === true) {
-            set_config('datasync_schools',  $selectedorg, 'enrol_oneroster');
-        }
-
-        $csvclient = client_helper::get_csv_client();
-
-        $csvclient->set_org_id($selectedorg);
-
-        // Set CSV data.
-        $manifest = $csvdata['manifest'] ?? [];
-        $users = $csvdata['users'] ?? [];
-        $classes = $csvdata['classes'] ?? [];
-        $orgs = $csvdata['orgs'] ?? [];
-        $enrollments = $csvdata['enrollments'] ?? [];
-        $academicsessions = $csvdata['academicSessions'] ?? [];
-
-        $csvclient->set_data($manifest, $users, $classes, $orgs, $enrollments, $academicsessions);
-
+        // Perform synchronization.
         $csvclient->synchronise();
 
-        $course = $DB->get_records('course');
-        $user = $DB->get_records('user');
-        $enrol = $DB->get_records('enrol');
-
-        // Check courses.
-        foreach ($course as $course) {
-            $this->assertArrayHasKey('id', (array)$course);
-            $this->assertArrayHasKey('fullname', (array)$course);
-            $this->assertIsString($course->fullname, 'Course fullname should be a string.');
-        }
-
-        // Check users.
-        foreach ($user as $user) {
-            $this->assertArrayHasKey('id', (array)$user);
-            $this->assertArrayHasKey('username', (array)$user);
-            $this->assertIsString($user->username, 'Username should be a string.');
-        }
-
-        // Check enrollments.
-        foreach ($enrol as $enrol) {
-            $this->assertArrayHasKey('courseid', (array)$enrol);
-            $this->assertArrayHasKey('enrol', (array)$enrol);
-            $courseid = (int) $enrol->courseid;
-            $this->assertIsInt($courseid, 'Course ID should be an integer.');
-        }
-
-        // Assertions for record counts.
-        $this->assertCount(3, $course, 'There should be exactly 3 course records.');
-        $this->assertCount(8, $user, 'There should be exactly 7 user records.');
-        $this->assertCount(8, $enrol, 'There should be exactly 8 enrolment records.');
+        // Assert database records.
+        $this->assert_database_records(3, 8, 8); // Expected counts for courses, users, enrolments.
     }
 
     /**
-     * Test Synchronise method to check the data is inserted into the database.
-     * This test uses the minimal data set.
+     * Test the synchronise method with the minimal data set.
      *
      * @covers \enrol_oneroster\local\csv_client
      */
     public function test_execute_minimal_data() {
-        global $DB;
         $this->resetAfterTest(true);
         $selectedorg = 'org-sch-222-456';
+        $zipfilepath = 'enrol/oneroster/tests/fixtures/csv_data/Test_minimal_data_set.zip';
+
+        // Prepare the test environment.
+        $csvclient = $this->prepare_test_environment($selectedorg, $zipfilepath);
+
+        // Perform synchronization.
+        $csvclient->synchronise();
+
+        // Assert database records.
+        $this->assert_database_records(3, 2, 8); // Expected counts for courses, users, enrolments.
+    }
+
+    /**
+     * Prepares the test environment by extracting and validating CSV data.
+     *
+     * @param string $selectedorg The organization ID to use.
+     * @param string $zipfilepath The path to the ZIP file containing CSV data.
+     * @return \enrol_oneroster\local\csv_client The prepared CSV client.
+     */
+    private function prepare_test_environment(string $selectedorg, string $zipfilepath) {
+        global $DB;
 
         $uniqueid = uniqid();
         $tempdir = make_temp_directory('oneroster_csv/' . $uniqueid);
-        $zipfilepath = 'enrol/oneroster/tests/fixtures/csv_data/Test_minimal_data_set.zip';
 
+        // Extract ZIP file.
         $zip = new \ZipArchive();
         $res = $zip->open($zipfilepath);
         $this->assertTrue($res === true, 'The ZIP file should open successfully.');
@@ -142,23 +96,27 @@ class csv_client_test extends \advanced_testcase {
 
         $manifestpath = $tempdir . '/manifest.csv';
 
+        // Check manifest and files.
         $missingfiles = csv_client_helper::check_manifest_and_files($manifestpath, $tempdir);
         $this->assertEmpty($missingfiles['missing_files'], 'There should be no missing files according to the manifest.');
         $this->assertEmpty($missingfiles['invalid_headers'], 'There should be no invalid headers in the extracted CSV files.');
 
+        // Validate CSV data types.
         $isvalid = csv_client_helper::validate_csv_data_types($tempdir);
         $this->assertArrayHasKey('is_valid', $isvalid);
         $this->assertTrue($isvalid['is_valid']);
 
+        // Extract CSV data to arrays.
         $csvdata = csv_client_helper::extract_csvs_to_arrays($tempdir);
         $this->assertNotEmpty($csvdata, 'The extracted CSV data should not be empty.');
 
+        // Validate user data and set configuration.
         if (csv_client_helper::validate_user_data($csvdata) === true) {
-            set_config('datasync_schools',  $selectedorg, 'enrol_oneroster');
+            set_config('datasync_schools', $selectedorg, 'enrol_oneroster');
         }
 
+        // Initialize CSV client.
         $csvclient = client_helper::get_csv_client();
-
         $csvclient->set_org_id($selectedorg);
 
         // Set CSV data.
@@ -171,36 +129,48 @@ class csv_client_test extends \advanced_testcase {
 
         $csvclient->set_data($manifest, $users, $classes, $orgs, $enrollments, $academicsessions);
 
-        $csvclient->synchronise();
+        return $csvclient;
+    }
 
-        $course = $DB->get_records('course');
-        $user = $DB->get_records('user');
-        $enrol = $DB->get_records('enrol');
+    /**
+     * Asserts the database records after synchronization.
+     *
+     * @param int $expectedcourses The expected number of courses.
+     * @param int $expectedusers The expected number of users.
+     * @param int $expectedenrolments The expected number of enrolments.
+     */
+    private function assert_database_records(int $expectedcourses, int $expectedusers, int $expectedenrolments) {
+        global $DB;
+
+        $courses = $DB->get_records('course');
+        $users = $DB->get_records('user');
+        $enrolments = $DB->get_records('enrol');
 
         // Check courses.
-        foreach ($course as $course) {
+        foreach ($courses as $course) {
             $this->assertArrayHasKey('id', (array)$course);
             $this->assertArrayHasKey('fullname', (array)$course);
             $this->assertIsString($course->fullname, 'Course fullname should be a string.');
         }
 
         // Check users.
-        foreach ($user as $user) {
+        foreach ($users as $user) {
             $this->assertArrayHasKey('id', (array)$user);
             $this->assertArrayHasKey('username', (array)$user);
             $this->assertIsString($user->username, 'Username should be a string.');
         }
 
-        // Check enrollments.
-        foreach ($enrol as $enrol) {
+        // Check enrolments.
+        foreach ($enrolments as $enrol) {
             $this->assertArrayHasKey('courseid', (array)$enrol);
             $this->assertArrayHasKey('enrol', (array)$enrol);
-            $courseid = (int) $enrol->courseid;
+            $courseid = (int)$enrol->courseid;
             $this->assertIsInt($courseid, 'Course ID should be an integer.');
         }
 
-        $this->assertCount(3, $course, 'There should be exactly 3 course records.');
-        $this->assertCount(2, $user, 'There should be exactly 2 user records.');
-        $this->assertCount(8, $enrol, 'There should be exactly 8 enrolment records.');
+        // Assertions for record counts.
+        $this->assertCount($expectedcourses, $courses, "There should be exactly {$expectedcourses} course records.");
+        $this->assertCount($expectedusers, $users, "There should be exactly {$expectedusers} user records.");
+        $this->assertCount($expectedenrolments, $enrolments, "There should be exactly {$expectedenrolments} enrolment records.");
     }
 }
