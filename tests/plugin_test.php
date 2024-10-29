@@ -35,7 +35,7 @@ use advanced_testcase;
  *
  * @covers  \enrol_oneroster\plugin
  */
-class plugin_testcase extends advanced_testcase {
+class plugin_test extends advanced_testcase {
     /**
      * Ensure that the name of the plugin is correctly determined.
      */

@@ -37,7 +37,7 @@ use enrol_oneroster\local\oneroster_testcase;
  *
  * @covers  enrol_oneroster\local\oauth2_client
  */
-class oauth2_client_testcase extends oneroster_testcase {
+class oauth2_client_test extends oneroster_testcase {
 
     /**
      * Get a mock of the abstract container.

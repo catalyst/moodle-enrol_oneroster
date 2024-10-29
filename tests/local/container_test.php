@@ -39,7 +39,7 @@ use enrol_oneroster\local\interfaces\client as client_interface;
  *
  * @covers  enrol_oneroster\local\container
  */
-class container_testcase extends oneroster_testcase {
+class container_test extends oneroster_testcase {
 
     /**
      * Get a mock of the abstract container.

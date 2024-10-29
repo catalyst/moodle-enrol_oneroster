@@ -39,7 +39,7 @@ use ReflectionClass;
  * @covers  enrol_oneroster\local\filter
  * @covers  enrol_oneroster\local\v1p1\filter
  */
-class filter_testcase extends advanced_testcase {
+class filter_test extends advanced_testcase {
     /**
      * Ensure that the filter constructor adds filters correctly.
      *
