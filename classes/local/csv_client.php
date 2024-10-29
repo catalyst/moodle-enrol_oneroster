@@ -78,7 +78,7 @@ class csv_client implements client_interface {
      * @param array $classes The classes data.
      * @param array $orgs The orgs data.
      * @param array $enrollments The enrollments data.
-     * @param array $academicSessions The academic sessions data.
+     * @param array $academicsessions The academic sessions data.
      */
     public function set_data(
         array $manifest,
@@ -86,7 +86,7 @@ class csv_client implements client_interface {
         array $classes,
         array $orgs,
         array $enrollments,
-        array $academicSessions
+        array $academicsessions
     ): void {
         $this->data = [
             'manifest' => $manifest,
@@ -94,7 +94,7 @@ class csv_client implements client_interface {
             'classes' => $classes,
             'orgs' => $orgs,
             'enrollments' => $enrollments,
-            'academicSessions' => $academicSessions,
+            'academicSessions' => $academicsessions,
         ];
     }
 
@@ -167,11 +167,11 @@ class csv_client implements client_interface {
             case self::BASEPATH_SCHOOLS:
                 // The endpoint getTermsForSchool is called to fetch a list of classes in a term.
                 if ($type === self::TYPE_TERMS) {
-                    $academicSessionData = $this->data[self::ACADEMIC_SESSIONS_KEY];
+                    $academicsessiondata = $this->data[self::ACADEMIC_SESSIONS_KEY];
                     $keys = array_map(function ($schools) {
                         return $schools['sourcedId'];
-                    }, $academicSessionData);
-                    $mappeddata = array_combine($keys, $academicSessionData);
+                    }, $academicsessiondata);
+                    $mappeddata = array_combine($keys, $academicsessiondata);
                     $academicsession = [];
                     foreach ($mappeddata as $academicid => $academicdata) {
                         $academic = (object) $academicdata;
@@ -193,11 +193,11 @@ class csv_client implements client_interface {
 
                 if ($type === self::TYPE_CLASSES) {
                     // The endpoint getClassesForSchool is called to fetch all students for a class.
-                    $classData = $this->data[self::TYPE_CLASSES];
+                    $classdata = $this->data[self::TYPE_CLASSES];
                     $keys = array_map(function($schools) {
                         return $schools['sourcedId'];
-                    }, $classData);
-                    $mappeddata = array_combine($keys, $classData);
+                    }, $classdata);
+                    $mappeddata = array_combine($keys, $classdata);
                     $classes = [];
                     foreach ($mappeddata as $classid => $classdata) {
                         $class = (object) $classdata;
@@ -221,7 +221,7 @@ class csv_client implements client_interface {
                             if (!empty($class->periods)) {
                                 if (is_string($class->periods)) {
                                     $class->periods = array_map('trim', explode(',', $class->periods));
-                                } elseif (!is_array($class->periods)) {
+                                } else if (!is_array($class->periods)) {
                                     $class->periods = [$class->periods];
                                 }
                             } else {
@@ -239,7 +239,7 @@ class csv_client implements client_interface {
                                 if (!empty($class->$obj)) {
                                     if (is_string($class->$obj)) {
                                         $class->$obj = array_map('trim', explode(',', $class->$obj));
-                                    } elseif (!is_array($class->$obj)) {
+                                    } else if (!is_array($class->$obj)) {
                                         $class->$obj = [$class->$obj];
                                     }
                                 } else {
@@ -268,11 +268,11 @@ class csv_client implements client_interface {
 
                 if ($type === self::TYPE_ENROLLMENTS) {
                     // The endpoint getEnrollmentsForSchool is called to fetch all enrollments in a school.
-                    $enrollmentData = $this->data[self::TYPE_ENROLLMENTS];
+                    $enrollmentdata = $this->data[self::TYPE_ENROLLMENTS];
                     $keys = array_map(function($schools) {
                         return $schools['sourcedId'];
-                    }, $enrollmentData);
-                    $mappeddata = array_combine($keys, $enrollmentData);
+                    }, $enrollmentdata);
+                    $mappeddata = array_combine($keys, $enrollmentdata);
                     $enrollments = [];
                     foreach ($mappeddata as $enrollmentid => $enrollmentdata) {
                         $enrollment = (object) $enrollmentdata;
@@ -377,3 +377,4 @@ class csv_client implements client_interface {
         }
     }
 }
+ 

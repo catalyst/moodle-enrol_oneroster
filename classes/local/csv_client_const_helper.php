@@ -108,11 +108,11 @@ class csv_client_const_helper {
     /**
      * Enum constants used for validation
      */
-    const valid_class_types = ['homeroom', 'scheduled'];
-    const valid_roles = ['administrator', 'proctor', 'student', 'teacher'];
-    const valid_primary_values = ['true', 'false'];
-    const valid_org_types = ['department', 'school', 'district', 'local', 'state', 'national'];
-    const valid_roles_users = [
+    const VALID_CLASS_TYPES = ['homeroom', 'scheduled'];
+    const VALID_ROLES = ['administrator', 'proctor', 'student', 'teacher'];
+    const VALID_PRIMARY_VALUES = ['true', 'false'];
+    const VALID_ORG_TYPES = ['department', 'school', 'district', 'local', 'state', 'national'];
+    const VALID_ROLES_USERS = [
         'administrator', 'aide', 'guardian', 'parent', 'proctor',
         'relative', 'student', 'teacher'
     ];

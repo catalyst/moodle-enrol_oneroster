@@ -787,7 +787,7 @@ class csv_client_helper {
      * @return bool True if the value is of type class type enum, false otherwise.
      */
     public static function is_class_type_enum($value): bool {
-        return in_array(strtolower($value), csv_client_const_helper::valid_class_types, true);
+        return in_array(strtolower($value), csv_client_const_helper::VALID_CLASS_TYPES, true);
     }
 
     /**
@@ -814,7 +814,7 @@ class csv_client_helper {
      * @return bool True if the value is of type role enum, false otherwise.
      */
     public static function is_role_enum(string $value): bool {
-        return in_array(strtolower($value), csv_client_const_helper::valid_roles, true);
+        return in_array(strtolower($value), csv_client_const_helper::VALID_ROLES, true);
     }
 
     /**
@@ -824,7 +824,7 @@ class csv_client_helper {
      * @return bool True if the value is of type primary enum, false otherwise.
      */
     public static function is_primary_enum($value): bool {
-        return in_array(strtolower($value), csv_client_const_helper::valid_primary_values, true);
+        return in_array(strtolower($value), csv_client_const_helper::VALID_PRIMARY_VALUES, true);
     }
 
     /**
@@ -834,7 +834,7 @@ class csv_client_helper {
      * @return bool True if the value is of type org type enum, false otherwise.
      */
     public static function is_org_type_enum($value): bool {
-        return in_array(strtolower($value), csv_client_const_helper::valid_org_types, true);
+        return in_array(strtolower($value), csv_client_const_helper::VALID_ORG_TYPES, true);
     }
 
     /**
@@ -874,6 +874,6 @@ class csv_client_helper {
      * @return bool True if the value is of type role user enum, false otherwise.
      */
     public static function is_role_user_enum($value): bool {
-        return in_array(strtolower($value), csv_client_const_helper::valid_roles_users, true);
+        return in_array(strtolower($value), csv_client_const_helper::VALID_ROLES_USERS, true);
     }
 }
