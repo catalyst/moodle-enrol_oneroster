@@ -36,13 +36,6 @@ class process_csv_data_type_validation_test extends \advanced_testcase {
     private $testdir;
 
     /**
-     * Path to the manifest.csv file.
-     *
-     * @var string
-     */
-    private $manifestpath;
-
-    /**
      * Set up the test environment.
      */
     protected function setUp(): void {
