@@ -24,10 +24,21 @@ use enrol_oneroster\csv_client_const_helper;
  * @package    enrol_oneroster
  * @copyright  Gustavo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \enrol_oneroster\csv_client_const_helper
+ * @covers     \enrol_oneroster\local\csv_client_helper
  */
 class process_csv_file_check_testcase extends \advanced_testcase {
+    /**
+     * Path to the test directory.
+     *
+     * @var string
+     */
     private $testdir;
+
+    /**
+     * Path to the manifest.csv file.
+     *
+     * @var string
+     */
     private $manifestpath;
 
     /**
@@ -165,7 +176,7 @@ class process_csv_file_check_testcase extends \advanced_testcase {
     /**
      * Test the check_manifest_and_files method.
      *
-     * @covers \enrol_oneroster\csv_client_const_helper::check_manifest_and_files
+     * @covers \enrol_oneroster\local\csv_client_helper::check_manifest_and_files
      */
     public function test_check_manifest_and_files_all_files_present() {
         $result = csv_client_helper::check_manifest_and_files($this->manifestpath, $this->testdir);
@@ -179,7 +190,7 @@ class process_csv_file_check_testcase extends \advanced_testcase {
     /**
      * Test the check_manifest_and_files method with a missing file.
      *
-     * @covers \enrol_oneroster\csv_client_const_helper::check_manifest_and_files
+     * @covers \enrol_oneroster\local\csv_client_helper::check_manifest_and_files
      */
     public function test_check_manifest_and_files_missing_file() {
         unlink($this->testdir . DIRECTORY_SEPARATOR . 'users.csv');
@@ -195,7 +206,7 @@ class process_csv_file_check_testcase extends \advanced_testcase {
     /**
      * Test the validate_csv_headers function with valid headers.
      *
-     * @covers \enrol_oneroster\csv_client_const_helper::validate_csv_headers
+     * @covers \enrol_oneroster\local\csv_client_helper::validate_csv_headers
      */
     public function test_validate_csv_headers_valid_headers() {
         // Test Users headers.
@@ -227,7 +238,7 @@ class process_csv_file_check_testcase extends \advanced_testcase {
     /**
      * Test the validate_csv_headers function with invalid headers.
      *
-     * @covers \enrol_oneroster\csv_client_const_helper::validate_csv_headers
+     * @covers \enrol_oneroster\local\csv_client_helper::validate_csv_headers
      */
     public function test_validate_csv_headers_invalid_headers() {
         $filepath = $this->testdir . DIRECTORY_SEPARATOR . 'invalid_users.csv';
@@ -252,7 +263,7 @@ class process_csv_file_check_testcase extends \advanced_testcase {
     /**
      * Test the extract_csvs_to_arrays function.
      *
-     * @covers \enrol_oneroster\csv_client_const_helper::extract_csvs_to_arrays
+     * @covers \enrol_oneroster\local\csv_client_helper::extract_csvs_to_arrays
      */
     public function test_extract_csvs_to_arrays() {
         $result = csv_client_helper::extract_csvs_to_arrays($this->testdir);
@@ -281,7 +292,7 @@ class process_csv_file_check_testcase extends \advanced_testcase {
     /**
      * Test the display_missing_and_invalid_files function.
      *
-     * @covers \enrol_oneroster\csv_client_const_helper::display_missing_and_invalid_files
+     * @covers \enrol_oneroster\local\csv_client_helper::display_missing_and_invalid_files
      */
     public function test_display_missing_and_invalid_files() {
         $missingfiles = [
@@ -300,7 +311,7 @@ class process_csv_file_check_testcase extends \advanced_testcase {
     /**
      * Test the getHeader function.
      *
-     * @covers \enrol_oneroster\csv_client_const_helper::getHeader
+     * @covers \enrol_oneroster\local\csv_client_helper::getHeader
      */
     public function test_get_header() {
         $result = csv_client_helper::getHeader('academicSessions.csv');

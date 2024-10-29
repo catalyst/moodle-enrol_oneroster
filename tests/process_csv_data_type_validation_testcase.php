@@ -15,8 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster\tests;
 
-use enrol_oneroster\csv_client_helper;
-use enrol_oneroster\csv_client_const_helper;
+use \enrol_oneroster\local\csv_client_helper;
+use \enrol_oneroster\local\csv_client_helper;
 
 /**
  * One Roster tests for the client_helper class.
@@ -24,10 +24,21 @@ use enrol_oneroster\csv_client_const_helper;
  * @package    enrol_oneroster
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers  enrol_oneroster\csv_client_const_helper
+ * @covers  \enrol_oneroster\local\csv_client_helper
  */
-class process_csv_data_type_validation_testcase extends \advanced_testcase {
+class process_csv_data_type_validation_testcase extends \advanced_testcase { 
+    /**
+     * Path to the test directory.
+     *
+     * @var string
+     */
     private $testdir;
+
+    /**
+     * Path to the manifest.csv file.
+     *
+     * @var string
+     */
     private $manifestpath;
 
     /**
@@ -165,7 +176,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the validate_csv_data_types method.
      *
-     * @covers \enrol_oneroster\csv_client_const_helper::validate_csv_data_types
+     * @covers \enrol_oneroster\local\csv_client_helper::validate_csv_data_types
      */
     public function test_validatecsvdatatypes(): void {
         $result = csv_client_helper::validate_csv_data_types($this->testdir);
@@ -178,7 +189,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the get_data_types function.
      *
-     * @covers \enrol_oneroster\csv_client_const_helper::get_data_types
+     * @covers \enrol_oneroster\local\csv_client_helper::get_data_types
      */
     public function test_getdatatypes() {
         // Test academicSessions.csv data types.
@@ -260,7 +271,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the determine_data_type function.
      *
-     * @covers enrol_oneroster\csv_client_const_helper::determine_data_type
+     * @covers \enrol_oneroster\local\csv_client_helper::determine_data_type
      */
     public function test_determinedatatype() {
         $result = csv_client_helper::determine_data_type('as-trm-222-1234', [csv_client_const_helper::DATATYPE_GUID, csv_client_const_helper::DATATYPE_STRING]);
@@ -282,7 +293,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_valid_human_readable_string function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_valid_human_readable_string
+     * @covers \enrol_oneroster\local\csv_client_helper::is_valid_human_readable_string
      */
     public function test_is_valid_human_readable_string() {
         $result = csv_client_helper::is_valid_human_readable_string('John Doe');
@@ -304,7 +315,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_int_type function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_int_type
+     * @covers \enrol_oneroster\local\csv_client_helper::is_int_type
      */
     public function test_is_int_type() {
         $result = csv_client_helper::is_int_type('123');
@@ -323,7 +334,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_list_of_strings function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_list_of_strings
+     * @covers \enrol_oneroster\local\csv_client_helper::is_list_of_strings
      */
     public function test_is_list_of_strings() {
         $result = csv_client_helper::is_list_of_strings('Math, Science, History');
@@ -337,7 +348,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_valid_subject_codes function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_valid_subject_codes
+     * @covers \enrol_oneroster\local\csv_client_helper::is_valid_subject_codes
      */
     public function test_is_valid_subject_codes() {
         $result = csv_client_helper::is_valid_subject_codes('Math123, Science123, History123');
@@ -350,7 +361,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_valid_periods function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_valid_periods
+     * @covers \enrol_oneroster\local\csv_client_helper::is_valid_periods
      */
     public function test_is_valid_periods() {
         $result = csv_client_helper::is_valid_periods('1, 2, 3');
@@ -369,7 +380,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_datetime_type function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_datetime_type
+     * @covers \enrol_oneroster\local\csv_client_helper::is_datetime_type
      */
     public function test_is_datetime_type() {
         $result = csv_client_helper::is_datetime_type('2023-05-01T18:25:43.511Z');
@@ -400,7 +411,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_date_type function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_date_type
+     * @covers \enrol_oneroster\local\csv_client_helper::is_date_type
      */
     public function test_is_date_type() {
         $result = csv_client_helper::is_date_type('2023-05-01');
@@ -431,7 +442,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_guid_type function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_guid_type
+     * @covers \enrol_oneroster\local\csv_client_helper::is_guid_type
      */
     public function test_is_guid_type() {
         $result = csv_client_helper::is_guid_type('usr-222-123456');
@@ -447,7 +458,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_status_enum_type function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_status_enum_type
+     * @covers \enrol_oneroster\local\csv_client_helper::is_status_enum_type
      */
     public function test_is_status_enum_type() {
         $result = csv_client_helper::is_status_enum_type('active');
@@ -466,7 +477,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_type_enum function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_type_enum
+     * @covers \enrol_oneroster\local\csv_client_helper::is_type_enum
      */
     public function test_is_type_enum() {
         $result = csv_client_helper::is_type_enum('gradingPeriod');
@@ -488,7 +499,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_year_type function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_year_type
+     * @covers \enrol_oneroster\local\csv_client_helper::is_year_type
      */
     public function test_is_year_type() {
         $result = csv_client_helper::is_year_type('2023');
@@ -507,7 +518,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_valid_grades function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_valid_grades
+     * @covers \enrol_oneroster\local\csv_client_helper::is_valid_grades
      */
     public function test_is_valid_grades() {
         $results = csv_client_helper::is_valid_grades('09');
@@ -520,7 +531,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_valid_grade function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_valid_grade
+     * @covers \enrol_oneroster\local\csv_client_helper::is_valid_grade
      */
     public function test_is_valid_grade() {
         $results = csv_client_helper::is_valid_grade('09');
@@ -533,7 +544,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_class_type_enum function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_class_type_enum
+     * @covers \enrol_oneroster\local\csv_client_helper::is_class_type_enum
      */
     public function test_is_class_type_enum() {
         $result = csv_client_helper::is_class_type_enum('Scheduled');
@@ -549,7 +560,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_valid_guid_list function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_valid_guid_list
+     * @covers \enrol_oneroster\local\csv_client_helper::is_valid_guid_list
      */
     public function test_is_valid_guid_list() {
         $result = csv_client_helper::is_valid_guid_list('usr-222-123456, usr-222-123456');
@@ -565,7 +576,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_role_enum function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_role_enum
+     * @covers \enrol_oneroster\local\csv_client_helper::is_role_enum
      */
     public function test_is_role_enum() {
         $result = csv_client_helper::is_role_enum('teacher');
@@ -587,7 +598,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_primary_enum function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_primary_enum
+     * @covers \enrol_oneroster\local\csv_client_helper::is_primary_enum
      */
     public function test_is_primary_enum() {
         $result = csv_client_helper::is_primary_enum('TRUE');
@@ -606,7 +617,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_org_type_enum function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_org_type_enum
+     * @covers \enrol_oneroster\local\csv_client_helper::is_org_type_enum
      */
     public function test_is_org_type_enum() {
         $result = csv_client_helper::is_org_type_enum('school');
@@ -634,7 +645,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_email_type function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_email_type
+     * @covers \enrol_oneroster\local\csv_client_helper::is_email_type
      */
     public function test_is_email_type() {
         $result = csv_client_helper::is_email_type('josh@example.com');
@@ -650,7 +661,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_user_id function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_valid_user_id
+     * @covers \enrol_oneroster\local\csv_client_helper::is_valid_user_id
      */
     public function test_is_user_id() {
         $result = csv_client_helper::is_valid_user_id('{LDAP:12},{LTI:15},{Fed:23}');
@@ -669,7 +680,7 @@ class process_csv_data_type_validation_testcase extends \advanced_testcase {
     /**
      * Test the is_role_user_enum function.
      *
-     * @covers enrol_oneroster\csv_client_helper::is_role_user_enum
+     * @covers \enrol_oneroster\local\csv_client_helper::is_role_user_enum
      */
     public function test_is_role_user_enum() {
         $result = csv_client_helper::is_role_user_enum('teacher');

@@ -777,7 +777,7 @@ class csv_client_helper {
      */
     public static function is_valid_grade(string $value): bool {
         $value = trim($value);
-        return in_array($value, csv_client_const_helper::valid_grade_codes, true);
+        return in_array($value, csv_client_const_helper::VALID_GRADE_CODES, true);
     }
 
     /**

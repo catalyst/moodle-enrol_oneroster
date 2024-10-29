@@ -38,27 +38,65 @@ class csv_client implements client_interface {
     use versioned_client;
 
     /**
-     * Constants for the base path and types.
+     * Base path for organisations.
      */
     const BASEPATH_ORGS = 'orgs';
+
+    /**
+     * Base path for schools.
+     */
     const BASEPATH_SCHOOLS = 'schools';
+
+    /**
+     * Type constant for terms.
+     */
     const TYPE_TERMS = 'terms';
+
+    /**
+     * Type constant for classes.
+     */
     const TYPE_CLASSES = 'classes';
+
+    /**
+     * Type constant for enrollments.
+     */
     const TYPE_ENROLLMENTS = 'enrollments';
+
+    /**
+     * Base path for users.
+     */
     const BASEPATH_USERS = 'users';
 
     /**
-     * Stores organisation ID.
+     * Stores the organisation ID.
+     *
+     * @var string The organisation ID.
      */
     private $orgid;
 
     /**
-     * Define key constants.
+     * Key for academic sessions.
      */
     const ACADEMIC_SESSIONS_KEY = 'academicSessions';
+
+    /**
+     * Key for periods.
+     */
     const PERIODS_KEY = 'periods';
+
+    /**
+     * Key for subjects.
+     */
     const SUBJECTS_KEYS = 'subjects';
+
+    /**
+     * Key for subject codes.
+     */
     const SUBJECT_CODES_KEY = 'subjectCodes';
+
+    /**
+     * Key for grades.
+     */
     const GRADES_KEY = 'grades';
 
     /**
@@ -377,4 +415,3 @@ class csv_client implements client_interface {
         }
     }
 }
- 
