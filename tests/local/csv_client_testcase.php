@@ -29,14 +29,14 @@ use enrol_oneroster\csv_client_helper;
  * @package    enrol_oneroster
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * 
+ *
  * @covers  \enrol_oneroster\local\csv_client_helper
  */
 class csv_client_test extends \advanced_testcase {
     /**
      * Test Synchronise method to check the data is inserted into the database.
      * This test uses the full data set.
-     * 
+     *
      * @covers \enrol_oneroster\local\csv_client
      */
     public function test_execute_full_data() {
@@ -122,7 +122,7 @@ class csv_client_test extends \advanced_testcase {
     /**
      * Test Synchronise method to check the data is inserted into the database.
      * This test uses the minimal data set.
-     * 
+     *
      * @covers \enrol_oneroster\local\csv_client
      */
     public function test_execute_minimal_data() {
@@ -198,7 +198,7 @@ class csv_client_test extends \advanced_testcase {
             $courseid = (int) $enrol->courseid;
             $this->assertIsInt($courseid, 'Course ID should be an integer.');
         }
-        
+
         $this->assertCount(3, $course, 'There should be exactly 3 course records.');
         $this->assertCount(2, $user, 'There should be exactly 2 user records.');
         $this->assertCount(8, $enrol, 'There should be exactly 8 enrolment records.');
