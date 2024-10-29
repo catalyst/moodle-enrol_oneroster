@@ -22,15 +22,10 @@ use enrol_oneroster\local\csv_client_helper;
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
+require_once($CFG->libdir . '/formslib.php');
 
-/**
- * One Roster Client.
- *
- * @package    enrol_oneroster
- * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * 
- */
+
+// One Roster Client.
 admin_externalpage_setup('enrol_oneroster_csv_upload');
 
 $PAGE->set_url('/enrol/oneroster/process_csv.php');
@@ -68,25 +63,25 @@ if ($step == 1) {
         $zip->extractTo($tempdir);
         $zip->close();
 
-        $manifest_path = $tempdir . '/manifest.csv';
-        if (!file_exists($manifest_path)) {
+        $manifestpath = $tempdir . '/manifest.csv';
+        if (!file_exists($manifestpath)) {
             redirect($PAGE->url, get_string('missing_csv_files', 'enrol_oneroster'));
         }
 
-        $missing_files = csv_client_helper::check_manifest_and_files($manifest_path, $tempdir);
-        if (!empty($missing_files['missing_files']) || !empty($missing_files['invalid_headers'])) {
-            $error_message = csv_client_helper::display_missing_and_invalid_files($missing_files);
-            redirect($PAGE->url, $error_message);
+        $missingfiles = csv_client_helper::check_manifest_and_files($manifestpath, $tempdir);
+        if (!empty($missingfiles['missing_files']) || !empty($missingfiles['invalid_headers'])) {
+            $errormessage = csv_client_helper::display_missing_and_invalid_files($missingfiles);
+            redirect($PAGE->url, $errormessage);
         }
 
         $datatype = csv_client_helper::validate_csv_data_types($tempdir);
         if (!$datatype['is_valid']) {
-            $error_message = csv_client_helper::display_validation_errors($datatype);
-            redirect($PAGE->url, $error_message);
+            $errormessage = csv_client_helper::display_validation_errors($datatype);
+            redirect($PAGE->url, $errormessage);
         }
 
-        $csv_data = csv_client_helper::extract_csvs_to_arrays($tempdir);
-        $orgs = $csv_data['orgs'] ?? [];
+        $csvdata = csv_client_helper::extract_csvs_to_arrays($tempdir);
+        $orgs = $csvdata['orgs'] ?? [];
 
         // Prepare organization options.
         $orgoptions = [];
@@ -96,8 +91,8 @@ if ($step == 1) {
 
         if (count($orgoptions) == 1) {
             // Only one organization, proceed directly.
-            $selected_org_sourcedId = array_key_first($orgoptions);
-            process_selected_organization($selected_org_sourcedId, $tempdir, $csv_data);
+            $selectedorgsourcedid = array_key_first($orgoptions);
+            process_selected_organization($selectedorgsourcedid, $tempdir, $csvdata);
             exit;
         } else {
             // Display the organization selection form.
@@ -116,24 +111,21 @@ if ($step == 1) {
         $mform->display();
         echo $OUTPUT->footer();
     }
-}
-else if ($step == 2) {
+} else if ($step == 2) {
     // Step 2: Select Organization.
-    $tempdir = required_param('tempdir', PARAM_PATH); 
-    $orgoptions = $SESSION->oneroster_csv['orgoptions']; 
+    $tempdir = required_param('tempdir', PARAM_PATH);
+    $orgoptions = $SESSION->oneroster_csv['orgoptions'];
     $orgform = new oneroster_org_selection_form(null, ['orgoptions' => $orgoptions, 'tempdir' => $tempdir]);
 
     if ($orgform->is_cancelled()) {
         redirect(new \moodle_url('/admin/settings.php', ['section' => 'enrolsettingsoneroster']));
-    } 
-    else if ($orgdata = $orgform->get_data()) {
-        $selected_org_sourcedId = $orgdata->organization;
+    } else if ($orgdata = $orgform->get_data()) {
+        $selectedorgsourcedid = $orgdata->organization;
         $tempdir = $orgdata->tempdir;
-    
+
         // Proceed to process the selected organization.
-        process_selected_organization($selected_org_sourcedId, $tempdir);
-    } 
-    else {
+        process_selected_organization($selectedorgsourcedid, $tempdir);
+    } else {
         echo $OUTPUT->header();
         echo get_string('invalid_form', 'enrol_oneroster') . ' <br>';
         echo $OUTPUT->footer();
@@ -143,12 +135,12 @@ else if ($step == 2) {
 /**
  * Processes the selected organization.
  *
- * @param string $selected_org_sourcedId The sourcedId of the selected organization.
+ * @param string $selectedorgsourcedid The sourcedId of the selected organization.
  * @param string $tempdir The temporary directory where files are extracted.
- * @param array|null $csv_data Optional CSV data if already extracted.
+ * @param array|null $csvdata Optional CSV data if already extracted.
  */
-function process_selected_organization(string $selected_org_sourcedId, string $tempdir, array$csv_data = null) {
-    global $OUTPUT;
+function process_selected_organization(string $selectedorgsourcedid, string $tempdir, array $csvdata = null) {
+    global $OUTPUT, $SESSION;
 
     $zipfilepath = $tempdir . '/uploadedzip.zip';
     $zip = new \ZipArchive();
@@ -162,24 +154,27 @@ function process_selected_organization(string $selected_org_sourcedId, string $t
 
     $zip->extractTo($tempdir);
     $zip->close();
-    $csv_data = csv_client_helper::extract_csvs_to_arrays($tempdir);
 
-    $manifest = $csv_data['manifest'] ?? [];
-    $users = $csv_data['users'] ?? [];
-    $classes = $csv_data['classes'] ?? [];
-    $orgs = $csv_data['orgs'] ?? [];
-    $enrollments = $csv_data['enrollments'] ?? [];
-    $academicSessions = $csv_data['academicSessions'] ?? [];
+    if (is_null($csvdata)) {
+        $csvdata = csv_client_helper::extract_csvs_to_arrays($tempdir);
+    }
+
+    $manifest = $csvdata['manifest'] ?? [];
+    $users = $csvdata['users'] ?? [];
+    $classes = $csvdata['classes'] ?? [];
+    $orgs = $csvdata['orgs'] ?? [];
+    $enrollments = $csvdata['enrollments'] ?? [];
+    $academicsessions = $csvdata['academicSessions'] ?? [];
 
     $csvclient = client_helper::get_csv_client();
 
-    $csvclient->set_org_id($selected_org_sourcedId);
+    $csvclient->set_org_id($selectedorgsourcedid);
 
-    if (csv_client_helper::validate_user_data($csv_data) === true) {
-        set_config('datasync_schools', $selected_org_sourcedId, 'enrol_oneroster');
+    if (csv_client_helper::validate_user_data($csvdata) === true) {
+        set_config('datasync_schools', $selectedorgsourcedid, 'enrol_oneroster');
     }
 
-    $csvclient->set_data($manifest, $users, $classes, $orgs, $enrollments, $academicSessions);
+    $csvclient->set_data($manifest, $users, $classes, $orgs, $enrollments, $academicsessions);
 
     try {
         $csvclient->synchronise();

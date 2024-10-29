@@ -13,9 +13,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-namespace enrol_oneroster\form;
 
-require_once("$CFG->libdir/formslib.php");
+defined('MOODLE_INTERNAL') || die();
+
+namespace enrol_oneroster\form;
 
 /**
  * One Roster Enrollment Client.
