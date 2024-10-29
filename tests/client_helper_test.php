@@ -35,7 +35,7 @@ use advanced_testcase;
  *
  * @covers  \enrol_oneroster\client_helper
  */
-class client_helper_testcase extends advanced_testcase {
+class client_helper_test extends advanced_testcase {
 
     /**
      * Test that the `get_client` function returns the correct client type.

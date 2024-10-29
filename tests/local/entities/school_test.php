@@ -47,7 +47,7 @@ use OutOfRangeException;
  * @covers  enrol_oneroster\local\entity
  * @covers  enrol_oneroster\local\entities\school
  */
-class school_testcase extends entity_testcase {
+class school_test extends entity_testcase {
 
     /**
      * Test the properties of the entity.

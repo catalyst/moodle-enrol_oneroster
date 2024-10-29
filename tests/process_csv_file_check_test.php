@@ -26,7 +26,7 @@ use enrol_oneroster\csv_client_const_helper;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \enrol_oneroster\local\csv_client_helper
  */
-class process_csv_file_check_testcase extends \advanced_testcase {
+class process_csv_file_check_test extends \advanced_testcase {
     /**
      * Path to the test directory.
      *

@@ -44,7 +44,7 @@ use enrol_oneroster\local\factories\entity_factory;
  * @copyright  Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class oneroster_testcase extends advanced_testcase {
+abstract class oneroster_test extends advanced_testcase {
     /**
      * Get a mocked container.
      *

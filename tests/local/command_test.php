@@ -37,7 +37,7 @@ use enrol_oneroster\local\oneroster_testcase;
  *
  * @covers  \enrol_oneroster\local\command
  */
-class command_testcase extends oneroster_testcase {
+class command_test extends oneroster_testcase {
 
     /**
      * Test the URL construction via the constructor.

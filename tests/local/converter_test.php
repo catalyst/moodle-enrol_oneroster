@@ -35,7 +35,7 @@ use advanced_testcase;
  *
  * @covers  enrol_oneroster\local\converter
  */
-class converter_testcase extends advanced_testcase {
+class converter_test extends advanced_testcase {
 
     /**
      * Ensure that the `from_date_to_unix` function.
