@@ -16,6 +16,7 @@
 namespace enrol_oneroster;
 
 use \enrol_oneroster\local\csv_client_helper;
+use \enrol_oneroster\local\csv_client_const_helper;
 
 /**
  * One Roster tests for the client_helper class.
@@ -193,72 +194,14 @@ class process_csv_data_type_validation_test extends \advanced_testcase {
     public function test_getdatatypes() {
         // Test academicSessions.csv data types.
         $result = csv_client_helper::get_data_types(csv_client_const_helper::FILE_ACADEMIC_SESSIONS);
-        $expected = [
-            csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
-            csv_client_const_helper::HEADER_STATUS => [
-                csv_client_const_helper::DATATYPE_ENUM_STATUS,
-                csv_client_const_helper::DATATYPE_NULL
-            ],
-            csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
-                csv_client_const_helper::DATATYPE_DATETIME,
-                csv_client_const_helper::DATATYPE_NULL
-            ],
-            csv_client_const_helper::HEADER_TITLE => csv_client_const_helper::DATATYPE_STRING,
-            csv_client_const_helper::HEADER_TYPE => csv_client_const_helper::DATATYPE_ENUM_TYPE,
-            csv_client_const_helper::HEADER_START_DATE => csv_client_const_helper::DATATYPE_DATE,
-            csv_client_const_helper::HEADER_END_DATE => csv_client_const_helper::DATATYPE_DATE,
-            csv_client_const_helper::HEADER_PARENT_SOURCEDID => [
-                csv_client_const_helper::DATATYPE_GUID,
-                csv_client_const_helper::DATATYPE_NULL
-            ],
-            csv_client_const_helper::HEADER_SCHOOL_YEAR => csv_client_const_helper::DATATYPE_YEAR
-        ];
+        $expectedDataTypes = csv_client_helper::get_file_datatypes();
+        $expected = $expectedDataTypes[csv_client_const_helper::FILE_ACADEMIC_SESSIONS];
         $this->assertEquals($expected, $result, 'The expected data types for academicSessions.csv do not match.');
 
         // Test classes.csv data types.
         $result = csv_client_helper::get_data_types(csv_client_const_helper::FILE_CLASSES);
-        $expected = [
-            csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
-            csv_client_const_helper::HEADER_STATUS => [
-                csv_client_const_helper::DATATYPE_ENUM_STATUS,
-                csv_client_const_helper::DATATYPE_NULL
-            ],
-            csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
-                csv_client_const_helper::DATATYPE_DATETIME,
-                csv_client_const_helper::DATATYPE_NULL
-            ],
-            csv_client_const_helper::HEADER_TITLE => csv_client_const_helper::DATATYPE_STRING,
-            csv_client_const_helper::HEADER_GRADES => [
-                csv_client_const_helper::DATATYPE_ARRAY_GRADE,
-                csv_client_const_helper::DATATYPE_NULL
-            ],
-            csv_client_const_helper::HEADER_COURSE_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
-            csv_client_const_helper::HEADER_CLASS_CODE => [
-                csv_client_const_helper::DATATYPE_STRING,
-                csv_client_const_helper::DATATYPE_NULL
-            ],
-            csv_client_const_helper::HEADER_CLASS_TYPE => csv_client_const_helper::DATATYPE_ENUM_CLASS_TYPE,
-            csv_client_const_helper::HEADER_LOCATION => [
-                csv_client_const_helper::DATATYPE_STRING,
-                csv_client_const_helper::DATATYPE_NULL
-            ],
-            csv_client_const_helper::HEADER_SCHOOL_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
-            csv_client_const_helper::HEADER_TERM_SOURCEDIDS => [
-                csv_client_const_helper::DATATYPE_ARRAY_GUID
-            ],
-            csv_client_const_helper::HEADER_SUBJECTS => [
-                csv_client_const_helper::DATATYPE_ARRAY_SUBJECTS,
-                csv_client_const_helper::DATATYPE_NULL
-            ],
-            csv_client_const_helper::HEADER_SUBJECT_CODES => [
-                csv_client_const_helper::DATATYPE_ARRAY_SUBJECT_CODES,
-                csv_client_const_helper::DATATYPE_NULL
-            ],
-            csv_client_const_helper::HEADER_PERIODS => [
-                csv_client_const_helper::DATATYPE_ARRAY_PERIODS,
-                csv_client_const_helper::DATATYPE_NULL
-            ]
-        ];
+        $expectedDataTypes = csv_client_helper::get_file_datatypes();
+        $expected = $expectedDataTypes[csv_client_const_helper::FILE_CLASSES];
         $this->assertEquals($expected, $result, 'The expected data types for classes.csv do not match.');
 
         // Test file with no data types defined.
