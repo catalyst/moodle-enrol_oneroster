@@ -27,7 +27,7 @@ namespace enrol_oneroster\tests\fixtures\local;
 use enrol_oneroster\local\interfaces\client as client_interface;
 use enrol_oneroster\local\interfaces\rostering_client as rostering_client_interface;
 use enrol_oneroster\local\oneroster_client as root_oneroster_client;
-use enrol_oneroster\local\oneroster_csv_client as csv_oneroster_client;
+use enrol_oneroster\local\csv_client as csv_oneroster_client;
 
 /**
  * One Roster v1p1 client utilising OAuth 2.0.
