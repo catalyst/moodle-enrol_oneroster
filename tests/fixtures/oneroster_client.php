@@ -40,4 +40,5 @@ use enrol_oneroster\local\csv_client as csv_oneroster_client;
 abstract class oneroster_client implements client_interface, rostering_client_interface {
     use root_oneroster_client;
     use versioned_client;
+    use csv_oneroster_client;
 }

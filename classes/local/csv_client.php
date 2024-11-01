@@ -33,7 +33,7 @@ use enrol_oneroster\local\v1p1\oneroster_client as versioned_client;
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class csv_client implements client_interface {
+trait csv_client {
     use root_oneroster_client;
     use versioned_client;
 
