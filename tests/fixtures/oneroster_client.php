@@ -27,7 +27,8 @@ namespace enrol_oneroster\tests\fixtures\local;
 use enrol_oneroster\local\interfaces\client as client_interface;
 use enrol_oneroster\local\interfaces\rostering_client as rostering_client_interface;
 use enrol_oneroster\local\oneroster_client as root_oneroster_client;
-use enrol_oneroster\local\csv_client;
+use enrol_oneroster\local\v1p1\oneroster_client as versioned_client;
+use enrol_oneroster\local\csv_client as csv_oneroster_client;
 
 /**
  * One Roster v1p1 client utilising OAuth 2.0.
@@ -38,16 +39,5 @@ use enrol_oneroster\local\csv_client;
  */
 abstract class oneroster_client implements client_interface, rostering_client_interface {
     use root_oneroster_client;
-
-    /**
-     * @var csv_client
-     */
-    protected $csvclient;
-
-    /**
-     * Constructor.
-     */
-    public function __construct() {
-        $this->csvclient = new csv_client();
-    }
+    use versioned_client;
 }
