@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster;
+require(__DIR__ . '/csv_test_helper.php');
 
-use enrol_oneroster\csv_client_helper;
-use enrol_oneroster\csv_client_const_helper;
+use enrol_oneroster\local\csv_client_helper;
+use enrol_oneroster\local\csv_client_const_helper;
 use enrol_oneroster\csv_test_helper;
 
 /**
@@ -53,6 +54,7 @@ class process_csv_file_check_test extends \advanced_testcase {
 
         // Use the helper class to set up CSV files.
         csv_test_helper::setupcsvfiles($this->testdir);
+        $this->manifestpath = $this->testdir . '/manifest.csv';
     }
 
     /**
@@ -63,8 +65,8 @@ class process_csv_file_check_test extends \advanced_testcase {
     public function test_check_manifest_and_files_all_files_present() {
         $result = csv_client_helper::check_manifest_and_files($this->manifestpath, $this->testdir);
         $expected = [
-            'missing_files' => [],
-            'invalid_headers' => []
+            'missingfiles' => [],
+            'invalidheaders' => []
         ];
         $this->assertEquals($expected, $result, 'All files should be present and have valid headers.');
     }
@@ -79,10 +81,10 @@ class process_csv_file_check_test extends \advanced_testcase {
         $result = csv_client_helper::check_manifest_and_files($this->manifestpath, $this->testdir);
         $this->assertEqualsCanonicalizing(
             ['users.csv'],
-            $result['missing_files'],
+            $result['missingfiles'],
             'users.csv should be reported as missing.'
         );
-        $this->assertEmpty($result['invalid_headers'], 'No headers should be invalid.');
+        $this->assertEmpty($result['invalidheaders'], 'No headers should be invalid.');
     }
 
     /**
@@ -178,16 +180,16 @@ class process_csv_file_check_test extends \advanced_testcase {
      */
     public function test_display_missing_and_invalid_files() {
         $missingfiles = [
-            'missing_files' => ['users.csv', 'classes.csv'],
-            'invalid_headers' => ['enrollments.csv']
+            'missingfiles' => ['users.csv', 'classes.csv'],
+            'invalidheaders' => ['enrollments.csv']
         ];
 
-        $this->expectOutputString(
+        $string =
             'The following required files are missing: users.csv, classes.csv<br>' .
-            'The following files have invalid or missing headers: enrollments.csv<br>'
-        );
+            'The following files have invalid or missing headers: enrollments.csv<br>';
 
-        csv_client_helper::display_missing_and_invalid_files($missingfiles);
+        $output = csv_client_helper::display_missing_and_invalid_files($missingfiles);
+        $this->assertEquals($string, $output);
     }
 
     /**
@@ -196,10 +198,10 @@ class process_csv_file_check_test extends \advanced_testcase {
      * @covers \enrol_oneroster\local\csv_client_helper::getHeader
      */
     public function test_get_header() {
-        $result = csv_client_helper::getHeader('academicSessions.csv');
+        $result = csv_client_helper::get_header('academicSessions.csv');
         $this->assertEquals(csv_client_const_helper::HEADER_ACADEMIC_SESSIONS, $result);
 
-        $result = csv_client_helper::getHeader('invalid.csv');
+        $result = csv_client_helper::get_header('invalid.csv');
         $this->assertEquals([], $result);
     }
 }

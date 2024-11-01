@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace enrol_oneroster;
-use enrol_oneroster\csv_client_helper;
+use enrol_oneroster\local\csv_client_helper;
 
 /**
  * One Roster tests for the client_helper class.
@@ -99,8 +99,8 @@ class csv_client_test extends \advanced_testcase {
 
         // Check manifest and files.
         $missingfiles = csv_client_helper::check_manifest_and_files($manifestpath, $tempdir);
-        $this->assertEmpty($missingfiles['missing_files'], 'There should be no missing files according to the manifest.');
-        $this->assertEmpty($missingfiles['invalid_headers'], 'There should be no invalid headers in the extracted CSV files.');
+        $this->assertEmpty($missingfiles['missingfiles'], 'There should be no missing files according to the manifest.');
+        $this->assertEmpty($missingfiles['invalidheaders'], 'There should be no invalid headers in the extracted CSV files.');
 
         // Validate CSV data types.
         $isvalid = csv_client_helper::validate_csv_data_types($tempdir);
