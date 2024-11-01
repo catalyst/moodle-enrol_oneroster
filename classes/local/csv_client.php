@@ -17,6 +17,7 @@
 namespace enrol_oneroster\local;
 
 use enrol_oneroster\local\interfaces\client as client_interface;
+use enrol_oneroster\local\csv_client_const_helper;
 use enrol_oneroster\local\oneroster_client as root_oneroster_client;
 use enrol_oneroster\local\command;
 use enrol_oneroster\local\interfaces\filter;
@@ -36,68 +37,6 @@ use enrol_oneroster\local\v1p1\oneroster_client as versioned_client;
 trait csv_client {
     use root_oneroster_client;
     use versioned_client;
-
-    /**
-     * Base path for organisations.
-     */
-    const BASEPATH_ORGS = 'orgs';
-
-    /**
-     * Base path for schools.
-     */
-    const BASEPATH_SCHOOLS = 'schools';
-
-    /**
-     * Type constant for terms.
-     */
-    const TYPE_TERMS = 'terms';
-
-    /**
-     * Type constant for classes.
-     */
-    const TYPE_CLASSES = 'classes';
-
-    /**
-     * Type constant for enrollments.
-     */
-    const TYPE_ENROLLMENTS = 'enrollments';
-
-    /**
-     * Base path for users.
-     */
-    const BASEPATH_USERS = 'users';
-
-    /**
-     * Stores the organisation ID.
-     *
-     * @var string The organisation ID.
-     */
-    private $orgid;
-
-    /**
-     * Key for academic sessions.
-     */
-    const ACADEMIC_SESSIONS_KEY = 'academicSessions';
-
-    /**
-     * Key for periods.
-     */
-    const PERIODS_KEY = 'periods';
-
-    /**
-     * Key for subjects.
-     */
-    const SUBJECTS_KEYS = 'subjects';
-
-    /**
-     * Key for subject codes.
-     */
-    const SUBJECT_CODES_KEY = 'subjectCodes';
-
-    /**
-     * Key for grades.
-     */
-    const GRADES_KEY = 'grades';
 
     /**
      * Authenticate the client. This is a no-op for the CSV client.
@@ -170,10 +109,10 @@ trait csv_client {
         }
 
         switch ($basepath) {
-            case self::BASEPATH_ORGS:
+            case csv_client_const_helper::BASEPATH_ORGS:
                 // The endpoint getAllOrgs is called to fetch all organisations.
                 if ($param === $orgid || $param === '') {
-                    $orgdata = $this->data[self::BASEPATH_ORGS];
+                    $orgdata = $this->data[csv_client_const_helper::BASEPATH_ORGS];
                     $keys = array_map(function($orgs) {
                         return $orgs['sourcedId'];
                     }, $orgdata);
@@ -202,10 +141,10 @@ trait csv_client {
                 }
                 break;
 
-            case self::BASEPATH_SCHOOLS:
+            case csv_client_const_helper::BASEPATH_SCHOOLS:
                 // The endpoint getTermsForSchool is called to fetch a list of classes in a term.
-                if ($type === self::TYPE_TERMS) {
-                    $academicsessiondata = $this->data[self::ACADEMIC_SESSIONS_KEY];
+                if ($type === csv_client_const_helper::TYPE_TERMS) {
+                    $academicsessiondata = $this->data[csv_client_const_helper::ACADEMIC_SESSIONS_KEY];
                     $keys = array_map(function ($schools) {
                         return $schools['sourcedId'];
                     }, $academicsessiondata);
@@ -229,9 +168,9 @@ trait csv_client {
                     ];
                 }
 
-                if ($type === self::TYPE_CLASSES) {
+                if ($type === csv_client_const_helper::TYPE_CLASSES) {
                     // The endpoint getClassesForSchool is called to fetch all students for a class.
-                    $classdata = $this->data[self::TYPE_CLASSES];
+                    $classdata = $this->data[csv_client_const_helper::TYPE_CLASSES];
                     $keys = array_map(function($schools) {
                         return $schools['sourcedId'];
                     }, $classdata);
@@ -267,10 +206,10 @@ trait csv_client {
                             }
 
                             $objs = [
-                                self::PERIODS_KEY,
-                                self::SUBJECTS_KEYS,
-                                self::SUBJECT_CODES_KEY,
-                                self::GRADES_KEY
+                                csv_client_const_helper::PERIODS_KEY,
+                                csv_client_const_helper::SUBJECTS_KEYS,
+                                csv_client_const_helper::SUBJECT_CODES_KEY,
+                                csv_client_const_helper::GRADES_KEY
                             ];
 
                             foreach ($objs as $obj) {
@@ -304,9 +243,9 @@ trait csv_client {
                     ];
                 }
 
-                if ($type === self::TYPE_ENROLLMENTS) {
+                if ($type === csv_client_const_helper::TYPE_ENROLLMENTS) {
                     // The endpoint getEnrollmentsForSchool is called to fetch all enrollments in a school.
-                    $enrollmentdata = $this->data[self::TYPE_ENROLLMENTS];
+                    $enrollmentdata = $this->data[csv_client_const_helper::TYPE_ENROLLMENTS];
                     $keys = array_map(function($schools) {
                         return $schools['sourcedId'];
                     }, $enrollmentdata);
@@ -347,9 +286,9 @@ trait csv_client {
                 }
                 break;
 
-            case self::BASEPATH_USERS:
+            case csv_client_const_helper::BASEPATH_USERS:
                 // The endpoint getAllUsers is called to fetch all users in a school.
-                $usersdata = $this->data[self::BASEPATH_USERS];
+                $usersdata = $this->data[csv_client_const_helper::BASEPATH_USERS];
                 $keys = array_map(function($user) {
                     return $user['sourcedId'];
                 }, $usersdata);

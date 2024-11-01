@@ -532,4 +532,66 @@ class csv_client_const_helper {
         self::FILE_ORGS => self::HEADER_ORGS,
         self::FILE_USERS => self::HEADER_USERS,
     ];
+
+        /**
+     * Base path for organisations.
+     */
+    const BASEPATH_ORGS = 'orgs';
+
+    /**
+     * Base path for schools.
+     */
+    const BASEPATH_SCHOOLS = 'schools';
+
+    /**
+     * Type constant for terms.
+     */
+    const TYPE_TERMS = 'terms';
+
+    /**
+     * Type constant for classes.
+     */
+    const TYPE_CLASSES = 'classes';
+
+    /**
+     * Type constant for enrollments.
+     */
+    const TYPE_ENROLLMENTS = 'enrollments';
+
+    /**
+     * Base path for users.
+     */
+    const BASEPATH_USERS = 'users';
+
+    /**
+     * Stores the organisation ID.
+     *
+     * @var string The organisation ID.
+     */
+    private $orgid;
+
+    /**
+     * Key for academic sessions.
+     */
+    const ACADEMIC_SESSIONS_KEY = 'academicSessions';
+
+    /**
+     * Key for periods.
+     */
+    const PERIODS_KEY = 'periods';
+
+    /**
+     * Key for subjects.
+     */
+    const SUBJECTS_KEYS = 'subjects';
+
+    /**
+     * Key for subject codes.
+     */
+    const SUBJECT_CODES_KEY = 'subjectCodes';
+
+    /**
+     * Key for grades.
+     */
+    const GRADES_KEY = 'grades';
 }
