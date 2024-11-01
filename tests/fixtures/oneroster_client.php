@@ -27,7 +27,6 @@ namespace enrol_oneroster\tests\fixtures\local;
 use enrol_oneroster\local\interfaces\client as client_interface;
 use enrol_oneroster\local\interfaces\rostering_client as rostering_client_interface;
 use enrol_oneroster\local\oneroster_client as root_oneroster_client;
-use enrol_oneroster\local\v1p1\oneroster_client as versioned_client;
 use enrol_oneroster\local\csv_client as csv_oneroster_client;
 
 /**
@@ -39,6 +38,5 @@ use enrol_oneroster\local\csv_client as csv_oneroster_client;
  */
 abstract class oneroster_client implements client_interface, rostering_client_interface {
     use root_oneroster_client;
-    use versioned_client;
     use csv_oneroster_client;
 }
