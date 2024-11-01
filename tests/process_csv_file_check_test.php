@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster;
+
+defined('MOODLE_INTERNAL') || die();
 require(__DIR__ . '/csv_test_helper.php');
 
 use enrol_oneroster\local\csv_client_helper;
