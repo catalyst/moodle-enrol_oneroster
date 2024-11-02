@@ -13,10 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-namespace enrol_oneroster;
-use moodleform;
-
-require_once($CFG->libdir . '/formslib.php');
+namespace enrol_oneroster\form;
 
 /**
  * One Roster Enrollment Client.
@@ -25,15 +22,27 @@ require_once($CFG->libdir . '/formslib.php');
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class oneroster_csv_form extends moodleform {
+class oneroster_csv_form extends \moodleform {
+    /**
+     * Defines form elements for uploading oneroster CSV ZIP files.
+     */
     protected function definition() {
         $mform = $this->_form;
 
-        // file picker for CSV file upload
-        $mform->addElement('filepicker', 'uploadedzip', 'Upload Zip File', null, array('accepted_types' => '.zip'));
+        // File picker for uploading the CSV file.
+        $mform->addElement(
+            'filepicker',
+            'uploadedzip',
+            get_string('upload_zip_label', 'enrol_oneroster'),
+            null,
+            array('accepted_types' => '.zip')
+        );
         $mform->addRule('uploadedzip', null, 'required', null, 'client');
 
-        // buttons
-        $this->add_action_buttons(true, 'Upload');
+        // Submit button.
+        $this->add_action_buttons(
+            true,
+            get_string('upload', 'enrol_oneroster')
+        );
     }
 }

@@ -13,11 +13,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-namespace enrol_oneroster;
+namespace enrol_oneroster\local;
 
 /**
- * Class OneRosterHelper
+ * Class csv_client_helper
  *
  * Helper class for OneRoster plugin
  *
@@ -25,451 +24,516 @@ namespace enrol_oneroster;
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class OneRosterHelper {
-    // Individual header constants
-    const HEADER_SOURCEDID = 'sourcedId';
-    const HEADER_STATUS = 'status';
-    const HEADER_DATE_LAST_MODIFIED = 'dateLastModified';
-    const HEADER_TITLE = 'title';
-    const HEADER_TYPE = 'type';
-    const HEADER_START_DATE = 'startDate';
-    const HEADER_END_DATE = 'endDate';
-    const HEADER_PARENT_SOURCEDID = 'parentSourcedId';
-    const HEADER_SCHOOL_YEAR = 'schoolYear';
-    const HEADER_GRADES = 'grades';
-    const HEADER_COURSE_SOURCEDID = 'courseSourcedId';
-    const HEADER_CLASS_CODE = 'classCode';
-    const HEADER_CLASS_TYPE = 'classType';
-    const HEADER_LOCATION = 'location';
-    const HEADER_SCHOOL_SOURCEDID = 'schoolSourcedId';
-    const HEADER_TERM_SOURCEDIDS = 'termSourcedIds';
-    const HEADER_SUBJECTS = 'subjects';
-    const HEADER_SUBJECT_CODES = 'subjectCodes';
-    const HEADER_PERIODS = 'periods';
-    const HEADER_CLASS_SOURCEDID = 'classSourcedId';
-    const HEADER_USER_SOURCEDID = 'userSourcedId';
-    const HEADER_ROLE = 'role';
-    const HEADER_PRIMARY = 'primary';
-    const HEADER_BEGIN_DATE = 'beginDate';
-    const HEADER_IDENTIFIER = 'identifier';
-    const HEADER_NAME = 'name';
-    const HEADER_ENABLED_USER = 'enabledUser';
-    const HEADER_ORG_SOURCEDIDS = 'orgSourcedIds';
-    const HEADER_USERNAME = 'username';
-    const HEADER_USERIDS = 'userIds';
-    const HEADER_GIVEN_NAME = 'givenName';
-    const HEADER_FAMILY_NAME = 'familyName';
-    const HEADER_MIDDLE_NAME = 'middleName';
-    const HEADER_EMAIL = 'email';
-    const HEADER_SMS = 'sms';
-    const HEADER_PHONE = 'phone';
-    const HEADER_AGENT_SOURCEDIDS = 'agentSourcedIds';
-    const HEADER_PASSWORD = 'password';
-
-    // CSV file names
-    const FILE_MANIFEST = 'manifest.csv';
-    const FILE_ACADEMIC_SESSIONS = 'academicSessions.csv';
-    const FILE_CLASSES = 'classes.csv';
-    const FILE_ENROLLMENTS = 'enrollments.csv';
-    const FILE_ORGS = 'orgs.csv';
-    const FILE_USERS = 'users.csv';
-
-    // Define constants for the types    
-    const DATATYPE_NULL = 'null';
-    const DATATYPE_GUID = 'guid';
-    const DATATYPE_INT = 'int';
-    const DATATYPE_DATETIME = 'datetime';
-    const DATATYPE_DATE = 'date';
-    const DATATYPE_YEAR = 'year';
-    const DATATYPE_ENUM_STATUS = 'enum_status';
-    const DATATYPE_ENUM_TYPE = 'enum_type';
-    const DATATYPE_ARRAY_GUID = 'array_guid';
-    const DATATYPE_ARRAY_GRADE = 'array_grade';
-    const DATATYPE_GRADE = 'grade';
-    const DATATYPE_STRING_EMAIL = 'string_email';
-    const DATATYPE_ARRAY_USERIDS = 'array_userIds';
-    const DATATYPE_ENUM_ROLE_USER = 'enum_role_user';
-    const DATATYPE_ENUM_TYPE_ENROL = 'enum_type_enrol';
-    const DATATYPE_ENUM_PRIMARY = 'enum_primary';
-    const DATATYPE_ENUM_CLASS_TYPE = 'enum_class_type';
-    const DATATYPE_ENUM_ORG_TYPE = 'enum_org_type';
-    const DATATYPE_ARRAY_SUBJECTS = 'array_subjects';
-    const DATATYPE_ARRAY_SUBJECT_CODES = 'array_subjectCodes';
-    const DATATYPE_ARRAY_PERIODS = 'array_periods';
-    const DATATYPE_PASSWORD = 'password';
-    const DATATYPE_STRING = 'string';
-
-    // Header constants for each file
-    const HEADER_ACADEMIC_SESSIONS = [
-        self::HEADER_SOURCEDID, self::HEADER_STATUS, self::HEADER_DATE_LAST_MODIFIED, self::HEADER_TITLE,
-        self::HEADER_TYPE, self::HEADER_START_DATE, self::HEADER_END_DATE, self::HEADER_PARENT_SOURCEDID, self::HEADER_SCHOOL_YEAR
-    ];
-    const HEADER_CLASSES = [
-        self::HEADER_SOURCEDID, self::HEADER_STATUS, self::HEADER_DATE_LAST_MODIFIED, self::HEADER_TITLE, self::HEADER_GRADES,
-        self::HEADER_COURSE_SOURCEDID, self::HEADER_CLASS_CODE, self::HEADER_CLASS_TYPE, self::HEADER_LOCATION,
-        self::HEADER_SCHOOL_SOURCEDID, self::HEADER_TERM_SOURCEDIDS, self::HEADER_SUBJECTS, self::HEADER_SUBJECT_CODES, self::HEADER_PERIODS
-    ];
-    const HEADER_ENROLLMENTS = [
-        self::HEADER_SOURCEDID, self::HEADER_STATUS, self::HEADER_DATE_LAST_MODIFIED, self::HEADER_CLASS_SOURCEDID,
-        self::HEADER_SCHOOL_SOURCEDID, self::HEADER_USER_SOURCEDID, self::HEADER_ROLE, self::HEADER_PRIMARY,
-        self::HEADER_BEGIN_DATE, self::HEADER_END_DATE
-    ];
-    const HEADER_ORGS = [
-        self::HEADER_SOURCEDID, self::HEADER_STATUS, self::HEADER_DATE_LAST_MODIFIED, self::HEADER_NAME, self::HEADER_TYPE,
-        self::HEADER_IDENTIFIER, self::HEADER_PARENT_SOURCEDID
-    ];
-    const HEADER_USERS = [
-        self::HEADER_SOURCEDID, self::HEADER_STATUS, self::HEADER_DATE_LAST_MODIFIED, self::HEADER_ENABLED_USER,
-        self::HEADER_ORG_SOURCEDIDS, self::HEADER_ROLE, self::HEADER_USERNAME, self::HEADER_USERIDS,
-        self::HEADER_GIVEN_NAME, self::HEADER_FAMILY_NAME, self::HEADER_MIDDLE_NAME, self::HEADER_IDENTIFIER,
-        self::HEADER_EMAIL, self::HEADER_SMS, self::HEADER_PHONE, self::HEADER_AGENT_SOURCEDIDS, self::HEADER_GRADES, self::HEADER_PASSWORD
-    ];
-
-    // Data type definitions for each file
-    public static $datatype_files = [
-        self::FILE_ACADEMIC_SESSIONS => [
-            self::HEADER_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
-            self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
-            self::HEADER_TITLE => self::DATATYPE_STRING,
-            self::HEADER_TYPE => self::DATATYPE_ENUM_TYPE,
-            self::HEADER_START_DATE => self::DATATYPE_DATE,
-            self::HEADER_END_DATE => self::DATATYPE_DATE,
-            self::HEADER_PARENT_SOURCEDID => [self::DATATYPE_GUID, self::DATATYPE_NULL],
-            self::HEADER_SCHOOL_YEAR => self::DATATYPE_YEAR,
-        ],
-        self::FILE_CLASSES => [
-            self::HEADER_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
-            self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
-            self::HEADER_TITLE => self::DATATYPE_STRING,
-            self::HEADER_GRADES => [self::DATATYPE_ARRAY_GRADE, self::DATATYPE_NULL],
-            self::HEADER_COURSE_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_CLASS_CODE => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-            self::HEADER_CLASS_TYPE => self::DATATYPE_ENUM_CLASS_TYPE,
-            self::HEADER_LOCATION => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-            self::HEADER_SCHOOL_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_TERM_SOURCEDIDS => [self::DATATYPE_ARRAY_GUID],
-            self::HEADER_SUBJECTS => [self::DATATYPE_ARRAY_SUBJECTS, self::DATATYPE_NULL],
-            self::HEADER_SUBJECT_CODES => [self::DATATYPE_ARRAY_SUBJECT_CODES, self::DATATYPE_NULL],
-            self::HEADER_PERIODS => [self::DATATYPE_ARRAY_PERIODS, self::DATATYPE_NULL],
-        ],
-        self::FILE_ENROLLMENTS => [
-            self::HEADER_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
-            self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
-            self::HEADER_CLASS_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_SCHOOL_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_USER_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_ROLE => self::DATATYPE_ENUM_TYPE_ENROL,
-            self::HEADER_PRIMARY => [self::DATATYPE_ENUM_PRIMARY, self::DATATYPE_NULL],
-            self::HEADER_BEGIN_DATE => [self::DATATYPE_DATE, self::DATATYPE_NULL],
-            self::HEADER_END_DATE => [self::DATATYPE_DATE, self::DATATYPE_NULL],
-        ],
-        self::FILE_ORGS => [
-            self::HEADER_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
-            self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
-            self::HEADER_NAME => self::DATATYPE_STRING,
-            self::HEADER_TYPE => self::DATATYPE_ENUM_ORG_TYPE,
-            self::HEADER_IDENTIFIER => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-            self::HEADER_PARENT_SOURCEDID => [self::DATATYPE_GUID, self::DATATYPE_NULL],
-        ],
-        self::FILE_USERS => [
-            self::HEADER_SOURCEDID => self::DATATYPE_GUID,
-            self::HEADER_STATUS => [self::DATATYPE_ENUM_STATUS, self::DATATYPE_NULL],
-            self::HEADER_DATE_LAST_MODIFIED => [self::DATATYPE_DATETIME, self::DATATYPE_NULL],
-            self::HEADER_ENABLED_USER => self::DATATYPE_ENUM_PRIMARY,
-            self::HEADER_ORG_SOURCEDIDS => self::DATATYPE_ARRAY_GUID,
-            self::HEADER_ROLE => self::DATATYPE_ENUM_ROLE_USER,
-            self::HEADER_USERNAME => self::DATATYPE_STRING,
-            self::HEADER_USERIDS => [self::DATATYPE_ARRAY_USERIDS, self::DATATYPE_NULL],
-            self::HEADER_GIVEN_NAME => self::DATATYPE_STRING,
-            self::HEADER_FAMILY_NAME => self::DATATYPE_STRING,
-            self::HEADER_MIDDLE_NAME => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-            self::HEADER_IDENTIFIER => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-            self::HEADER_EMAIL => [self::DATATYPE_STRING_EMAIL, self::DATATYPE_NULL],
-            self::HEADER_SMS => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-            self::HEADER_PHONE => [self::DATATYPE_STRING, self::DATATYPE_NULL],
-            self::HEADER_AGENT_SOURCEDIDS => [self::DATATYPE_ARRAY_GUID, self::DATATYPE_NULL],
-            self::HEADER_GRADES => [self::DATATYPE_GRADE, self::DATATYPE_NULL],
-            self::HEADER_PASSWORD => [self::DATATYPE_PASSWORD, self::DATATYPE_NULL],
-        ],
-    ];
-
-    // Required files and their headers
-    const REQUIRED_FILES = [
-        self::FILE_ACADEMIC_SESSIONS => self::HEADER_ACADEMIC_SESSIONS,
-        self::FILE_CLASSES => self::HEADER_CLASSES,
-        self::FILE_ENROLLMENTS => self::HEADER_ENROLLMENTS,
-        self::FILE_ORGS => self::HEADER_ORGS,
-        self::FILE_USERS => self::HEADER_USERS,
-    ];
-
-    // Validators for each data type
-    public static $validators = [
-        self::DATATYPE_GUID => 'is_guid_type',
-        self::DATATYPE_INT => 'is_int_type',
-        self::DATATYPE_DATETIME => 'is_datetime_type',
-        self::DATATYPE_DATE => 'is_date_type',
-        self::DATATYPE_YEAR => 'is_year_type',
-        self::DATATYPE_ENUM_STATUS => 'is_status_enum_type',
-        self::DATATYPE_ENUM_TYPE => 'is_type_enum',
-        self::DATATYPE_ARRAY_GUID => 'is_valid_guid_list',
-        self::DATATYPE_ARRAY_GRADE => 'is_valid_grades',
-        self::DATATYPE_GRADE => 'is_valid_grade',
-        self::DATATYPE_STRING_EMAIL => 'is_email_type',
-        self::DATATYPE_ARRAY_USERIDS => 'is_valid_user_id',
-        self::DATATYPE_ENUM_ROLE_USER => 'is_role_user_enum',
-        self::DATATYPE_ENUM_TYPE_ENROL => 'is_role_enum',
-        self::DATATYPE_ENUM_PRIMARY => 'is_primary_enum',
-        self::DATATYPE_ENUM_CLASS_TYPE => 'is_class_type_enum',
-        self::DATATYPE_ENUM_ORG_TYPE => 'is_org_type_enum',
-        self::DATATYPE_ARRAY_SUBJECTS => 'is_list_of_strings',
-        self::DATATYPE_ARRAY_SUBJECT_CODES => 'is_valid_subject_codes',
-        self::DATATYPE_PASSWORD => 'is_valid_password',
-        self::DATATYPE_ARRAY_PERIODS => 'is_valid_periods',
-        self::DATATYPE_STRING => 'is_valid_human_readable_string',
-    ];
+class csv_client_helper {
+    /**
+     * Get the expected data types for each file.
+     *
+     * @return array An array containing the expected data types for each file.
+     */
+    public static function get_file_datatypes(): array {
+        return [
+            csv_client_const_helper::FILE_ACADEMIC_SESSIONS => [
+                csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_STATUS => [
+                    csv_client_const_helper::DATATYPE_ENUM_STATUS,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
+                    csv_client_const_helper::DATATYPE_DATETIME,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_TITLE => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_TYPE => csv_client_const_helper::DATATYPE_ENUM_TYPE,
+                csv_client_const_helper::HEADER_START_DATE => csv_client_const_helper::DATATYPE_DATE,
+                csv_client_const_helper::HEADER_END_DATE => csv_client_const_helper::DATATYPE_DATE,
+                csv_client_const_helper::HEADER_PARENT_SOURCEDID => [
+                    csv_client_const_helper::DATATYPE_GUID,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_SCHOOL_YEAR => csv_client_const_helper::DATATYPE_YEAR,
+            ],
+            csv_client_const_helper::FILE_CLASSES => [
+                csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_STATUS => [
+                    csv_client_const_helper::DATATYPE_ENUM_STATUS,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
+                    csv_client_const_helper::DATATYPE_DATETIME,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_TITLE => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_GRADES => [
+                    csv_client_const_helper::DATATYPE_ARRAY_GRADE,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_COURSE_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_CLASS_CODE => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_CLASS_TYPE => csv_client_const_helper::DATATYPE_ENUM_CLASS_TYPE,
+                csv_client_const_helper::HEADER_LOCATION => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_SCHOOL_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_TERM_SOURCEDIDS => [
+                    csv_client_const_helper::DATATYPE_ARRAY_GUID
+                ],
+                csv_client_const_helper::HEADER_SUBJECTS => [
+                    csv_client_const_helper::DATATYPE_ARRAY_SUBJECTS,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_SUBJECT_CODES => [
+                    csv_client_const_helper::DATATYPE_ARRAY_SUBJECT_CODES,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PERIODS => [
+                    csv_client_const_helper::DATATYPE_ARRAY_PERIODS,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+            ],
+            csv_client_const_helper::FILE_ENROLLMENTS => [
+                csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_STATUS => [
+                    csv_client_const_helper::DATATYPE_ENUM_STATUS,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
+                    csv_client_const_helper::DATATYPE_DATETIME,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_CLASS_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_SCHOOL_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_USER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_ROLE => csv_client_const_helper::DATATYPE_ENUM_TYPE_ENROL,
+                csv_client_const_helper::HEADER_PRIMARY => [
+                    csv_client_const_helper::DATATYPE_ENUM_PRIMARY,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_BEGIN_DATE => [
+                    csv_client_const_helper::DATATYPE_DATE,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_END_DATE => [
+                    csv_client_const_helper::DATATYPE_DATE,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+            ],
+            csv_client_const_helper::FILE_ORGS => [
+                csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_STATUS => [
+                    csv_client_const_helper::DATATYPE_ENUM_STATUS,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
+                    csv_client_const_helper::DATATYPE_DATETIME,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_NAME => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_TYPE => csv_client_const_helper::DATATYPE_ENUM_ORG_TYPE,
+                csv_client_const_helper::HEADER_IDENTIFIER => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PARENT_SOURCEDID => [
+                    csv_client_const_helper::DATATYPE_GUID,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+            ],
+            csv_client_const_helper::FILE_USERS => [
+                csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_STATUS => [
+                    csv_client_const_helper::DATATYPE_ENUM_STATUS,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
+                    csv_client_const_helper::DATATYPE_DATETIME,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_ENABLED_USER => csv_client_const_helper::DATATYPE_ENUM_PRIMARY,
+                csv_client_const_helper::HEADER_ORG_SOURCEDIDS => csv_client_const_helper::DATATYPE_ARRAY_GUID,
+                csv_client_const_helper::HEADER_ROLE => csv_client_const_helper::DATATYPE_ENUM_ROLE_USER,
+                csv_client_const_helper::HEADER_USERNAME => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_USERIDS => [
+                    csv_client_const_helper::DATATYPE_ARRAY_USERIDS,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_GIVEN_NAME => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_FAMILY_NAME => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_MIDDLE_NAME => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_IDENTIFIER => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_EMAIL => [
+                    csv_client_const_helper::DATATYPE_STRING_EMAIL,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_SMS => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PHONE => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_AGENT_SOURCEDIDS => [
+                    csv_client_const_helper::DATATYPE_ARRAY_GUID,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_GRADES => [
+                    csv_client_const_helper::DATATYPE_GRADE,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PASSWORD => [
+                    csv_client_const_helper::DATATYPE_PASSWORD,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+            ],
+        ];
+    }
 
     /**
-     * Function to validate CSV headers
+     * Get the validator functions for each data type.
      *
-     * @param string $file_path Path to the CSV file
-     * @return bool True if the headers are valid, false otherwise
+     * @return array An array containing the validator functions for each data type.
      */
-    public static function validate_csv_headers(string $file_path): bool {
-        $clean_file_path = clean_param($file_path, PARAM_PATH);
-        $file_name = basename($clean_file_path);
-        $expected_headers = self::getHeader($file_name);
+    public static function get_validator(): array {
+        return [
+            csv_client_const_helper::DATATYPE_GUID => 'is_guid_type',
+            csv_client_const_helper::DATATYPE_INT => 'is_int_type',
+            csv_client_const_helper::DATATYPE_DATETIME => 'is_datetime_type',
+            csv_client_const_helper::DATATYPE_DATE => 'is_date_type',
+            csv_client_const_helper::DATATYPE_YEAR => 'is_year_type',
+            csv_client_const_helper::DATATYPE_ENUM_STATUS => 'is_status_enum_type',
+            csv_client_const_helper::DATATYPE_ENUM_TYPE => 'is_type_enum',
+            csv_client_const_helper::DATATYPE_ARRAY_GUID => 'is_valid_guid_list',
+            csv_client_const_helper::DATATYPE_ARRAY_GRADE => 'is_valid_grades',
+            csv_client_const_helper::DATATYPE_GRADE => 'is_valid_grade',
+            csv_client_const_helper::DATATYPE_STRING_EMAIL => 'is_email_type',
+            csv_client_const_helper::DATATYPE_ARRAY_USERIDS => 'is_valid_user_id',
+            csv_client_const_helper::DATATYPE_ENUM_ROLE_USER => 'is_role_user_enum',
+            csv_client_const_helper::DATATYPE_ENUM_TYPE_ENROL => 'is_role_enum',
+            csv_client_const_helper::DATATYPE_ENUM_PRIMARY => 'is_primary_enum',
+            csv_client_const_helper::DATATYPE_ENUM_CLASS_TYPE => 'is_class_type_enum',
+            csv_client_const_helper::DATATYPE_ENUM_ORG_TYPE => 'is_org_type_enum',
+            csv_client_const_helper::DATATYPE_ARRAY_SUBJECTS => 'is_list_of_strings',
+            csv_client_const_helper::DATATYPE_ARRAY_SUBJECT_CODES => 'is_valid_subject_codes',
+            csv_client_const_helper::DATATYPE_PASSWORD => 'is_valid_password',
+            csv_client_const_helper::DATATYPE_ARRAY_PERIODS => 'is_valid_periods',
+            csv_client_const_helper::DATATYPE_STRING => 'is_valid_human_readable_string',
+        ];
+    }
 
-        if (($handle = fopen($clean_file_path, "r")) !== false) {
-            $headers = fgetcsv($handle, 1000, ",");
+    /**
+     * Function to validate CSV headers.
+     *
+     * @param string $filepath Path to the CSV file.
+     * @return bool True if the headers are valid, false otherwise.
+     */
+    public static function validate_csv_headers(string $filepath): bool {
+        $cleanfilepath = clean_param($filepath, PARAM_PATH);
+        $filename = basename($cleanfilepath);
+        $expectedheaders = self::get_header($filename);
+
+        if (($handle = fopen($cleanfilepath, 'r')) !== false) {
+            $headers = fgetcsv($handle, 0, ',');
             fclose($handle);
-            return $headers === $expected_headers;
-        } 
+            return $headers === $expectedheaders;
+        }
         return false;
     }
 
     /**
-     * Function to check if the manifest and required files are present
+     * Function to check if the manifest and required files are present.
      *
-     * @param string $manifest_path Path to the manifest file
-     * @param string $tempdir Path to the temporary directory
-     * @return array An array containing the missing files and invalid headers
+     * @param string $manifestpath Path to the manifest file.
+     * @param string $tempdir Path to the temporary directory.
+     * @return array An array containing the missing files and invalid headers.
      */
-    public static function check_manifest_and_files($manifest_path, $tempdir) {
-        $invalid_headers = [];
-        $required_files = [];
+    public static function check_manifest_and_files(string $manifestpath, string $tempdir): array {
+        $invalidheaders = [];
+        $requiredfiles = [];
 
-        if (($handle = fopen($manifest_path, "r")) !== false) {
-            while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+        if (($handle = fopen($manifestpath, 'r')) !== false) {
+            while (($data = fgetcsv($handle, 0, ',')) !== false) {
                 if (in_array($data[1], ['bulk', 'delta'])) {
-                    $required_files[] = str_replace('file.', '', $data[0]) . '.csv';
+                    // Remove 'file.' prefix and add '.csv' suffix in the manifest file to clean the param names.
+                    $requiredfiles[] = str_replace('file.', '', $data[0]) . '.csv';
                 }
             }
             fclose($handle);
         }
 
-        $extracted_files = array_diff(scandir($tempdir), array('.', '..', 'uploadedzip.zip'));
-        $missing_files = array_diff($required_files, $extracted_files);
+        $extractedfiles = array_diff(scandir($tempdir), ['.', '..', 'uploadedzip.zip']);
+        $missingfiles = array_diff($requiredfiles, $extractedfiles);
 
-        foreach ($required_files as $file) {
-            if (in_array($file, $extracted_files)) {
-                $file_path = $tempdir . '/' . $file;
-                if (!self::validate_csv_headers($file_path)) {
-                    $invalid_headers[] = $file;
+        foreach ($requiredfiles as $file) {
+            $cleanfilepath = clean_param($file, PARAM_PATH);
+
+            if (in_array($cleanfilepath, $extractedfiles)) {
+                $filepath = $tempdir . '/' . $file;
+                if (!self::validate_csv_headers($filepath)) {
+                    $invalidheaders[] = $file;
                 }
             }
         }
 
         return [
-            'missing_files' => $missing_files,
-            'invalid_headers' => $invalid_headers
+            'missingfiles' => $missingfiles,
+            'invalidheaders' => $invalidheaders
         ];
     }
 
     /**
-     * Function to extract CSV files to arrays
+     * Function to extract CSV files to arrays.
      *
-     * @param string $directory Path to the directory containing the CSV files
-     * @return array An associative array containing the CSV data
+     * @param string $directory Path to the directory containing the CSV files.
+     * @return array An associative array containing the CSV data.
      */
-    public static function extract_csvs_to_arrays($directory) {
-        $csv_data = [];
+    public static function extract_csvs_to_arrays(string $directory): array {
+        $csvdata = [];
         $files = scandir($directory);
-    
+
         foreach ($files as $file) {
             if (pathinfo($file, PATHINFO_EXTENSION) === 'csv') {
-                $file_name = pathinfo($file, PATHINFO_FILENAME);
-                $csv_data[$file_name] = [];
+                $filename = pathinfo($file, PATHINFO_FILENAME);
+                $csvdata[$filename] = [];
 
                 if (($handle = fopen($directory . '/' . $file, 'r')) !== false) {
-                    $headers = fgetcsv($handle, 1000, ',');
-                    while (($row = fgetcsv($handle, 1000, ',')) !== false) {
-                        $csv_data[$file_name][] = array_combine($headers, $row);
+                    $headers = fgetcsv($handle, 0, ',');
+                    while (($row = fgetcsv($handle, 0, ',')) !== false) {
+                        $csvdata[$filename][] = array_combine($headers, $row);
                     }
                     fclose($handle);
                 }
             }
         }
-        return $csv_data;
+        return $csvdata;
     }
 
     /**
-     * Function to display missing and invalid files
+     * Function to display missing and invalid files.
      *
-     * @param array $missing_files An array containing the missing files and invalid headers
+     * @param array $missingfiles An array containing the missing files and invalid headers.
+     * @return string The error messages to be displayed.
      */
-    public static function display_missing_and_invalid_files($missing_files) {
-        $critical_files = [self::FILE_ACADEMIC_SESSIONS, self::FILE_CLASSES, self::FILE_ENROLLMENTS, self::FILE_ORGS, self::FILE_USERS];
-    
-        if (!empty($missing_files['missing_files'])) {
-            foreach ($missing_files['missing_files'] as $missing_file) {
-                if (in_array($missing_file, $critical_files, true)) {
-                    echo get_string('missingfiles', 'enrol_oneroster') . implode(', ', $missing_files['missing_files']) . '<br>';
+    public static function display_missing_and_invalid_files(array $missingfiles): string {
+        $criticalfiles = [
+            csv_client_const_helper::FILE_ACADEMIC_SESSIONS,
+            csv_client_const_helper::FILE_CLASSES,
+            csv_client_const_helper::FILE_ENROLLMENTS,
+            csv_client_const_helper::FILE_ORGS,
+            csv_client_const_helper::FILE_USERS
+        ];
+
+        $errormessage = '';
+
+        if (!empty($missingfiles['missingfiles'])) {
+            $criticalmissingfiles = [];
+            $noncriticalfiles = [];
+
+            foreach ($missingfiles['missingfiles'] as $missingfile) {
+                if (in_array($missingfile, $criticalfiles, true)) {
+                    $criticalmissingfiles[] = $missingfile;
                 } else {
-                    echo $missing_file . get_string('invalid_manifest_selection', 'enrol_oneroster') .'<br>';
+                    $noncriticalfiles[] = $missingfile;
                 }
             }
+
+            if (!empty($criticalmissingfiles)) {
+                $criticalfileslist = implode(', ', $criticalmissingfiles);
+                $errormessage .= get_string(
+                    'missingfiles',
+                    'enrol_oneroster',
+                    (object)['files' => $criticalfileslist]
+                ) . '<br>';
+            }
+
+            foreach ($noncriticalfiles as $noncriticalfile) {
+                $errormessage .= get_string(
+                    'invalid_manifest_selection',
+                    'enrol_oneroster',
+                    (object)['manifest' => $noncriticalfile]
+                ) . '<br>';
+            }
         }
-    
-        if (!empty($missing_files['invalid_headers'])) {
-            echo get_string('invalidheaders', 'enrol_oneroster') . implode(', ', $missing_files['invalid_headers']) . '<br>';
+
+        if (!empty($missingfiles['invalidheaders'])) {
+            $invalidheaderslist = implode(', ', $missingfiles['invalidheaders']);
+            $errormessage .= get_string(
+                'invalidheaders',
+                'enrol_oneroster',
+                (object)['headers' => $invalidheaderslist]
+            ) . '<br>';
         }
+
+        return $errormessage;
     }
-    
+
     /**
-     * Function to get the header for a given file
+     * Function to get the header for a given file.
      *
-     * @param string $file_name The name of the file
-     * @return array The header for the given file
+     * @param string $filename The name of the file.
+     * @return array The header for the given file.
      */
-    public static function getHeader($file_name) {
-        switch ($file_name) {
-            case self::FILE_MANIFEST:
-                return self::HEADER_MANIFEST;
-            case self::FILE_ACADEMIC_SESSIONS:
-                return self::HEADER_ACADEMIC_SESSIONS;
-            case self::FILE_CLASSES:
-                return self::HEADER_CLASSES;
-            case self::FILE_ENROLLMENTS:
-                return self::HEADER_ENROLLMENTS;
-            case self::FILE_ORGS:
-                return self::HEADER_ORGS;
-            case self::FILE_USERS:
-                return self::HEADER_USERS;
+    public static function get_header(string $filename): array {
+        switch ($filename) {
+            case csv_client_const_helper::FILE_ACADEMIC_SESSIONS:
+                return csv_client_const_helper::HEADER_ACADEMIC_SESSIONS;
+            case csv_client_const_helper::FILE_CLASSES:
+                return csv_client_const_helper::HEADER_CLASSES;
+            case csv_client_const_helper::FILE_ENROLLMENTS:
+                return csv_client_const_helper::HEADER_ENROLLMENTS;
+            case csv_client_const_helper::FILE_ORGS:
+                return csv_client_const_helper::HEADER_ORGS;
+            case csv_client_const_helper::FILE_USERS:
+                return csv_client_const_helper::HEADER_USERS;
             default:
                 return [];
         }
     }
 
     /**
-     * Get the expected data types for a given file
+     * Get the expected data types for a given file.
      *
-     * @param string $file_name The name of the file
-     * @return array The expected data types for the given file
+     * @param string $filename The name of the file.
+     * @return array The expected data types for the given file.
      */
-    public static function get_data_types($file_name) {
-        return self::$datatype_files[$file_name] ?? [];
+    public static function get_data_types(string $filename): array {
+        return self::get_file_datatypes()[$filename] ?? [];
     }
 
     /**
-     * Validate the data types of the CSV files
+     * Validate the data types of the CSV files.
      *
-     * @param string $directory The directory containing the CSV files
-     * @return array An array containing the validity of the files, the invalid files, and error messages
+     * @param string $directory The directory containing the CSV files.
+     * @return array An array containing the validity of the files, the invalid files, and error messages.
      */
-    public static function validate_csv_data_types($directory) {
-        $isValid = true;
-        $invalid_files = [];
-        $error_messages = [];
+    public static function validate_csv_data_types(string $directory): array {
+        $isvalid = true;
+        $invalidfiles = [];
+        $errormessages = [];
 
         $files = scandir($directory);
 
         foreach ($files as $file) {
-            if ($file === '.' || $file === '..' || pathinfo($file, PATHINFO_EXTENSION) !== 'csv' || $file === self::FILE_MANIFEST) {
+            if ($file === '.' || $file === '..' ||
+                pathinfo($file, PATHINFO_EXTENSION) !== 'csv' ||
+                $file === csv_client_const_helper::FILE_MANIFEST) {
                 continue;
             }
 
-            $clean_file_path = clean_param($directory . '/' . $file, PARAM_PATH);
-            $expected_data_types = self::get_data_types($file);
-            $detected_data_types = [];
+            $cleanfilepath = clean_param($directory . '/' . $file, PARAM_PATH);
+            $expecteddatatypes = self::get_data_types($file);
+            $detecteddatatypes = [];
 
-            if (($handle = fopen($clean_file_path, "r")) !== false) {
-                $headers = fgetcsv($handle, 1000, ",");
+            if (($handle = fopen($cleanfilepath, 'r')) !== false) {
+                $headers = fgetcsv($handle, 0, ',');
                 if ($headers === false) {
-                    $isValid = false;
-                    $invalid_files[] = $file;
-                    $error_messages[] = "Failed to read headers from CSV file: $file";
+                    $isvalid = false;
+                    $invalidfiles[] = $file;
+                    $errormessages[] = "Failed to read headers from CSV file: $file";
                     continue;
                 }
 
-                $detected_data_types = array_fill(0, count($headers), 'unknown');
-                while (($row = fgetcsv($handle, 1000, ",")) !== false) {
+                $detecteddatatypes = array_fill(0, count($headers), 'unknown');
+
+                while (($row = fgetcsv($handle, 0, ',')) !== false) {
+                    $row = array_slice($row, 0, count($headers));
                     foreach ($row as $index => $value) {
-                        $detected_type = self::determine_data_type($value, $expected_data_types[$headers[$index]] ?? []);
-                        if ($detected_data_types[$index] === 'unknown' || $detected_data_types[$index] === self::DATATYPE_NULL || $detected_data_types[$index] !== false) {
-                            $detected_data_types[$index] = $detected_type;
+                        if (isset($headers[$index])) {
+                            $detectedtype = self::determine_data_type(
+                                $value,
+                                $expecteddatatypes[$headers[$index]] ?? []
+                            );
+
+                            if ($detecteddatatypes[$index] === 'unknown' ||
+                                $detecteddatatypes[$index] === csv_client_const_helper::DATATYPE_NULL ||
+                                $detecteddatatypes[$index] !== false) {
+                                $detecteddatatypes[$index] = $detectedtype;
+                            }
                         }
                     }
                 }
 
                 fclose($handle);
 
-                $file_is_valid = true;
+                $fileisvalid = true;
                 foreach ($headers as $index => $header) {
-                    $expected_types = $expected_data_types[$header] ?? ['N/A'];
-                    $detected_type = $detected_data_types[$index];
-                    if (!in_array($detected_type, (array)$expected_types, true)) {
-                        $error_messages[] = "Validation failed for header '$header' in file '$file'.";
-                        $isValid = false;
-                        $file_is_valid = false;
+                    $expectedtypes = $expecteddatatypes[$header] ?? [get_string('na', 'enrol_oneroster')];
+                    $detectedtype = $detecteddatatypes[$index];
+                    if (!in_array($detectedtype, (array)$expectedtypes, true)) {
+                        $errormessages[] = get_string(
+                            'validation',
+                            'enrol_oneroster',
+                            (object)['header' => $header, 'file' => $file]
+                        );
+                        $isvalid = false;
+                        $fileisvalid = false;
                     }
                 }
 
-                if (!$file_is_valid) {
-                    $invalid_files[] = $file;
+                if (!$fileisvalid) {
+                    $invalidfiles[] = $file;
                 }
             }
         }
 
         return [
-            'isValid' => $isValid,
-            'invalid_files' => $invalid_files,
-            'error_messages' => $error_messages
+            'is_valid' => $isvalid,
+            'invalid_files' => $invalidfiles,
+            'error_messages' => $errormessages
         ];
     }
 
     /**
-     * Function to display errors for CSV data type validation
+     * Function to display errors for CSV data type validation.
      *
-     * @param array $validation_result An array containing the validity of the files, the invalid files, and error messages
+     * @param array $validationresult An array containing the validity of the files, the invalid files, and error messages.
+     * @return string The error messages to be displayed.
      */
-    public static function display_validation_errors($validation_result) {
-        if (!empty($validation_result['error_messages'])) {
-            echo '<h3>' . "Data Type Errors Messages" . '</h3>';
-            echo '<ul>';
-            foreach ($validation_result['error_messages'] as $message) {
-                echo '<li>' . $message . '</li>';
+    public static function display_validation_errors(array $validationresult): string {
+        $errormessage = '';
+
+        if (!empty($validationresult['error_messages'])) {
+            $errormessage .= \html_writer::tag('h3', get_string('datatype_error_messages', 'enrol_oneroster'));
+
+            $errorlistitems = '';
+            foreach ($validationresult['error_messages'] as $message) {
+                $errorlistitems .= \html_writer::tag('li', $message);
             }
-            echo '</ul>';
-            echo '<p>'. get_string('reference_message', 'enrol_oneroster');
-            echo '<a href="https://www.imsglobal.org/oneroster-v11-final-csv-tables#_Toc480293266" target="_blank">' . get_string('csv_spec', 'enrol_oneroster') . '</a>.</p>';
+
+            $errormessage .= \html_writer::tag('ul', $errorlistitems);
+
+            $referencemessage = get_string('reference_message', 'enrol_oneroster') . ' ';
+            $link = \html_writer::link(
+                'https://www.imsglobal.org/oneroster-v11-final-csv-tables#_Toc480293266',
+                get_string('csv_spec', 'enrol_oneroster'),
+                ['target' => '_blank']
+            );
+            $errormessage .= \html_writer::tag('p', $referencemessage . $link . '.');
         }
+
+        return $errormessage;
     }
 
     /**
-     * Function to validate users and configure settings for database entry
-     * If all users have an identifier, the users will be saved to the database
-     * Otherwise, no users will be saved
+     * Function to validate users and configure settings for database entry.
+     * If all users have an identifier, the users will be saved to the database.
+     * Otherwise, no users will be saved.
      *
-     * @param array $csv_data An array containing user data, including identifiers and other relevant details.
+     * @param array $csvdata An array containing user data, including identifiers and other relevant details.
+     * @return bool True if all users have an identifier and password, false otherwise.
      */
-    public static function validate_and_save_users_to_database($csv_data): bool {
-        foreach ($csv_data['users'] as $user) {
-            // If any user has an empty identifier, return false
-            if (empty($user['identifier']) && empty($user['password'])) {
+    public static function validate_user_data(array $csvdata): bool {
+        foreach ($csvdata['users'] as $user) {
+            if (empty($user['identifier']) || empty($user['password'])) {
                 return false;
             }
         }
@@ -477,81 +541,73 @@ class OneRosterHelper {
     }
 
     /**
-     * Determine the data type of a value
+     * Determine the data type of a value.
      *
-     * @param string $value The value to determine the data type of
-     * @param array $expected_types The expected data types for the value
-     * @return string The detected data type
+     * @param string $value The value to determine the data type of.
+     * @param array $expectedtypes The expected data types for the value.
+     * @return string The detected data type.
      */
-    public static function determine_data_type($value, $expected_types) {
+    public static function determine_data_type($value, $expectedtypes): string {
         if (trim($value) === '') {
-            return self::DATATYPE_NULL;
+            return csv_client_const_helper::DATATYPE_NULL;
         }
 
-        foreach ((array)$expected_types as $expected_type) {
-            if (isset(self::$validators[$expected_type]) && call_user_func([self::class, self::$validators[$expected_type]], $value)) {
-                return $expected_type;
+        foreach ((array)$expectedtypes as $expectedtype) {
+            if (isset(self::get_validator()[$expectedtype]) &&
+                call_user_func([self::class, self::get_validator()[$expectedtype]], $value)) {
+                return $expectedtype;
             }
         }
         return 'unknown';
     }
 
     /**
-     * Check if a value is a valid password
+     * Check if a value is a valid password.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is a valid password, false otherwise
+     * @param mixed $value The value to check.
+     * @return bool True if the value is a valid password, false otherwise.
      */
-    public static function is_valid_password($value) {
-        if (!preg_match('/\d/', $value)) {
-            return false;
-        }
-    
-        if (!preg_match('/[a-z]/', $value)) {
-            return false;
-        }
-    
-        if (!preg_match('/[\W_]/', $value)) {
-            return false;
-        }
-    
-        return true;
+    public static function is_valid_password($value): bool {
+        return check_password_policy($value, $errormsg);
     }
 
     /**
-     * Check if a value is a valid human-readable string
+     * Check if a value is a valid human-readable string.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is human-readable string, false otherwise
+     * A valid human-readable string is defined as a string that:
+     * - Contains only letters, numbers, spaces, and a limited set of punctuation characters (.,-).
+     * - The regex uses Unicode properties to allow for letters from different languages (\p{L} for letters and \p{N} for numbers).
+     *
+     * @param mixed $value The value to check.
+     * @return bool True if the value is a human-readable string, false otherwise.
      */
-    public static function is_valid_human_readable_string($value) : bool {
-        $trimmed_value = trim($value);
-        $result = is_string($trimmed_value) && preg_match('/^[\p{L}\p{N}\s.,-]+$/u', $trimmed_value);
-        
+    public static function is_valid_human_readable_string($value): bool {
+        $trimmedvalue = trim($value);
+        $result = is_string($trimmedvalue) && preg_match('/^[\p{L}\p{N}\s.,-]+$/u', $trimmedvalue);
         return $result;
     }
 
     /**
-     * Check if a value is of type int
+     * Check if a value is of type int.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is of type int, false otherwise
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type int, false otherwise.
      */
-    public static function is_int_type($value) : bool {
+    public static function is_int_type($value): bool {
         return is_numeric($value) && filter_var($value, FILTER_VALIDATE_INT) !== false;
     }
 
-   /**
-    * Check if a value is of type list (array of strings)
-    *
-    * @param mixed $value The value to check
-    * @return bool True if the value is of type list of strings, false otherwise
-    */
-    public static function is_list_of_strings($value) : bool {
+    /**
+     * Check if a value is of type list (array of strings).
+     *
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type list of strings, false otherwise.
+     */
+    public static function is_list_of_strings($value): bool {
         if (is_string($value)) {
-            $value = array_map('trim', explode(',', $value)); 
+            $value = array_map('trim', explode(',', $value));
         }
-    
+
         foreach ($value as &$item) {
             $item = str_replace(',', '', $item);
             if (trim($item) === '') {
@@ -565,15 +621,15 @@ class OneRosterHelper {
     }
 
     /**
-     * Validate and parse subject codes
-     * Subject codes can be a single string or a list of strings separated by commas
+     * Validate and parse subject codes.
+     * Subject codes can be a single string or a list of strings separated by commas.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is a valid list of subject codes, false otherwise
+     * @param string $value The value to check.
+     * @return bool True if the value is a valid list of subject codes, false otherwise.
      */
-    public static function is_valid_subject_codes($value) : bool {
+    public static function is_valid_subject_codes(string $value): bool {
         if (is_string($value)) {
-            $value = array_map('trim', explode(',', $value)); 
+            $value = array_map('trim', explode(',', $value));
         }
 
         foreach ($value as $item) {
@@ -582,7 +638,7 @@ class OneRosterHelper {
                 $codes = explode(',', $item);
                 foreach ($codes as $code) {
                     if (!is_string(trim($code)) || trim($code) === '') {
-                        return false; 
+                        return false;
                     }
                 }
             } else {
@@ -597,10 +653,10 @@ class OneRosterHelper {
     /**
      * Validate and parse periods string.
      *
-     * @param string $value The value to check and parse
-     * @return bool True if the value is a valid periods string, false otherwise
+     * @param string $value The value to check and parse.
+     * @return bool True if the value is a valid periods string, false otherwise.
      */
-    public static function is_valid_periods($value) : bool {
+    public static function is_valid_periods(string $value): bool {
         $value = trim($value);
 
         if (preg_match('/^".*?"$/', $value)) {
@@ -616,22 +672,22 @@ class OneRosterHelper {
         }
         return true;
     }
- 
+
     /**
-     * Check if a value is of type datetime
-     * Regular expression for ISO 8601 datetime format (YYYY-MM-DDTHH:MM:SS.SSSZ)
+     * Check if a value is of type datetime.
      *
+     * Regular expression for ISO 8601 datetime format (YYYY-MM-DDTHH:MM:SS.SSSZ).
      * If the value is in the old format (YYYY-MM-DD), it transforms to the new format (YYYY-MM-DDT23:59:59.999Z).
      *
-     * @param mixed $value The value to check
-     * @return bool|string True if the value is of type datetime, transformed datetime string if in v1.0 format, false otherwise
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type datetime, false otherwise.
      */
-    public static function is_datetime_type($value) {
+    public static function is_datetime_type($value): bool {
         if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/', $value)) {
             return true;
         }
 
-        // Check if the value matches the v1.0 format (YYYY-MM-DD)
+        // Check if the value matches the v1.0 format (YYYY-MM-DD).
         if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
             return true;
         }
@@ -639,117 +695,110 @@ class OneRosterHelper {
     }
 
     /**
-     * Check if a value is of type date
-     * Regular expression for ISO 8601 date format (YYYY-MM-DD)
+     * Check if a value is of type date.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is of type date, false otherwise
+     * Regular expression for ISO 8601 date format (YYYY-MM-DD).
+     *
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type date, false otherwise.
      */
-    public static function is_date_type($value) {
+    public static function is_date_type($value): bool {
         return preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) === 1;
     }
 
     /**
-     * Check if a value is of type 
-     * Regular expression for GUID (characters: 0-9, a-z, A-Z, ., -, _, /, @)
+     * Check if a value is of type GUID.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is of type GUID, false otherwise
+     * Regular expression for GUID (characters: 0-9, a-z, A-Z, ., -, _, /, @).
+     *
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type GUID, false otherwise.
      */
-    public static function is_guid_type($value) : bool {
+    public static function is_guid_type($value): bool {
         return strlen($value) < 256 && preg_match('/^[0-9a-zA-Z.\-_\/@]+$/', $value) === 1;
     }
 
     /**
-     * Check if a value is of type status enum
+     * Check if a value is of type status enum.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is of type status enum, false otherwise
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type status enum, false otherwise.
      */
-    public static function is_status_enum_type($value) : bool {
-        $valid_status_values = ['active', 'tobedeleted', 'inactive'];
-        return in_array(strtolower($value), $valid_status_values, true);
+    public static function is_status_enum_type($value): bool {
+        $validstatusvalues = ['active', 'tobedeleted', 'inactive'];
+        return in_array(strtolower($value), $validstatusvalues, true);
     }
 
     /**
-     * Check if a value is of type type enum
+     * Check if a value is of type enum.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is of type type enum, false otherwise
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type type enum, false otherwise.
      */
-    public static function is_type_enum($value) : bool {
-        $valid_type_values = ['gradingPeriod', 'semester', 'schoolYear', 'term'];
-        return in_array($value, $valid_type_values, true);
+    public static function is_type_enum($value): bool {
+        $validtypevalues = ['gradingPeriod', 'semester', 'schoolYear', 'term'];
+        return in_array($value, $validtypevalues, true);
     }
 
     /**
-     * Check if a value is of type year
-     * Regular expression for year format (YYYY)
+     * Check if a value is of type year.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is of type year, false otherwise
+     * Regular expression for year format (YYYY).
+     *
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type year, false otherwise.
      */
-    public static function is_year_type($value) : bool {
-        $currentYear = (int)date('Y');
-        return preg_match('/^\d{4}$/', $value) === 1 && (int)$value >= 1800 && (int)$value <= $currentYear;
+    public static function is_year_type($value): bool {
+        return preg_match('/^\d{4}$/', $value) === 1;
     }
 
     /**
-     * Check if a value is of type grade
+     * Check if a value is of type grade.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is of type grade, false otherwise
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type grade, false otherwise.
      */
-    public static function is_valid_grades($value) : bool{
-        $valid_grade_codes = [
-            'IT', 'PR', 'PK', 'TK', 'KG', '01', '02', '03', '04', '05', '06',
-            '07', '08', '09', '10', '11', '12', '13', 'PS', 'UG', 'Other'
-        ];
+    public static function is_valid_grades($value): bool {
         $grades = array_map('trim', explode(',', $value));
 
         foreach ($grades as $grade) {
-            if (!in_array($grade, $valid_grade_codes, true)) {
+            if (!self::is_valid_grade($grade)) {
                 return false;
             }
-        }    
+        }
         return true;
     }
 
     /**
-     * Check if a value is of type grade
+     * Check if a value is of type grade.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is of type grade, false otherwise
+     * @param string $value The value to check.
+     * @return bool True if the value is of type grade, false otherwise.
      */
-    public static function is_valid_grade($value) : bool {
-        $valid_grade_codes = [
-            'IT', 'PR', 'PK', 'TK', 'KG', '01', '02', '03', '04', '05', '06',
-            '07', '08', '09', '10', '11', '12', '13', 'PS', 'UG', 'Other'
-        ];
+    public static function is_valid_grade(string $value): bool {
         $value = trim($value);
-        return in_array($value, $valid_grade_codes, true);
+        return in_array($value, csv_client_const_helper::VALID_GRADE_CODES, true);
     }
 
     /**
-     * Check if a value is of type class type enum
+     * Check if a value is of type class type enum.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is of type class type enum, false otherwise
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type class type enum, false otherwise.
      */
-    public static function is_class_type_enum($value) : bool {
-        $valid_class_types = ['homeroom', 'scheduled'];
-        return in_array(strtolower($value), $valid_class_types, true);
+    public static function is_class_type_enum($value): bool {
+        return in_array(strtolower($value), csv_client_const_helper::VALID_CLASS_TYPES, true);
     }
 
     /**
-     * Check if a value is of type GUID list
+     * Check if a value is of type GUID list.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is of type GUID list, false otherwise
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type GUID list, false otherwise.
      */
-    public static function is_valid_guid_list($value) : bool {
+    public static function is_valid_guid_list($value): bool {
         $guids = array_map('trim', explode(',', $value));
-    
+
         foreach ($guids as $guid) {
             if (!self::is_guid_type($guid)) {
                 return false;
@@ -759,79 +808,72 @@ class OneRosterHelper {
     }
 
     /**
-     * Check if a value is of type role enum
+     * Check if a value is of type role enum.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is of type role enum, false otherwise
+     * @param string $value The value to check.
+     * @return bool True if the value is of type role enum, false otherwise.
      */
-    public static function is_role_enum($value) : bool {
-        $valid_roles = ['administrator', 'proctor', 'student', 'teacher'];
-        return in_array(strtolower($value), $valid_roles, true);
+    public static function is_role_enum(string $value): bool {
+        return in_array(strtolower($value), csv_client_const_helper::VALID_ROLES, true);
     }
 
     /**
-     * Check if a value is of type primary enum
+     * Check if a value is of type primary enum.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is of type primary enum, false otherwise
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type primary enum, false otherwise.
      */
-    public static function is_primary_enum($value) : bool {
-        $valid_primary_values = ['true', 'false'];
-        return in_array(strtolower($value), $valid_primary_values, true);
+    public static function is_primary_enum($value): bool {
+        return in_array(strtolower($value), csv_client_const_helper::VALID_PRIMARY_VALUES, true);
     }
 
     /**
-     * Check if a value is of type org type enum
+     * Check if a value is of type org type enum.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is of type org type enum, false otherwise
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type org type enum, false otherwise.
      */
-    public static function is_org_type_enum($value) : bool {
-        $valid_org_types = ['department', 'school', 'district', 'local', 'state', 'national'];
-        return in_array(strtolower($value), $valid_org_types, true);
+    public static function is_org_type_enum($value): bool {
+        return in_array(strtolower($value), csv_client_const_helper::VALID_ORG_TYPES, true);
     }
 
     /**
-     * Check if a value is of type email
+     * Check if a value is of type email.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is of type email, false otherwise
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type email, false otherwise.
      */
-    public static function is_email_type($value) : bool {
+    public static function is_email_type($value): bool {
         return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
     }
 
     /**
      * Check if a value is of type user ID or a valid user ID list.
+     *
      * Regular expression for user ID format ({[a-zA-Z0-9]+:[a-zA-Z0-9]+}).
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is of type user ID or user ID list, false otherwise
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type user ID or user ID list, false otherwise.
      */
-    public static function is_valid_user_id($value) : bool {
+    public static function is_valid_user_id($value): bool {
         $value = trim($value, '"');
-        $userIds = array_map('trim', explode(',', $value));
-        
-        foreach ($userIds as $userId) {
-            if (!preg_match('/^\{[a-zA-Z0-9]+:[a-zA-Z0-9]+\}$/', $userId)) {
+        $userids = array_map('trim', explode(',', $value));
+
+        foreach ($userids as $userid) {
+            if (!preg_match('/^\{[a-zA-Z0-9]+:[a-zA-Z0-9]+\}$/', $userid)) {
                 return false;
             }
         }
         return true;
     }
 
-
     /**
-     * Check if a value is of type role user enum
+     * Check if a value is of type role user enum.
      *
-     * @param mixed $value The value to check
-     * @return bool True if the value is of type role user enum, false otherwise
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type role user enum, false otherwise.
      */
-    public static function is_role_user_enum($value) : bool {
-        $valid_roles = [
-            'administrator', 'aide', 'guardian', 'parent', 'proctor', 
-            'relative', 'student', 'teacher'
-        ];
-        return in_array(strtolower($value), $valid_roles, true);
+    public static function is_role_user_enum($value): bool {
+        return in_array(strtolower($value), csv_client_const_helper::VALID_ROLES_USERS, true);
     }
 }

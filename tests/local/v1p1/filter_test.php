@@ -36,10 +36,10 @@ use ReflectionClass;
  * @package    enrol_oneroster
  * @copyright  Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers  enrol_oneroster\local\filter
- * @covers  enrol_oneroster\local\v1p1\filter
+ * @covers  \enrol_oneroster\local\filter
+ * @covers  \enrol_oneroster\local\v1p1\filter
  */
-class filter_testcase extends advanced_testcase {
+class filter_test extends advanced_testcase {
     /**
      * Ensure that the filter constructor adds filters correctly.
      *

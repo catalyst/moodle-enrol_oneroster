@@ -182,5 +182,5 @@ abstract class collection implements IteratorAggregate {
      * @param   stdClass $data The raw data returned from the endpoint
      * @return  stdClass The parsed data
      */
-    abstract static protected function parse_returned_row(container_interface $container, stdClass $data): entity;
+    abstract protected static function parse_returned_row(container_interface $container, stdClass $data): entity;
 }

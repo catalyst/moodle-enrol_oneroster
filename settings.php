@@ -31,19 +31,8 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_heading(
         'enrol_oneroster',
         '',
-        get_string('options', 'enrol_oneroster')
+        get_string('pluginname_desc', 'enrol_database')
     ));
-
-    // CSV upload link.
-    $settings->add(new admin_setting_heading(
-        'enrol_oneroster/csvupload_link',
-        get_string('csv_upload', 'enrol_oneroster'),
-        html_writer::link(new moodle_url('/enrol/oneroster/process_csv.php'), 
-        get_string('csv_upload_process', 'enrol_oneroster'), 
-        array('style' => 'font-size: 20px;'))
-    ));
-
-
 
     // Connections settings:
     // - One Roster version;
@@ -279,4 +268,12 @@ if ($hassiteconfig) {
             true
         )
     );
+    $ADMIN->add(
+        'enrolments',
+        new admin_externalpage(
+            'enrol_oneroster_csv_upload',
+            get_string('csv_upload_process', 'enrol_oneroster'),
+            new moodle_url('/enrol/oneroster/process_csv.php'),
+            'moodle/site:config'
+    ));
 }

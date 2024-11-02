@@ -510,7 +510,7 @@ class rostering extends endpoint implements rostering_endpoint_interface {
             return self::$commands[$command];
         }
 
-        return parent::get_command_data($command);  
+        return parent::get_command_data($command);
     }
 
     /**

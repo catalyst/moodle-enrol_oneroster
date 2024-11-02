@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:9.6
+        image: postgres:14
         env:
           POSTGRES_USER: 'postgres'
           POSTGRES_HOST_AUTH_METHOD: 'trust'
@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['7.3', '7.4']
+        php-versions: ['8.1']
         database: ['pgsql', 'mariadb']
     steps:
       - name: Check out repository code
@@ -48,6 +48,7 @@ jobs:
           php-version: ${{ matrix.php-versions }}
           extensions: mbstring, pgsql, mysqli
           tools: phpunit
+          ini-values: max_input_vars=5000
 
       - name: Deploy moodle-plugin-ci
         run: |
@@ -63,7 +64,7 @@ jobs:
         env:
           DB: ${{ matrix.database }}
           # TODO: Omitted MOODLE_BRANCH results in regex failure, investigate.
-          MOODLE_BRANCH: 'master'
+          MOODLE_BRANCH: 'main'
 
       - name: Run phplint
         if: ${{ always() }}

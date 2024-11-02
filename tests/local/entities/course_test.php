@@ -37,10 +37,10 @@ use OutOfRangeException;
  * @package    enrol_oneroster
  * @copyright  Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers  enrol_oneroster\local\entity
- * @covers  enrol_oneroster\local\entities\course
+ * @covers  \enrol_oneroster\local\entity
+ * @covers  \enrol_oneroster\local\entities\course
  */
-class course_testcase extends entity_testcase {
+class course_test extends entity_testcase {
 
     /**
      * Test the properties of the entity.

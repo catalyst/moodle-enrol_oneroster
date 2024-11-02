@@ -35,9 +35,9 @@ use enrol_oneroster\local\oneroster_testcase;
  * @copyright  Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers  enrol_oneroster\local\endpoint
+ * @covers  \enrol_oneroster\local\endpoint
  */
-class endpoint_testcase extends oneroster_testcase {
+class endpoint_test extends oneroster_testcase {
 
     /**
      * Get a mocked command at the specified endpoint.

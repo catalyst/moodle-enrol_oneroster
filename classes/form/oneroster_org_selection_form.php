@@ -15,8 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster\form;
 
-require_once("$CFG->libdir/formslib.php");
-
 /**
  * One Roster Enrollment Client.
  *
@@ -25,6 +23,13 @@ require_once("$CFG->libdir/formslib.php");
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class oneroster_org_selection_form extends \moodleform {
+    /**
+     * Creates a form with fields to select an organisation, a hidden field for the temp directory and a step field
+     *
+     * Also adds a submit button with validation rules
+     *
+     * @return void
+     */
     public function definition() {
         $mform = $this->_form;
 
@@ -32,11 +37,11 @@ class oneroster_org_selection_form extends \moodleform {
         $tempdir = $this->_customdata['tempdir'];
 
         $mform->addElement('select', 'organization', get_string('selectorganization', 'enrol_oneroster'), $orgoptions);
-        $mform->setType('organization', PARAM_RAW);
+        $mform->setType('organization', PARAM_TEXT);
         $mform->addRule('organization', null, 'required', null, 'client');
 
         $mform->addElement('hidden', 'tempdir', $tempdir);
-        $mform->setType('tempdir', PARAM_RAW);
+        $mform->setType('tempdir', PARAM_PATH);
 
         $mform->addElement('hidden', 'step', 2);
         $mform->setType('step', PARAM_INT);
