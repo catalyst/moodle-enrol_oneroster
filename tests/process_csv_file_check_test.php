@@ -119,6 +119,11 @@ class process_csv_file_check_test extends \advanced_testcase {
         $filepath = $this->testdir . DIRECTORY_SEPARATOR . 'classes.csv';
         $result = csv_client_helper::validate_csv_headers($filepath);
         $this->assertTrue($result, 'Headers should be valid.');
+
+        // Test User Profile headers.
+        $filepath = $this->testdir . DIRECTORY_SEPARATOR . 'userprofiles.csv';
+        $result = csv_client_helper::validate_csv_headers($filepath);
+        $this->assertTrue($result, 'Heeaders should be valid');
     }
 
     /**

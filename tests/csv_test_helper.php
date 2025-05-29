@@ -51,6 +51,7 @@ class csv_test_helper {
             ['file.enrollments', 'bulk'],
             ['file.orgs', 'bulk'],
             ['file.users', 'bulk'],
+            ['file.userprofiles', 'bulk']
         ];
         self::createcsvfiles($testdir . DIRECTORY_SEPARATOR . 'manifest.csv', $manifestcontent);
 
@@ -142,5 +143,34 @@ class csv_test_helper {
             ]
         ];
         self::createcsvfiles($testdir . DIRECTORY_SEPARATOR . 'users.csv', $userscontent);
+
+        // Creating userprofiles.csv
+        $userProfiles = [
+            csv_client_const_helper::HEADER_USERPROFILES,
+            [
+                'upf-12345-123', 'active',           
+                '2025-01-10', 'usr-222-123456',    
+                'teacher', 'vendor-abc-001', 'app-12345-678',       
+                'Teacher profile','standard',         
+                'john.doe', 'Password1*'
+            ],
+            [
+                'upf-54321-321', 
+                'tobedeleted', '2025-03-15', 
+                'usr-333-654321', 'student', 
+                'vendor-abc-002', 'app-54321-123', 
+                'Student profile', 'ldap', 
+                'mary.jones', 'Password2*'
+            ],
+            [
+                'upf-67890-456', 'active', 
+                '2025-05-01', 'usr-444-789012', 
+                'parent', 'vendor-abc-003', 'app-67891-321', 
+                'Parent profile', 'federated', 
+                'thomas.joness', 'Password3*'
+            ],
+            
+        ];
+        self::createcsvfiles($testdir . DIRECTORY_SEPARATOR . 'userprofiles.csv', $userProfiles);
     }
 }

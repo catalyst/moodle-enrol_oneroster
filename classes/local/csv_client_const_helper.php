@@ -220,6 +220,34 @@ class csv_client_const_helper {
      */
     const HEADER_PASSWORD = 'password';
 
+    /**
+     * Id field for the vendor id
+     */
+    const HEADER_VENDOR_ID = 'vendor_id';
+    
+    /**
+     * id field for the application id
+     */
+    const HEADER_APPLICATION_ID = 'application_id';
+
+
+    /**
+     * type field for the user profile
+     */
+    const HEADER_PROFILE_TYPE = 'profile_type';
+
+     /**
+     * Credential type field for the credential type
+     */
+    const HEADER_CREDENTIAL_TYPE = 'credential_type';
+
+
+    /**
+     * THe description field for the user profile
+     */
+    const HEADER_DESCRIPTION = 'description';
+
+
     // ... Continue documenting other constants in the same manner.
 
     /**
@@ -251,6 +279,11 @@ class csv_client_const_helper {
      * File name for users.
      */
     const FILE_USERS = 'users.csv';
+
+    /**
+     * File name for user profiles.
+     */
+    const FILE_USERPROFILES = 'userprofiles.csv';
 
     // Datatype constants used for validation.
 
@@ -520,6 +553,26 @@ class csv_client_const_helper {
         self::HEADER_PASSWORD
     ];
 
+    /** 
+     * Header fields for user profiles 
+     * 
+     * 
+     * @var array
+     */
+     const HEADER_USERPROFILES = [
+        self::HEADER_SOURCEDID,
+        self::HEADER_STATUS,
+        self::HEADER_DATE_LAST_MODIFIED,
+        self::HEADER_USER_SOURCEDID,
+        self::HEADER_PROFILE_TYPE,
+        self::HEADER_VENDOR_ID,
+        self::HEADER_APPLICATION_ID,
+        self::HEADER_DESCRIPTION,
+        self::HEADER_CREDENTIAL_TYPE,
+        self::HEADER_USERNAME,
+        self::HEADER_PASSWORD
+     ];
+
     /**
      * Required files and their corresponding headers.
      *
@@ -531,5 +584,6 @@ class csv_client_const_helper {
         self::FILE_ENROLLMENTS => self::HEADER_ENROLLMENTS,
         self::FILE_ORGS => self::HEADER_ORGS,
         self::FILE_USERS => self::HEADER_USERS,
+        self::FILE_USERPROFILES => self::HEADER_USERPROFILES
     ];
 }

@@ -195,6 +195,27 @@ class csv_client_helper {
                     csv_client_const_helper::DATATYPE_NULL
                 ],
             ],
+            csv_client_const_helper::FILE_USERPROFILES => [
+                csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_STATUS => [
+                    csv_client_const_helper::DATATYPE_ENUM_STATUS,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
+                    csv_client_const_helper::DATATYPE_DATETIME,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_USER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_PROFILE_TYPE,
+                csv_client_const_helper::HEADER_VENDOR_ID,
+                csv_client_const_helper::HEADER_APPLICATION_ID,
+                csv_client_const_helper:: HEADER_DESCRIPTION,
+                csv_client_const_helper::HEADER_CREDENTIAL_TYPE,
+                csv_client_const_helper::HEADER_USERNAME,
+                csv_client_const_helper::HEADER_PASSWORD
+
+
+            ]
         ];
     }
 
@@ -329,7 +350,8 @@ class csv_client_helper {
             csv_client_const_helper::FILE_CLASSES,
             csv_client_const_helper::FILE_ENROLLMENTS,
             csv_client_const_helper::FILE_ORGS,
-            csv_client_const_helper::FILE_USERS
+            csv_client_const_helper::FILE_USERS,
+            csv_client_const_helper::FILE_USERPROFILES
         ];
 
         $errormessage = '';
@@ -394,6 +416,8 @@ class csv_client_helper {
                 return csv_client_const_helper::HEADER_ORGS;
             case csv_client_const_helper::FILE_USERS:
                 return csv_client_const_helper::HEADER_USERS;
+            case csv_client_const_helper::FILE_USERPROFILES:
+                return csv_client_const_helper::HEADER_USERPROFILES;
             default:
                 return [];
         }
@@ -406,7 +430,7 @@ class csv_client_helper {
      * @return array The expected data types for the given file.
      */
     public static function get_data_types(string $filename): array {
-        return self::get_file_datatypes()[$filename] ?? [];
+        return self::get_file_datatypes()[$filename] ?? []; 
     }
 
     /**
