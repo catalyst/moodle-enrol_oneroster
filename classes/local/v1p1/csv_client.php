@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace enrol_oneroster\local;
+namespace enrol_oneroster\local\v1p1;
 
 use enrol_oneroster\local\interfaces\client as client_interface;
 use enrol_oneroster\local\oneroster_client as root_oneroster_client;
