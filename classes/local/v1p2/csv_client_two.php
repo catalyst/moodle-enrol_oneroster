@@ -14,26 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * One Roster Enrolment Client.
- *
- * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+namespace enrol_oneroster\local\v1p2;
 
-namespace enrol_oneroster\local\v1p1;
-
-use enrol_oneroster\local\entity as entity_base;
-use enrol_oneroster\local\interfaces\entity_factory as entity_factory_interface;
-use enrol_oneroster\local\v1p2\factories\entity_factory as entity_factory_instance;
+use enrol_oneroster\local\interfaces\client as client_interface;
+use enrol_oneroster\local\oneroster_client as root_oneroster_client;
+use enrol_oneroster\local\command;
+use enrol_oneroster\local\interfaces\filter;
+use stdClass;
+use DateTime;
+use enrol_oneroster\local\v1p2\oneroster_client as versioned_client;
+use enrol_oneroster\local\v1p1\csv_client as csv_client;
 
 /**
- * One Roster v1p2 Entity.
+ * One Roster Client.
+ *
+ * This plugin synchronizes enrolment and roles with an uploaded OneRoster CSV file.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class entity extends entity_base {
+class csv_client_two extends csv_client{
+   // Insert new logic here.
 }

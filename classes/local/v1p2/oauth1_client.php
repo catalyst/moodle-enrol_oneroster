@@ -28,7 +28,7 @@ use enrol_oneroster\local\interfaces\client as client_interface;
 use enrol_oneroster\local\interfaces\rostering_client as rostering_client_interface;
 use enrol_oneroster\local\oauth1_client as abstract_oauth_client;
 use enrol_oneroster\local\oneroster_client as root_oneroster_client;
-use enrol_oneroster\local\v1p1\oneroster_client as versioned_oneroster_client;
+use enrol_oneroster\local\v1p2\oneroster_client as versioned_oneroster_client;
 
 /**
  * One Roster v1p1 client utilising OAuth 1.0.

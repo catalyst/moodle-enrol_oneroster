@@ -13,27 +13,19 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+namespace enrol_oneroster\local;
+
+use enrol_oneroster\local\v1p1\csv_client_const_helper as csv_client_const_helper;
 
 /**
- * One Roster Enrolment Client.
+ * Class csv_client_const_helper.
+ *
+ * This class contains constants that are used throughout the OneRoster CSV client.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace enrol_oneroster\local\v1p1;
-
-use enrol_oneroster\local\entity as entity_base;
-use enrol_oneroster\local\interfaces\entity_factory as entity_factory_interface;
-use enrol_oneroster\local\v1p2\factories\entity_factory as entity_factory_instance;
-
-/**
- * One Roster v1p2 Entity.
- *
- * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-abstract class entity extends entity_base {
+class csv_client_const_helper_two extends csv_client_const_helper{
+   // Insert new header constands here.
 }

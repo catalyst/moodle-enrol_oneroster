@@ -13,27 +13,20 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-/**
- * One Roster Enrolment Client.
- *
- * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace enrol_oneroster\local\v1p1;
 
-use enrol_oneroster\local\entity as entity_base;
-use enrol_oneroster\local\interfaces\entity_factory as entity_factory_interface;
-use enrol_oneroster\local\v1p2\factories\entity_factory as entity_factory_instance;
+use enrol_oneroster\local\v1p2\csv_client_const_helper as csv_client_const_helper;
+use enrol_oneroster\local\v1p1\csv_client_helper as csv_client_helper;
 
 /**
- * One Roster v1p2 Entity.
+ * Class csv_client_helper
+ *
+ * Helper class for OneRoster plugin
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class entity extends entity_base {
+class csv_client_helper_two extends csv_client_helper{
+   // Insert new logic here.
 }

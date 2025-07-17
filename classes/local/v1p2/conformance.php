@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\v1p1;
+namespace enrol_oneroster\local\v1p2;
 
 use enrol_oneroster\local\conformance as conformance_base;
 
