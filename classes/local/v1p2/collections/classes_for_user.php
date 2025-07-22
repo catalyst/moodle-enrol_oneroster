@@ -18,32 +18,21 @@
  * One Roster Enrolment Client.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\v1p1\collections;
+namespace enrol_oneroster\local\v1p2;
 
-use enrol_oneroster\local\interfaces\container as container_interface;
-use enrol_oneroster\local\v1p1\endpoints\rostering as rostering_endpoint;
-use enrol_oneroster\local\collections\classes as classes_collection;
+use enrol_oneroster\local\v1p1\collections\classes_for_user as classes_collection_version_one;
 
 /**
  * One Roster Courses collection.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class classes_for_user extends classes_collection {
-
-    /**
-     * Get the operation ID for the endpoint, otherwise known as the name of the endpoint.
-     *
-     * @param   container_interface $container The container to which this entity belongs
-     * @return  string
-     */
-    protected static function get_operation_id(container_interface $container): string {
-        return rostering_endpoint::getClassesForUser;
-    }
+class classes_for_user extends classes_collection_version_one {
+    // New logic here.
 }

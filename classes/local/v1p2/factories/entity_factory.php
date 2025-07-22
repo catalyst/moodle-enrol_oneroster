@@ -18,20 +18,21 @@
  * One Roster Enrolment Client.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace enrol_oneroster\local\v1p2\factories;
 
-use enrol_oneroster\local\factories\entity_factory as parent_entity_factory;
+use enrol_oneroster\local\v1p1\factories\entity_factory as entity_factory_version_one;
 
 /**
  * One Roster v1p2 entity factory.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entity_factory extends parent_entity_factory {
+class entity_factory extends entity_factory_version_one {
+    // Insert new logic here.
 }

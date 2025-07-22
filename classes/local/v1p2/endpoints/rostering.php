@@ -18,88 +18,22 @@
  * One Roster Enrolment Client.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace enrol_oneroster\local\v1p2\endpoints;
 
 use enrol_oneroster\client_helper;
-use enrol_oneroster\local\endpoints\rostering as parent_endpoint;
+use enrol_oneroster\local\v1p1\endpoints\rostering as rostering_version_one;
 
 /**
  * One Roster Endpoint for the v1p2 client.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class rostering extends parent_endpoint {
-
-    // @codingStandardsIgnoreStart UpperCaseConstantNameSniff
-
-    /** @var string Endpoint name to fetch classes for a user */
-    const getClassesForUser = 'getClassesForUser';
-
-    // @codingStandardsIgnoreEnd UpperCaseConstantNameSniff
-
-    /** @var array List of commands and their configuration */
-    protected static $commands = [
-        self::getClassesForUser => [
-            'url' => '/users/:user_id/classes',
-            'method' => client_helper::GET,
-            'description' => 'Return the collection of classes attended by this user.',
-            'collection' => [
-                'classes',
-            ],
-        ],
-    ];
-
-    /**
-     * Get details of the required scope for the One Roster OAuth2 client.
-     *
-     * @return  array
-     */
-    public static function get_required_scopes(): array {
-        return [
-            'https://purl.imsglobal.org/spec/or/v1p1/scope/roster.readonly',
-        ];
-    }
-
-    /**
-     * Get the URL for the specified endpoint.
-     *
-     * @param   string $baseurl
-     * @param   string $endpoint
-     * @return  string
-     */
-    public function get_url_for_command(string $baseurl, string $endpoint): string {
-        return "{$baseurl}{$endpoint}";
-    }
-
-    /**
-     * Get the command data for the specified command.
-     *
-     * @param   string $command
-     * @return  array
-     */
-    protected static function get_command_data(string $command): array {
-        if (array_key_exists($command, self::$commands)) {
-            return self::$commands[$command];
-        }
-
-        return parent::get_command_data($command);
-    }
-
-    /**
-     * Get the list of all commands.
-     *
-     * @return  array
-     */
-    public static function get_all_commands(): array {
-        return array_merge(
-            parent::get_all_commands(),
-            self::$commands
-        );
-    }
+class rostering extends rostering_version_one{
+    // Insert new logic here.
 }

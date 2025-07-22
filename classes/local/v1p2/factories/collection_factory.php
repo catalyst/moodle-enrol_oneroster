@@ -18,7 +18,7 @@
  * One Roster Enrolment Client.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -27,6 +27,7 @@ namespace enrol_oneroster\local\v1p2\factories;
 use enrol_oneroster\local\factories\collection_factory as parent_collection_factory;
 // Entities which resemble a class.
 use enrol_oneroster\local\v1p2\collections\classes_for_user as classes_for_user_collection;
+use enrol_oneroster\local\v1p1\factories\collection_factory as collection_factory_version_one;
 use enrol_oneroster\local\entities\user as user_entity;
 use enrol_oneroster\local\filter;
 
@@ -34,10 +35,10 @@ use enrol_oneroster\local\filter;
  * One Roster v1p2 Collection Factory.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class collection_factory extends parent_collection_factory {
+class collection_factory extends parent_collection_factory{
 
     /**
      * Fetch a collection of classes for a user.

@@ -16,14 +16,7 @@
 
 namespace enrol_oneroster\local\v1p2;
 
-use enrol_oneroster\local\interfaces\client as client_interface;
-use enrol_oneroster\local\oneroster_client as root_oneroster_client;
-use enrol_oneroster\local\command;
-use enrol_oneroster\local\interfaces\filter;
-use stdClass;
-use DateTime;
-use enrol_oneroster\local\v1p2\oneroster_client as versioned_client;
-use enrol_oneroster\local\v1p1\csv_client as csv_client;
+use enrol_oneroster\local\v1p1\csv_client as csv_client_version_one;
 
 /**
  * One Roster Client.
@@ -31,9 +24,9 @@ use enrol_oneroster\local\v1p1\csv_client as csv_client;
  * This plugin synchronizes enrolment and roles with an uploaded OneRoster CSV file.
  *
  * @package    enrol_oneroster
- * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class csv_client_two extends csv_client{
+class csv_client extends csv_client_version_one{
    // Insert new logic here.
 }

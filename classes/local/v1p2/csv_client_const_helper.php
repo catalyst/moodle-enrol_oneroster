@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster\local;
 
-use enrol_oneroster\local\v1p1\csv_client_const_helper as csv_client_const_helper;
+use enrol_oneroster\local\v1p1\csv_client_const_helper as csv_client_const_helper_version_one;
 
 /**
  * Class csv_client_const_helper.
@@ -23,9 +23,9 @@ use enrol_oneroster\local\v1p1\csv_client_const_helper as csv_client_const_helpe
  * This class contains constants that are used throughout the OneRoster CSV client.
  *
  * @package    enrol_oneroster
- * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class csv_client_const_helper_two extends csv_client_const_helper{
+class csv_client_const_helper extends csv_client_const_helper_version_one{
    // Insert new header constands here.
 }

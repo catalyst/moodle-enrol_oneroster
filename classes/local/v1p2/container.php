@@ -18,102 +18,21 @@
  * One Roster Enrolment Client.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace enrol_oneroster\local\v1p2;
 
-use enrol_oneroster\local\container as abstract_container;
-use enrol_oneroster\local\interfaces\cache_factory as cache_factory_interface;
-use enrol_oneroster\local\interfaces\collection_factory as collection_factory_interface;
-use enrol_oneroster\local\interfaces\container as container_interface;
-use enrol_oneroster\local\interfaces\entity_factory as entity_factory_interface;
-use enrol_oneroster\local\interfaces\filter as filter_interface;
-use enrol_oneroster\local\interfaces\rostering_endpoint as rostering_endpoint_interface;
-use enrol_oneroster\local\v1p2\factories\cache_factory;
-use enrol_oneroster\local\v1p2\factories\collection_factory;
-use enrol_oneroster\local\v1p2\factories\entity_factory;
+use enrol_oneroster\local\v1p1\container as version_one_container;
 
 /**
  * One Roster 1.2 Factory Manager.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class container extends abstract_container implements container_interface {
-    /** @var endpoint The rostering endpoint being used */
-    protected $rostering = null;
-
-    /** @var entity_factory The current entity factory */
-    protected $entityfactory = null;
-
-    /** @var collection_factory The current collection factory */
-    protected $collectionfactory = null;
-
-    /** @var cache_factory The current cache factory */
-    protected $cachefactory = null;
-
-    /**
-     * Get the Rostering endpoint in use.
-     *
-     * @return  rostering_endpoint_interface
-     */
-    public function get_rostering_endpoint(): rostering_endpoint_interface {
-        if ($this->rostering === null) {
-            $this->rostering = $this->client->get_rostering_endpoint();
-        }
-
-        return $this->rostering;
-
-    }
-
-    /**
-     * Get the Entity Factory.
-     *
-     * @return  entity_factory_interface
-     */
-    public function get_entity_factory(): entity_factory_interface {
-        if ($this->entityfactory === null) {
-            $this->entityfactory = new entity_factory($this);
-        }
-
-        return $this->entityfactory;
-    }
-
-    /**
-     * Get the Collection Factory.
-     *
-     * @return  collection_factory_interface
-     */
-    public function get_collection_factory(): collection_factory_interface {
-        if ($this->collectionfactory === null) {
-            $this->collectionfactory = new collection_factory($this);
-        }
-
-        return $this->collectionfactory;
-    }
-
-    /**
-     * Get the Cache Factory.
-     *
-     * @return  cache_factory_interface
-     */
-    public function get_cache_factory(): cache_factory_interface {
-        if ($this->cachefactory === null) {
-            $this->cachefactory = new cache_factory($this);
-        }
-
-        return $this->cachefactory;
-    }
-
-    /**
-     * Get an instance of a filter.
-     *
-     * @return  filter_interface
-     */
-    public function get_filter_instance(): filter_interface {
-        return new filter();
-    }
+class container extends version_one_container {
+    // Insert new logic here.
 }

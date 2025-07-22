@@ -18,26 +18,21 @@
  * One Roster Enrolment Client.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace enrol_oneroster\local\v1p1;
 
-use enrol_oneroster\local\interfaces\client as client_interface;
-use enrol_oneroster\local\interfaces\rostering_client as rostering_client_interface;
-use enrol_oneroster\local\oauth1_client as abstract_oauth_client;
-use enrol_oneroster\local\oneroster_client as root_oneroster_client;
-use enrol_oneroster\local\v1p2\oneroster_client as versioned_oneroster_client;
+use enrol_oneroster\local\v1p1\oauth1_client as abstract_oauth_client_version_one;
 
 /**
- * One Roster v1p1 client utilising OAuth 1.0.
+ * One Roster v1p2 client utilising OAuth 1.0.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class oauth1_client extends abstract_oauth_client implements client_interface, rostering_client_interface {
-    use root_oneroster_client;
-    use versioned_oneroster_client;
+class oauth1_client extends abstract_oauth_client_version_one {
+    // Insert new logic here.
 }

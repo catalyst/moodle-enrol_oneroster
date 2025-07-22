@@ -16,7 +16,7 @@
 namespace enrol_oneroster\local\v1p1;
 
 use enrol_oneroster\local\v1p2\csv_client_const_helper as csv_client_const_helper;
-use enrol_oneroster\local\v1p1\csv_client_helper as csv_client_helper;
+use enrol_oneroster\local\v1p1\csv_client_helper as csv_client_helper_version_one;
 
 /**
  * Class csv_client_helper
@@ -24,9 +24,9 @@ use enrol_oneroster\local\v1p1\csv_client_helper as csv_client_helper;
  * Helper class for OneRoster plugin
  *
  * @package    enrol_oneroster
- * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class csv_client_helper_two extends csv_client_helper{
+class csv_client_helper extends csv_client_helper_version_one{
    // Insert new logic here.
 }
