@@ -18,21 +18,21 @@
  * One Roster Enrolment Client.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace enrol_oneroster\local\v1p2;
 
-use enrol_oneroster\local\v1p1\collections\classes_for_user as classes_collection_version_one;
+use enrol_oneroster\tests\fixtures\local\oneroster_client as client_version_one;
 
 /**
- * One Roster Courses collection.
+ * One Roster v1p2 client utilising OAuth 2.0.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class classes_for_user extends classes_collection_version_one {
-    // New logic here.
+abstract class oneroster_client extends client_version_one {
+    // Insert new logic here.
 }

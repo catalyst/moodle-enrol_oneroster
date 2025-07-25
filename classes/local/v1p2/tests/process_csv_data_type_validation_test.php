@@ -13,26 +13,18 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-/**
- * One Roster Enrolment Client.
- *
- * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace enrol_oneroster\local\v1p2;
 
-use enrol_oneroster\local\v1p1\collections\classes_for_user as classes_collection_version_one;
+use enrol_oneroster\process_csv_data_type_validation_test as data_type_test_version_one;
 
 /**
- * One Roster Courses collection.
+ * One Roster tests for the client_helper class.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers  \enrol_oneroster\local\csv_client_helper
  */
-class classes_for_user extends classes_collection_version_one {
-    // New logic here.
+class process_csv_data_type_validation_test extends data_type_test_version_one {
+    // Insert new logic here.
 }

@@ -24,12 +24,7 @@
 
 namespace enrol_oneroster\local\v1p2\factories;
 
-use enrol_oneroster\local\factories\collection_factory as parent_collection_factory;
-// Entities which resemble a class.
-use enrol_oneroster\local\v1p2\collections\classes_for_user as classes_for_user_collection;
 use enrol_oneroster\local\v1p1\factories\collection_factory as collection_factory_version_one;
-use enrol_oneroster\local\entities\user as user_entity;
-use enrol_oneroster\local\filter;
 
 /**
  * One Roster v1p2 Collection Factory.
@@ -38,32 +33,6 @@ use enrol_oneroster\local\filter;
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class collection_factory extends parent_collection_factory{
-
-    /**
-     * Fetch a collection of classes for a user.
-     *
-     * The user id is automatically filled. Additional parameters can be supplied.
-     *
-     * @param   user_entity $user The user to fetch classes for
-     * @param   array $params The parameters to use when fetching the collection
-     * @param   filter $filter The filter to use when fetching the collection
-     * @param   callable $recordfilter Any subsequent filter to apply to the results
-     * @return  classes_for_user_collection
-     */
-    public function get_classes_for_user(
-        user_entity $user,
-        array $params = [],
-        ?filter $filter = null,
-        ?callable $recordfilter = null
-    ): classes_for_user_collection {
-        return new classes_for_user_collection(
-            $this->container,
-            array_merge([
-                ':user_id' => $user->get('sourcedId'),
-            ], $params),
-            $filter,
-            $recordfilter
-        );
-    }
+class collection_factory extends collection_factory_version_one{
+    // Insert new logic here.
 }

@@ -15,24 +15,28 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * One Roster Enrolment Client.
+ * One Roster Enrolment Client Unit tests.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\v1p2;
+namespace enrol_oneroster\local\v1p2\endpoints;
 
-use enrol_oneroster\local\v1p1\collections\classes_for_user as classes_collection_version_one;
+defined('MOODLE_INTERNAL') || die;
+require_once(__DIR__ . '/../oneroster_testcase.php');
+use enrol_oneroster\local\endpoints\rostering_test as rostering_test_version_one;
 
 /**
- * One Roster Courses collection.
+ * One Roster tests for filters.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * @covers  \enrol_oneroster\local\endpoints\rostering
  */
-class classes_for_user extends classes_collection_version_one {
-    // New logic here.
+class rostering_test extends rostering_test_version_one {
+    // Insert new logic here.
 }

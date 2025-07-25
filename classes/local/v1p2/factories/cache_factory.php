@@ -28,7 +28,7 @@ use cache;
 use enrol_oneroster\local\v1p1\factories\cache_factory as cache_factory_version_one;
 
 /**
- * One Roster 1.1 Cache Factory.
+ * One Roster 1.2 Cache Factory.
  *
  * @package    enrol_oneroster
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
