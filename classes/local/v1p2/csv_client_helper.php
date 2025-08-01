@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster\local\v1p2;
 
-use enrol_oneroster\local\csv_client_const_helper;
+use enrol_oneroster\local\v1p2\csv_client_const_helper;
 use enrol_oneroster\local\v1p1\csv_client_helper as csv_client_helper_version_one;
 
 use function PHPUnit\Framework\assertEquals;
@@ -178,6 +178,8 @@ class csv_client_helper extends csv_client_helper_version_one{
       switch ($filename) {
             case csv_client_const_helper::FILE_ROLES:
                 return csv_client_const_helper::HEADER_ROLES;
+            case csv_client_const_helper::FILE_USERPROFILES:
+              return csv_client_const_helper::HEADER_USERPROFILES;
             default:
                 return [];
       }
@@ -233,4 +235,5 @@ class csv_client_helper extends csv_client_helper_version_one{
     public static function is_role_user_enum($value): bool {
         return in_array(strtolower($value), csv_client_const_helper::VALID_ROLES_USERS, true);
     }
-   }
+
+}

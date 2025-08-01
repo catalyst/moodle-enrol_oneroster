@@ -18,25 +18,25 @@
  * One Roster Enrolment Client Unit tests.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\v1p2;
+namespace enrol_oneroster\tests\local\v1p2;
 
 defined('MOODLE_INTERNAL') || die;
-require_once(__DIR__ . '/entity_testcase.php');
-use enrol_oneroster\local\entities\org_test as test_one;
+require_once('/var/www/moodle/enrol/oneroster/tests/local/container_test.php');
+use enrol_oneroster\tests\local\container_test as container_test_version_one;
 
 /**
- * One Roster tests for the org entity.
+ * One Roster tests for container.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers  \enrol_oneroster\local\entity
- * @covers  \enrol_oneroster\local\entities\org
+ *
+ * @covers  \enrol_oneroster\local\container
  */
-class org_test extends test_one {
+class container_test extends container_test_version_one {
     // Insert new logic here.
 }

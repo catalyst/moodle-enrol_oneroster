@@ -39,7 +39,7 @@ use enrol_oneroster\local\v1p1\factories\entity_factory;
  * One Roster 1.1 Factory Manager.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class container extends abstract_container implements container_interface {

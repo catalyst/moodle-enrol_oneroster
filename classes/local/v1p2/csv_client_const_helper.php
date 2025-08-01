@@ -160,6 +160,7 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
         self::FILE_ENROLLMENTS => self::HEADER_ENROLLMENTS,
         self::FILE_ORGS => self::HEADER_ORGS,
         self::FILE_USERS => self::HEADER_USERS,
+        self::FILE_USERPROFILES => self::HEADER_USERPROFILES,
         self::FILE_ROLES => self:: HEADER_ROLES,
     ];
 }

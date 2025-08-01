@@ -18,25 +18,21 @@
  * One Roster Enrolment Client Unit tests.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace enrol_oneroster\local\v1p2;
-
-defined('MOODLE_INTERNAL') || die;
-require_once(__DIR__ . '/oneroster_testcase.php');
-use enrol_oneroster\local\command_test as command_test_version_one;
+namespace enrol_oneroster\tests\local\v1p2;
+use enrol_oneroster\tests\csv_test_helper as csv_client_test_version_one;
 
 /**
- * One Roster tests for the `command` class.
+ * One Roster tests for the client_helper class.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers  \enrol_oneroster\local\command
+ * @covers  \enrol_oneroster\local\csv_client_helper
  */
-class command_test extends command_test_version_one{
+class csv_client_test extends csv_client_test_version_one {
     // Insert new logic here.
 }

@@ -22,27 +22,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\v1p1\endpoints;
+namespace enrol_oneroster\tests\local\v1p2;
 
-defined('MOODLE_INTERNAL') || die;
-require_once(__DIR__ . '/../../oneroster_testcase.php');
-use enrol_oneroster\local\v1p1\endpoints\rostering_test as rostering_test_version_one;
+require_once('/var/www/moodle/enrol/oneroster/tests/client_helper_test.php');
+use enrol_oneroster\client_helper_test as client_helper_test_version_one;
 
-use advanced_testcase;
-use stdClass;
-use InvalidArgumentException;
-use ReflectionClass;
 
 /**
- * One Roster tests for filters.
+ * One Roster tests for the client_helper class.
  *
  * @package    enrol_oneroster
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers  \enrol_oneroster\local\endpoints\rostering
- * @covers  \enrol_oneroster\local\v1p1\endpoints\rostering
+ * @covers  \enrol_oneroster\client_helper
  */
-class rostering_test extends rostering_test_version_one {
+class client_helper_test extends client_helper_test_version_one{
     // Insert new logic here.
 }

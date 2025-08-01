@@ -8,7 +8,7 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR ANY PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
@@ -18,41 +18,34 @@
  * One Roster Enrolment Client Unit tests.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\tests\local\entities;
+namespace enrol_oneroster\tests\local\v1p2\entities;
 
-defined('MOODLE_INTERNAL') || die;
-require_once(__DIR__ . '/entity_testcase.php');
-use enrol_oneroster\tests\local\entities\entity_testcase;
 
 use stdClass;
-use OutOfRangeException;
+use coding_exception;
 
-/**
- * One Roster tests for the course entity.
- *
- * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers  \enrol_oneroster\local\entity
- * @covers  \enrol_oneroster\local\entities\course
- */
-class course_test extends entity_testcase {
+require_once('/var/www/moodle/enrol/oneroster/classes/local/v1p2/entities/userprofile.php');
+require_once(__DIR__ . '/../oneroster_testcase.php');
+use enrol_oneroster\tests\local\v1p2\oneroster_testcase;
+use enrol_oneroster\classes\local\v1p2\entities\userprofile;
 
+class userprofile_test extends oneroster_testcase {
     /**
      * Test the properties of the entity.
      */
     public function test_entity(): void {
         $container = $this->get_mocked_container();
 
-        $entity = new course($container, '12345');
-        $this->assertInstanceOf(course::class, $entity);
+        $entity = new userprofile($container, '12345');
+
+        $this->assertInstanceOf(userprofile::class, $entity);
     }
 
-    /**
+     /**
      * Ensure that preloading of entity data means that endpoint is not called.
      */
     public function test_preload(): void {
@@ -64,7 +57,7 @@ class course_test extends entity_testcase {
             ->method('execute');
         $container->method('get_rostering_endpoint')->willReturn($rostering);
 
-        $entity = new course($container, '12345', (object) [
+        $entity = new userprofile($container, '12345', (object) [
             'sourcedId' => 'preloadedObject'
         ]);
 
@@ -73,14 +66,14 @@ class course_test extends entity_testcase {
         $this->assertIsObject($data);
         $this->assertEquals('preloadedObject', $data->sourcedId);
 
-        // And it can be retrieved via `get().
+        // And it can be retrieved via `get()`.
         $this->assertEquals('preloadedObject', $entity->get('sourcedId'));
 
         // Non-existent objects return null.
         $this->assertNull($entity->get('fake'));
     }
 
-    /**
+     /**
      * Ensure that the get function calls the web service correctly.
      */
     public function test_get(): void {
@@ -91,31 +84,31 @@ class course_test extends entity_testcase {
             ->expects($this->once())
             ->method('execute')
             ->willReturn((object) [
-                'course' => (object) [
+                'userProfile' => (object) [
                     'sourcedId' => '12345',
-                    'name' => 'Example courseanisation',
+                    'name' => 'Example user profile',
                 ],
             ]);
         $container->method('get_rostering_endpoint')->willReturn($rostering);
 
-        $entity = new course($container, '12345');
+        $entity = new userprofile($container, '12345');
 
         // The get_data() function should contain the data.
         $data = $entity->get_data();
         $this->assertIsObject($data);
         $this->assertEquals('12345', $data->sourcedId);
-        $this->assertEquals('Example courseanisation', $data->name);
+        $this->assertEquals('Example user profile', $data->name);
 
         // And it can be retrieved via `get()` without incurring another fetch.
         $this->assertEquals('12345', $entity->get('sourcedId'));
-        $this->assertEquals('Example courseanisation', $entity->get('name'));
+        $this->assertEquals('Example user profile', $entity->get('name'));
 
         // Non-existent objects return null.
         $this->assertNull($entity->get('fake'));
     }
 
-    /**
-     * An OutOfRangeException exception should be thrown when the data does not contain an 'course' attribute.
+     /**
+     * An coding_exception exception should be thrown when the data does not contain a 'userProfile' attribute.
      */
     public function test_get_missing_structure(): void {
         $container = $this->get_mocked_container();
@@ -126,52 +119,62 @@ class course_test extends entity_testcase {
         ]);
         $container->method('get_rostering_endpoint')->willReturn($rostering);
 
-        $this->expectException(OutOfRangeException::class);
+        $this->expectException(coding_exception::class);
 
-        $entity = new course($container, '12345');
-        $data = $entity->get_data();
+        $entity = new userprofile($container, '12345');
+        $entity->get_data();
     }
 
-    /**
-     * Ensure that the get_org function fetches the parent where one is defined.
+     /**
+     * Ensure that the user profile representations are correct.
      *
-     * @dataProvider parent_provider
-     * @param   stdClass $parentdata
+     * @dataProvider userprofile_data_provider
+     * @param   stdClass $data The data in the user profile
+     * @param   stdClass $expected The data returned as a user profile
      */
-    public function test_get_org_defined(stdClass $parentdata): void {
+    public function test_get_userprofile_data($data, $expected): void {
         $container = $this->get_mocked_container();
 
-        $entity = new course($container, 'example', (object) [
-            'sourcedId' => 'example',
-            'org' => $parentdata,
-        ]);
+        $entity = new userprofile($container, $data->sourcedId, $data);
 
-        $entityfactory = $this->mock_entity_factory($container, [
-            'fetch_org_by_id',
-        ]);
-
-        $parentorg = new org($container, $parentdata->sourcedId, $parentdata);
-        $container->method('get_entity_factory')->willReturn($entityfactory);
-
-        $entityfactory
-            ->expects($this->once())
-            ->method('fetch_org_by_id')
-            ->with($this->equalTo($parentdata->sourcedId))
-            ->willReturn($parentorg);
-
-        $this->assertEquals($parentorg, $entity->get_org());
+        $this->assertEquals($expected, $entity->get_userProfile_data());
     }
 
     /**
-     * Data providet for get_org tests where a parent is defined.
+     * Data provider for user profile tests.
      *
-     * @return  array
+     * @return array
      */
-    public function parent_provider(): array {
+    public static function userprofile_data_provider(): array {
         return [
-            [(object) ['sourcedId' => 'other example']],
-            [(object) ['sourcedId' => '0']],
-            [(object) ['sourcedId' => 0]],
+            'basic_profile' => [
+                (object) [
+                    'sourcedId' => 'profile123',
+                    'status' => 'active',
+                    'dateLastModified' => '2024-01-01T00:00:00Z',
+                    'userSourcedId' => 'user456',
+                    'profileType' => 'application',
+                    'vendorId' => 'vendor1',
+                    'applicationId' => 'app1',
+                    'description' => 'Test profile',
+                    'credentialType' => 'username',
+                    'username' => 'testuser',
+                    'password' => 'testpass'
+                ],
+                (object) [
+                    'profileId' => 'profile123',
+                    'status' => 'active',
+                    'dateLastModified' => '2024-01-01T00:00:00Z',
+                    'userSourcedId' => 'user456',
+                    'profileType' => 'application',
+                    'vendorId' => 'vendor1',
+                    'applicationId' => 'app1',
+                    'description' => 'Test profile',
+                    'credentialType' => 'username',
+                    'username' => 'testuser',
+                    'password' => 'testpass'
+                ]
+            ]
         ];
     }
 }

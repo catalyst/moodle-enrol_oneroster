@@ -18,28 +18,27 @@
  * One Roster Enrolment Client Unit tests.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\tests\local;
+namespace enrol_oneroster\tests\local\v1p2;
 
-defined('MOODLE_INTERNAL') || die;
-require_once('/var/www/moodle/enrol/oneroster/tests/local/v1p2/oneroster_testcase.php');
-use enrol_oneroster\tests\local\v1p2\oneroster_testcase;
+
+require_once('/var/www/moodle/enrol/oneroster/tests/local/command_test.php');
+use enrol_oneroster\tests\local\command_test as command_test_version_one;
 
 /**
  * One Roster tests for the `command` class.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * @covers  \enrol_oneroster\local\command
  */
-class command_test extends oneroster_testcase {
-
-    /**
+class command_test extends command_test_version_one{
+     /**
      * Test the URL construction via the constructor.
      *
      * @dataProvider param_and_url_provider
@@ -51,12 +50,12 @@ class command_test extends oneroster_testcase {
     public function test_construct_url($url, $params, $expectedurl, array $finalparams): void {
         $endpoint = $this->getMockBuilder(endpoint::class)
             ->disableOriginalConstructor()
-            ->setMethods(['get_url_for_command'])
+            ->onlyMethods(['get_url_for_command'])
             ->getMock();
 
         $endpoint
             ->method('get_url_for_command')
-            ->will($this->returnArgument(1));
+            ->will($this->willReturnArgument(1));
 
         $command = new command(
             $endpoint,
@@ -69,50 +68,13 @@ class command_test extends oneroster_testcase {
             $params
         );
 
-        $this->assertEquals($expectedurl, $command->get_url(''));
+        $this->assertSame($expectedurl, $command->get_url(''));
 
         $this->assertIsArray($command->get_params());
         $this->assertSame($finalparams, $command->get_params());
     }
 
-    /**
-     * Data provider for URL construction when valid parameters are provided.
-     *
-     * @return  array
-     */
-    public function param_and_url_provider(): array {
-        return [
-            'URL without params' => [
-                '/someMethod',
-                [],
-                '/someMethod',
-                [],
-            ],
-            'Normal params do not do anything to the URL' => [
-                '/someMethod',
-                [
-                    'someValye' => 'dateLastModified',
-                ],
-                '/someMethod',
-                [
-                    'someValye' => 'dateLastModified',
-                ],
-            ],
-            'URL param gets replaced' => [
-                '/someMethod/:some_id',
-                [
-                    ':some_id' => 'someValue',
-                    'limit' => '5',
-                ],
-                '/someMethod/someValue',
-                [
-                    'limit' => '5',
-                ],
-            ],
-        ];
-    }
-
-    /**
+     /**
      * Test the URL construction via the constructor when the params and URL or incorrect.
      *
      * @dataProvider invalid_param_and_url_provider
@@ -122,12 +84,12 @@ class command_test extends oneroster_testcase {
     public function test_construct_url_invalid_params($url, $params): void {
         $endpoint = $this->getMockBuilder(endpoint::class)
             ->disableOriginalConstructor()
-            ->setMethods(['get_url_for_command'])
+            ->onlyMethods(['get_url_for_command'])
             ->getMock();
 
         $endpoint
             ->method('get_url_for_command')
-            ->will($this->returnArgument(1));
+            ->will($this->willReturnArgument(1));
 
         $this->expectException(\OutOfRangeException::class);
         $command = new command(
@@ -140,26 +102,6 @@ class command_test extends oneroster_testcase {
             null,
             $params
         );
-    }
-
-    /**
-     * Data provider for URL construction when invalid parameters are provided.
-     *
-     * @return  array
-     */
-    public function invalid_param_and_url_provider(): array {
-        return [
-            'Value provided in params without a placeholder' => [
-                '/someMethod',
-                [
-                    ':some_id' => 'someValue',
-                ],
-            ],
-            'Placeholder without a param' => [
-                '/someMethod/:some_id',
-                [],
-            ],
-        ];
     }
 
     /**
@@ -187,21 +129,7 @@ class command_test extends oneroster_testcase {
         $this->assertEquals($collectionnames, $command->get_collection_names());
     }
 
-    /**
-     * Data provider for the `get_collection_names` for function.
-     *
-     * @return  array
-     */
-    public function get_collection_names_provider(): array {
-        return [
-            [null],
-            [['org']],
-            [['org', 'school']],
-            [['1', 2]],
-        ];
-    }
-
-    /**
+     /**
      * Ensure that the is_collection function returns correctly for a range of collection values.
      *
      * @dataProvider is_collection_provider
@@ -227,102 +155,7 @@ class command_test extends oneroster_testcase {
         $this->assertEquals($iscollection, $command->is_collection());
     }
 
-    /**
-     * Data provider for the `is_collection` tests.
-     *
-     * @return  array
-     */
-    public function is_collection_provider(): array {
-        return [
-            [null, false],
-            [[], false],
-            [[0], true],
-            [['org'], true],
-            [['org', 'school'], true],
-            [['1', 2], true],
-        ];
-    }
-
-    /**
-     * Ensure that the require_collection function does not except.
-     *
-     * @dataProvider require_collection_valid_provider
-     * @param   array|null $collectionnames
-     */
-    public function test_require_collection_valid(?array $collectionnames): void {
-        $endpoint = $this->getMockBuilder(endpoint::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $command = new command(
-            $endpoint,
-            '/someMethod',
-            'someMethod',
-            'Description of some example test method',
-            $collectionnames,
-            null,
-            null,
-            []
-        );
-
-        $this->assertNull($command->require_collection());
-    }
-
-    /**
-     * Data provider for the `require_collection` for valid values.
-     *
-     * @return  array
-     */
-    public function require_collection_valid_provider(): array {
-        return array_filter(
-            $this->is_collection_provider(),
-            function($values) {
-                return $values[1];
-            }
-        );
-    }
-
-    /**
-     * Ensure that the require_collection function does not except.
-     *
-     * @dataProvider require_collection_invalid_provider
-     * @param   array|null $collectionnames
-     */
-    public function test_require_collection_invalid(?array $collectionnames): void {
-        $endpoint = $this->getMockBuilder(endpoint::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $command = new command(
-            $endpoint,
-            '/someMethod',
-            'someMethod',
-            'Description of some example test method',
-            $collectionnames,
-            null,
-            null,
-            []
-        );
-
-        $this->expectException(\BadMethodCallException::class);
-        $command->require_collection();
-    }
-
-    /**
-     * Data provider for the `require_collection` for invalid values.
-     *
-     * @return  array
-     */
-    public function require_collection_invalid_provider(): array {
-        return array_filter(
-            $this->is_collection_provider(),
-            function($values) {
-                return !$values[1];
-            }
-        );
-    }
-
-    /**
+     /**
      * Tests for `get_method` function.
      */
     public function test_get_method(): void {
