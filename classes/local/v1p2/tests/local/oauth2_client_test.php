@@ -39,5 +39,73 @@ use enrol_oneroster\local\oauth2_client_test as oauth2_client_test_version_one;
  * @covers  \enrol_oneroster\local\oauth2_client
  */
 class oauth2_client_test extends oauth2_client_test_version_one {
-    // Insert new logic here.
+    
+        /**
+     * Get a mock of the abstract container.
+     *
+     * @return  container
+     */
+    //need to overide test
+    public function test_auth_url_is_unused(): container {
+        $client = $this->getMockBuilder(oauth2_client::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods([])
+            ->getMock();
+
+        $rc = new \ReflectionClass(oauth2_client::class);
+        $rcm = $rc->getMethod('auth_url');
+        $rcm->setAccessible(true);
+
+        $this->expectException(\coding_exception::class);
+        $rcm->invoke($client);
+    }
+
+        /**
+     * Test the `authenticate` method.
+     */
+    public function test_authenticate(): void {
+        $tokenurl = 'https://example.com/token';
+        $server = 'https://example.com/';
+        $clientid = 'thisIsMyClientId';
+        $clientsecret = 'thisIsMyBiggestSecret';
+
+        $client = $this->getMockBuilder(oauth2_client::class)
+            ->setConstructorArgs([
+                $tokenurl,
+                $server,
+                $clientid,
+                $clientsecret
+            ])
+            ->onlyMethods([
+                'get_all_scopes',
+                'post',
+                'get_request_info'
+            ])
+            ->getMock();
+
+        $scopes = [
+            'https://example.org/spec/example/v1p1/scope/example.dosoemthing',
+        ];
+        $client
+            ->method('get_all_scopes')
+            ->willReturn($scopes);
+
+        $client
+            ->method('post')
+            ->willReturn(json_encode((object) [
+                'access_token' => 'exampleToken',
+                'expires_in' => usergetmidnight(time()) + DAYSECS,
+                'scope' => implode(',', $scopes),
+            ]));
+
+        $client
+            ->method('get_request_info')
+            ->willReturn([
+                'http_code' => 200,
+            ]);
+
+        // Call Authenticate to authenticate the user.
+        $client->authenticate();
+    }
+
 }
