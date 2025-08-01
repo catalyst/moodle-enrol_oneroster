@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-namespace enrol_oneroster\local;
+namespace enrol_oneroster\local\v1p2;
 
 use enrol_oneroster\local\v1p1\csv_client_const_helper as csv_client_const_helper_version_one;
 
