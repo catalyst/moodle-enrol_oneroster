@@ -252,11 +252,6 @@ class csv_client_const_helper {
      */
     const FILE_USERS = 'users.csv';
 
-    /**
-     * File name for user profiles.
-     */
-    const FILE_USERPROFILES = 'userProfiles.csv';
-
     // Datatype constants used for validation.
 
     /**
