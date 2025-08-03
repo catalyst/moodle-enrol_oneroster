@@ -220,36 +220,6 @@ class csv_client_const_helper {
      */
     const HEADER_PASSWORD = 'password';
 
-    /**
-     * Header field for the user sourced ID.
-     */
-    const HEADER_USER_SOURCEDID = 'userSourcedId';
-
-    /**
-     * Header field for the profile type.
-     */
-    const HEADER_PROFILE_TYPE = 'profileType';
-
-    /**
-     * Header field for the vendor ID.
-     */
-    const HEADER_VENDOR_ID = 'vendorId';
-
-    /**
-     * Header field for the application ID.
-     */
-    const HEADER_APPLICATION_ID = 'applicationId';
-
-    /**
-     * Header field for the description.
-     */
-    const HEADER_DESCRIPTION = 'description';
-
-    /**
-     * Header field for the credential type.
-     */
-    const HEADER_CREDENTIAL_TYPE = 'credentialType';
-
     // ... Continue documenting other constants in the same manner.
 
     /**
