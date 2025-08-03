@@ -171,6 +171,7 @@ function process_selected_organization(string $selectedorgsourcedid, string $tem
     $orgs = $csvdata['orgs'] ?? [];
     $enrollments = $csvdata['enrollments'] ?? [];
     $academicsessions = $csvdata['academicSessions'] ?? [];
+    $userprofiles = $csvdata['userprofiles'] ?? [];
 
     $csvclient = client_helper::get_csv_client();
 
@@ -180,7 +181,7 @@ function process_selected_organization(string $selectedorgsourcedid, string $tem
         set_config('datasync_schools', $selectedorgsourcedid, 'enrol_oneroster');
     }
 
-    $csvclient->set_data($manifest, $users, $classes, $orgs, $enrollments, $academicsessions);
+    $csvclient->set_data($manifest, $users, $classes, $orgs, $enrollments, $academicsessions, $userprofiles);
 
     try {
         $csvclient->synchronise();
