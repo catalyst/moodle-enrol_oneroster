@@ -1,4 +1,5 @@
 <?php
+namespace enrol_oneroster\tests\local\v1p2;
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -18,25 +19,58 @@
  * One Roster Enrolment Client Unit tests.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use advanced_testcase;
+use enrol_oneroster\local\v1p2\client;
 
-namespace enrol_oneroster\local;
-
-defined('MOODLE_INTERNAL') || die;
-require_once(__DIR__ . '/oneroster_testcase.php');
-use enrol_oneroster\local\endpoint_test as endpoint_test_version_one;
+defined('MOODLE_INTERNAL') || die();
 
 /**
- * One Roster tests for filters.
+ * Tests for the endpoint class in OneRoster v1p2.
  *
- * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
- * @covers  \enrol_oneroster\local\endpoint
+ * @covers \enrol_oneroster\local\v1p2\endpoint
  */
-class endpoint_test extends endpoint_test_version_one{
-    // Insert new logic here.
+class endpoint_test extends advanced_testcase {
+
+    /**
+     * Test get_classes_for_user_returns_expected_format
+     *
+     * @copyright  Khushi
+     */
+    public function test_get_classes_for_user_returns_expected_format() {
+        $this->resetAfterTest(true);
+
+        
+        $mockclient = $this->getMockBuilder(client::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['execute'])
+            ->getMock();
+
+        
+        $mockclient->method('execute')->willReturn([
+            'userid' => 1001,
+            'statuscodeMajor' => 'success',
+            'classes' => ['class1', 'class2']
+        ]);
+
+               $endpoint = new class($mockclient) extends endpoint {
+            private $mockclient;
+
+            public function __construct($mockclient) {
+                $this->mockclient = $mockclient;
+            }
+
+            protected function get_client(): client {
+                return $this->mockclient;
+            }
+        };
+
+       
+        $result = $endpoint->get_classes_for_user(1001);
+
+        $this->assertIsArray($result);
+        $this->assertEquals(['class1', 'class2'], $result);
+    }
 }
