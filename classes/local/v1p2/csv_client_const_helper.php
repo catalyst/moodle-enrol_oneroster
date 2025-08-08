@@ -51,7 +51,7 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
      * Datatype constant for an role type enumeration.
      */
     const DATATYPE_ENUM_ROLE_TYPE = 'enum_role_type';
-    
+
     /**
      * Datatype constant for an legacy role type enumeration.
      */
@@ -69,8 +69,8 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
      *
      * @var array
      */
-    const VALID_ROLE_ROLES = ['aide' , 'counselor' , 'districtAdministrator' , 'guardian' , 
-                            'parent' , 'principal' , 'proctor' , 'relative' , 'siteAdministrator' 
+    const VALID_ROLE_ROLES = ['aide' , 'counselor' , 'districtAdministrator' , 'guardian' ,
+                            'parent' , 'principal' , 'proctor' , 'relative' , 'siteAdministrator'
                             , 'student' , 'systemAdministrator' , 'teacher'];
 
     /**
@@ -130,10 +130,10 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
       self::HEADER_USERNAME,
       self::HEADER_PASSWORD
    ];
-  
+
    /**
      * Header fields for the roles file.
-     * 
+     *
      * @var array
      */
     const HEADER_ROLES = [
@@ -160,13 +160,7 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
         self::FILE_ENROLLMENTS => self::HEADER_ENROLLMENTS,
         self::FILE_ORGS => self::HEADER_ORGS,
         self::FILE_USERS => self::HEADER_USERS,
+        self::FILE_USERPROFILES => self::HEADER_USERPROFILES,
         self::FILE_ROLES => self:: HEADER_ROLES,
     ];
-      self::FILE_ACADEMIC_SESSIONS => self::HEADER_ACADEMIC_SESSIONS,
-      self::FILE_CLASSES => self::HEADER_CLASSES,
-      self::FILE_ENROLLMENTS => self::HEADER_ENROLLMENTS,
-      self::FILE_ORGS => self::HEADER_ORGS,
-      self::FILE_USERS => self::HEADER_USERS,
-      self::FILE_USERPROFILES => self::HEADER_USERPROFILES
-  ];
 }
