@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local;
+namespace enrol_oneroster\tests\local;
 
 use advanced_testcase;
 use enrol_oneroster\local\interfaces\client as client_interface;
