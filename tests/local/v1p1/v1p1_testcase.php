@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\test\local\v1p1;
+namespace enrol_oneroster\local\v1p1;
 
 defined('MOODLE_INTERNAL') || die;
 require_once(__DIR__ . '/../oneroster_testcase.php');
