@@ -57,8 +57,8 @@ abstract class oneroster_testcase extends oneroster_testcase_version_one{
         $mock->method('get_client')->willReturn($client);
         return $mock;
         }
-        /**
-     * Mock a rostering endpoint
+    /**
+     * Mock a rostering endpoint, returns it and adds it to mocked container
      *  @param container_interface $container is a mocked container
      *  @param array $mockedfunctions the rostering functions to me mocked
      * @return rostering_endpoint_interface mocked rostering endpoint 
@@ -68,12 +68,17 @@ abstract class oneroster_testcase extends oneroster_testcase_version_one{
             ->setConstructorArgs([$container])
             ->onlyMethods(array_values($mockfunctions))
             ->getMock();
-        //
+    
         $container->method('get_rostering_endpoint')->willReturn($mock);
 
         return $mock;
     }
-
+    /**
+     * Mock a entity factory, returns it and adds it to mocked container
+     *  @param container_interface $container is a mocked container
+     *  @param array $mockedfunctions the rostering functions to me mocked
+     * @return entity_factory_interface mocked entity factory 
+     */
     protected function mock_entity_factory(container_interface $container, array $mockfunctions): entity_factory_interface {
         $mock = $this->getMockBuilder(entity_factory::class)
             ->setConstructorArgs([$container])
@@ -84,7 +89,13 @@ abstract class oneroster_testcase extends oneroster_testcase_version_one{
 
         return $mock;
     }
-
+    
+    /**
+     * Mock a collection factory, returns it and adds it to mocked container
+     *  @param container_interface $container is a mocked container
+     *  @param array $mockedfunctions the rostering functions to me mocked
+     * @return entity_colection_interface mocked entity factory 
+     */
     protected function mock_collection_factory(container_interface $container, array $mockfunctions): collection_factory_interface {
         $mock = $this->getMockBuilder(collection_factory::class)
             ->setConstructorArgs([$container])
