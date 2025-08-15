@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster\local\v1p2;
 use enrol_oneroster\csv_test_helper as csv_test_helper_version_one;
-use enrol_oneroster\local\csv_client_const_helper;
+use enrol_oneroster\local\v1p2\csv_client_const_helper;
 
 /**
  * Helper class for tests that involve CSV files.
@@ -39,6 +39,7 @@ class csv_test_helper extends csv_test_helper_version_one {
             ['file.orgs', 'bulk'],
             ['file.users', 'bulk'],
             ['file.userprofiles', 'bulk'],
+            ['file.roles', 'bulk']
         ];
         self::createcsvfiles($testdir . DIRECTORY_SEPARATOR . 'manifest.csv', $manifestcontent);
 
@@ -159,5 +160,29 @@ class csv_test_helper extends csv_test_helper_version_one {
 
         ];
         self::createcsvfiles($testdir . DIRECTORY_SEPARATOR . 'userprofiles.csv', $userProfiles);
+
+        //Creating roles.csv
+        $roles = [
+        csv_client_const_helper::HEADER_ROLES,
+        //userguid present
+            [
+                'rol-54321-321', 'active', 'usr-222-123456',
+                'primary', 'student', '2025-01-01',
+                '2025-05-05', 'org-sch-222-3456', 'upf-12345-123'
+            ],
+            //userguid not present
+            [
+                'rol-512345-123', 'active', 'usr-333-654321',
+                'primary', 'student', '2025-01-01',
+                '2025-05-05', 'org-sch-222-3456', 'upf-54321-321'
+            ],
+            //userguid present
+            [
+                'rol-12345-543', 'secondary', 'usr-222-66778900',
+                'secondary', 'teacher', '2025-01-01',
+                '2025-05-05', 'org-sch-222-3456', 'upf-12345-123'
+            ]
+        ];
+        self::createcsvfiles($testdir . DIRECTORY_SEPARATOR . 'roles.csv', $roles);
     }
 }
