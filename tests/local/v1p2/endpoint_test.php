@@ -22,7 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local;
+/**
+ * One Roster 1.1 Factory Manager.
+ *
+ * @package    enrol_oneroster
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+namespace enrol_oneroster\tests\local\v1p2;
 
 defined('MOODLE_INTERNAL') || die;
 require_once(__DIR__ . '/oneroster_testcase.php');

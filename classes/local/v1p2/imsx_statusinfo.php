@@ -1,5 +1,6 @@
 <?php
-namespace enrol_oneroster\local\v1p2;
+namespace enrol_oneroster\classes\local\v1p2;
+require_once(__DIR__ . '/enums.php');
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -19,75 +20,53 @@ namespace enrol_oneroster\local\v1p2;
  * One Roster Enrolment Client Unit tests.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class minor
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/lib/moodlelib.php');
-require_once(__DIR__ . '/codeMajor.php');
-require_once(__DIR__ . '/severity.php');
-require_once(__DIR__ . '/minorFieldValue.php');
-require_once(__DIR__ . '/codeMinor.php');
-
 /**
- * IMSX Status Info implementation for OneRoster.
- *
- * @package    enrol_oneroster
+ * Enum classes assumed to exist:
+ * codeMajor, severity, minorFieldValue
  */
+
 class imsx_statusinfo {
 
-    /** @var codeMajor */
     public codeMajor $codeMajor;
-
-    /** @var severity */
     public severity $severity;
-
-    /** @var string */
     public string $description;
+    public ?minorFieldValue $codeMinor;
 
-    /** @var codeMinor */
-    public codeMinor $codeMinor;
+   public function __construct(object $data) {
 
-    /**
-     * Constructor.
-     *
-     * @param \stdClass $data Input status info data
-     * @throws \moodle_exception if validation fails
-     */
-    public function __construct(\stdClass $data) {
-        // Validate codeMajor.
-        if (empty($data->codeMajor)) {
-            throw new \moodle_exception('Missing codeMajor in imsx_statusinfo');
-        }
-
-        try {
-            $this->codeMajor = codeMajor::from($data->codeMajor);
-        } catch (\ValueError $e) {
-            throw new \moodle_exception('Invalid codeMajor: ' . $data->codeMajor);
-        }
-
-        // Validate severity.
-        if (empty($data->severity)) {
-            throw new \moodle_exception('Missing severity in imsx_statusinfo');
-        }
-
-        try {
-            $this->severity = severity::from($data->severity);
-        } catch (\ValueError $e) {
-            throw new \moodle_exception('Invalid severity: ' . $data->severity);
-        }
-
-        // Description is optional.
-        $this->description = $data->description ?? '';
-
-        // Validate codeMinor.
-        if (empty($data->codeMinor) || !is_object($data->codeMinor)) {
-            throw new \moodle_exception('Missing or invalid codeMinor in imsx_statusinfo');
-        }
-        $this->codeMinor = new codeMinor($data->codeMinor);
+    // codeMajor
+    try {
+        $this->codeMajor = codeMajor::from($data->codeMajor ?? '');
+    } catch (\ValueError | \TypeError $e) {
+        throw new \moodle_exception('Invalid or missing codeMajor');
     }
+
+    // severity
+    try {
+        $this->severity = severity::from($data->severity ?? '');
+    } catch (\ValueError | \TypeError $e) {
+        throw new \moodle_exception('Invalid or missing severity');
+    }
+
+    // description
+    $this->description = $data->description ?? '';
+
+    // codeMinor
+    if (isset($data->codeMinor->field)) {
+        try {
+            $this->codeMinor = minorFieldValue::from($data->codeMinor->field);
+        } catch (\ValueError $e) {
+            throw new \moodle_exception('Invalid codeMinor value');
+        }
+    } else {
+        $this->codeMinor = null;
+    }
+}
 }
