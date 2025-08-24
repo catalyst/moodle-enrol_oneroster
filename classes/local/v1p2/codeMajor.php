@@ -1,5 +1,5 @@
 <?php
-namespace enrol_oneroster\local\v1p2;
+namespace enrol_oneroster\classes\local\v1p2;
 
 // This file is part of Moodle - http://moodle.org/
 //
