@@ -22,11 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local;
+namespace enrol_oneroster\tests\local;
 
 defined('MOODLE_INTERNAL') || die;
-require_once(__DIR__ . '/oneroster_testcase.php');
-use enrol_oneroster\local\oneroster_testcase;
+require_once('/var/www/moodle/enrol/oneroster/tests/local/v1p2/oneroster_testcase.php');
+use enrol_oneroster\tests\local\v1p2\oneroster_testcase;
 
 /**
  * One Roster tests for the `command` class.

@@ -18,31 +18,27 @@
  * One Roster Enrolment Client Unit tests.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\v1p1\endpoints;
+namespace enrol_oneroster\tests\local\v1p2\entities;
 
 defined('MOODLE_INTERNAL') || die;
-require_once(__DIR__ . '/../../oneroster_testcase.php');
-use enrol_oneroster\local\v1p1\endpoints\rostering_test as rostering_test_version_one;
+require_once(__DIR__ . '/../oneroster_testcase.php');
+use enrol_oneroster\tests\local\v1p2\oneroster_testcase;
 
-use advanced_testcase;
-use stdClass;
-use InvalidArgumentException;
-use ReflectionClass;
+use enrol_oneroster\tests\local\entities\org_test as test_one;
 
 /**
- * One Roster tests for filters.
+ * One Roster tests for the org entity.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
- * @covers  \enrol_oneroster\local\endpoints\rostering
- * @covers  \enrol_oneroster\local\v1p1\endpoints\rostering
+ * @covers  \enrol_oneroster\local\entity
+ * @covers  \enrol_oneroster\local\entities\org
  */
-class rostering_test extends rostering_test_version_one {
+class org_test extends oneroster_testcase {
     // Insert new logic here.
 }

@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
-namespace enrol_oneroster\local\entities;
+namespace enrol_oneroster\classes\local\v1p2\entities;
 
 use coding_exception;
 use enrol_oneroster\local\endpoints\rostering as rostering_endpoint;

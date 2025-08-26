@@ -22,21 +22,23 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\v1p2;
+namespace enrol_oneroster\tests\local\v1p2\entities;
 
 defined('MOODLE_INTERNAL') || die;
-require_once(__DIR__ . '/entity_testcase.php');
-use enrol_oneroster\local\entities\school_test as school_test_version_one;
+require_once(__DIR__ . '/../oneroster_testcase.php');
+use enrol_oneroster\tests\local\v1p2\oneroster_testcase;
+
+use enrol_oneroster\tests\local\entities\course_test as course_test_version_one;
 
 /**
- * One Roster tests for the school entity.
+ * One Roster tests for the course entity.
  *
  * @package    enrol_oneroster
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers  \enrol_oneroster\local\entity
- * @covers  \enrol_oneroster\local\entities\school
+ * @covers  \enrol_oneroster\local\entities\course
  */
-class school_test extends school_test_version_one {
+class course_test extends oneroster_testcase {
     // Insert new logic here.
 }

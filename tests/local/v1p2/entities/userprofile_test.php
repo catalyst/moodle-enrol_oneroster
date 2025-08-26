@@ -22,17 +22,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\entities;
+namespace enrol_oneroster\tests\local\v1p2\entities;
 
-use enrol_oneroster\local\entities\userprofile;
+
 use stdClass;
 use coding_exception;
 
-defined('MOODLE_INTERNAL') || die;
-require_once(__DIR__ . '/entity_testcase.php');
-use enrol_oneroster\local\entities\entity_testcase;
+require_once('/var/www/moodle/enrol/oneroster/classes/local/v1p2/entities/userprofile.php');
+require_once(__DIR__ . '/../oneroster_testcase.php');
+use enrol_oneroster\tests\local\v1p2\oneroster_testcase;
+use enrol_oneroster\classes\local\v1p2\entities\userprofile;
 
-class userprofile_test extends entity_testcase {
+class userprofile_test extends oneroster_testcase {
     /**
      * Test the properties of the entity.
      */

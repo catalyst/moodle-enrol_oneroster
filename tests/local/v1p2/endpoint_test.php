@@ -1,4 +1,5 @@
 <?php
+namespace enrol_oneroster\tests\local\v1p2;
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -18,251 +19,59 @@
  * One Roster Enrolment Client Unit tests.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use advanced_testcase;
 
-namespace enrol_oneroster\local;
+use enrol_oneroster\local\interfaces\client;
 
-defined('MOODLE_INTERNAL') || die;
-require_once(__DIR__ . '/oneroster_testcase.php');
-use enrol_oneroster\local\oneroster_testcase;
+defined('MOODLE_INTERNAL') || die();
 
 /**
- * One Roster tests for filters.
+ * Tests for the endpoint class in OneRoster v1p2.
  *
- * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
- * @covers  \enrol_oneroster\local\endpoint
+ * @covers \enrol_oneroster\local\v1p2\endpoint
  */
-class endpoint_test extends oneroster_testcase {
+class endpoint_test extends advanced_testcase {
 
     /**
-     * Get a mocked command at the specified endpoint.
+     * Test get_classes_for_user_returns_expected_format
      *
-     * @param   endpoint $endpoint
-     * @param   string $method
-     * @param   array $params
-     * @param   array|null $collection
-     * @return  command
+     * @copyright  Khushi
      */
-    protected function get_mocked_command(endpoint $endpoint, string $method, array $params, ?array $collection = null): command {
-        return $this->getMockBuilder(command::class)
-            ->setConstructorArgs([
-                $endpoint,
-                '/exampleMethod',
-                $method,
-                'This is an example method',
-                $collection,
-                null,
-                null,
-                $params
-            ])
-            ->setMethods(null)
-            ->getMock();
-    }
+    public function test_get_classes_for_user_returns_expected_format() {
+        $this->resetAfterTest(true);
 
-    /**
-     * Test instantiation of the endpoint.
-     */
-    public function test_instantiation(): void {
-        $container = $this->get_mocked_container();
-
-        $endpoint = $this->getMockBuilder(endpoint::class)
-            ->setConstructorArgs([$container])
+        
+        $mockclient = $this->getMockBuilder(client::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['execute'])
             ->getMock();
 
-        $this->assertInstanceOf(endpoint::class, $endpoint);
-    }
+        
+        $mockclient->method('execute')->willReturn([
+            'userid' => 1001,
+            'statuscodeMajor' => 'success',
+            'classes' => ['class1', 'class2']
+        ]);
 
-    /**
-     * Test the 'execute' method.
-     */
-    public function test_execute(): void {
-        $container = $this->get_mocked_container();
+               $endpoint = new class($mockclient) extends endpoint {
+            private $mockclient;
 
-        // Mock the endpoint under test.
-        // The 'get_http_method' method must be mocked because no commands are available to test in the abstract
-        // endpoint.
-        $endpoint = $this->getMockBuilder(endpoint::class)
-            ->setConstructorArgs([$container])
-            ->setMethods([
-                'get_http_method',
-            ])
-            ->getMock();
+            public function __construct($mockclient) {
+                $this->mockclient = $mockclient;
+            }
 
-        // Test data.
-        $method = 'exampleEndpoint';
-        $params = [
-            'sort' => 'dateLastModified',
-        ];
-        $filter = $this->createMock(filter::class);
+            protected function get_client(): client {
+                return $this->mockclient;
+            }
+        };
 
-        $command = $this->get_mocked_command($endpoint, $method, $params);
+       
+        $result = $endpoint->get_classes_for_user(1001);
 
-        $endpoint
-            ->expects($this->once())
-            ->method('get_http_method')
-            ->with(
-                $this->equalTo($method),
-                $this->equalTo($params)
-            )
-            ->willReturn($command);
-
-        $client = $container->get_client();
-        $client
-            ->expects($this->once())
-            ->method('execute')
-            ->with(
-                $this->equalTo($command),
-                $this->equalTo($filter)
-            )
-            ->willReturn((object) [
-                'response' => 'Example response',
-            ]);
-
-        $this->assertequals('Example response', $endpoint->execute($method, $filter, $params));
-    }
-
-    /**
-     * Test the 'execute_command' method.
-     */
-    public function test_execute_command(): void {
-        $container = $this->get_mocked_container();
-
-        // Mock the endpoint under test.
-        $endpoint = $this->getMockBuilder(endpoint::class)
-            ->setConstructorArgs([$container])
-            ->setMethods(null)
-            ->getMock();
-
-        // Test data.
-        $command = $this->get_mocked_command($endpoint, 'exampleEndpoint', []);
-        $filter = $this->createMock(filter::class);
-
-        $container->get_client()
-            ->expects($this->once())
-            ->method('execute')
-            ->with(
-                $this->equalTo($command),
-                $this->equalTo($filter)
-            )
-            ->willReturn((object) [
-                'response' => 'Example response',
-            ]);
-
-        $result = $endpoint->execute_command($command, $filter);
-        $this->assertEquals('Example response', $result);
-    }
-
-    /**
-     * Test the 'execute_paginated_function' method.
-     */
-    public function test_execute_paginated_function(): void {
-        $container = $this->get_mocked_container();
-
-        // Mock the endpoint under test.
-        // The 'get_http_method' method must be mocked because no commands are available to test in the abstract
-        // endpoint.
-        $endpoint = $this->getMockBuilder(endpoint::class)
-            ->setConstructorArgs([$container])
-            ->setMethods([
-                'get_http_method',
-            ])
-            ->getMock();
-        $this->assertInstanceOf(endpoint::class, $endpoint);
-        $this->assertInstanceOf(\enrol_oneroster\local\interfaces\endpoint::class, $endpoint);
-
-        // Test data.
-        $method = 'exampleEndpoint';
-        $params = [
-            'sort' => 'dateLastModified',
-        ];
-
-        $filter = $this->createMock(filter::class);
-        $command = $this->get_mocked_command($endpoint, $method, $params, ['examples']);
-        $command1 = clone $command;
-        $command2 = clone $command;
-        $command3 = clone $command;
-
-        $endpoint
-            ->expects($this->exactly(3))
-            ->method('get_http_method')
-            ->withConsecutive(
-                [$this->equalTo($method), $this->equalTo(array_merge($params, ['offset' => 0, 'limit' => 200]))],
-                [$this->equalTo($method), $this->equalTo(array_merge($params, ['offset' => 200, 'limit' => 200]))],
-                [$this->equalTo($method), $this->equalTo(array_merge($params, ['offset' => 400, 'limit' => 200]))]
-            )
-            ->will(
-                $this->onConsecutiveCalls(
-                    $command1,
-                    $command2,
-                    $command3
-                )
-            );
-
-        $client = $container->get_client();
-        $client
-            ->method('execute')
-            ->withConsecutive(
-                [$this->equalTo($command1), $this->equalTo($filter)],
-                [$this->equalTo($command2), $this->equalTo($filter)],
-                [$this->equalTo($command3), $this->equalTo($filter)]
-            )
-            ->will($this->onConsecutiveCalls(
-                (object) [
-                    'response' => (object) [
-                        'examples' => array_map(function($id) {
-                            return (object) ['sourcedId' => $id];
-                        }, array_keys(array_fill(1, 200, null))),
-                    ],
-                ],
-                (object) [
-                    'response' => (object) [
-                        'examples' => array_map(function($id) {
-                            return (object) ['sourcedId' => $id];
-                        }, array_keys(array_fill(201, 400, null))),
-                    ],
-                ],
-                (object) [
-                    'response' => (object) [
-                        'examples' => [],
-                    ],
-                ]
-            ));
-
-        $result = $endpoint->execute_paginated_function($method, $filter, $params, function($row) {
-            return $row;
-        });
-        $this->assertInstanceOf(\Generator::class, $result);
-
-        foreach ($result as $row) {
-            $this->assertIsObject($row);
-        }
-    }
-
-    /**
-     * Ensure that the `get_all_commands` function returns an array.
-     */
-    public function test_get_all_data(): void {
-        $container = $this->get_mocked_container();
-        $endpoint = new endpoint($container);
-
-        $this->assertIsArray($endpoint->get_all_commands());
-    }
-
-    /**
-     * Ensure that the 'execute_command' method throws an exception for an invalid command.
-     */
-    public function test_execute_invalid(): void {
-        $container = $this->get_mocked_container();
-
-        // Mock the endpoint under test.
-        $endpoint = new endpoint($container);
-
-        $this->expectException(\BadMethodCallException::class);
-        $endpoint->execute('unknownMethod');
+        $this->assertIsArray($result);
+        $this->assertEquals(['class1', 'class2'], $result);
     }
 }

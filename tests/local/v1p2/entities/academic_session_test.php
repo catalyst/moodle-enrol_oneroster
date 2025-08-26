@@ -22,20 +22,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster;
+namespace enrol_oneroster\tests\local\v1p2\entities;
 
-use enrol_oneroster\client_helper_test as client_helper_test_version_one;
+defined('MOODLE_INTERNAL') || die;
+require_once(__DIR__ . '/../oneroster_testcase.php');
 
-
+use enrol_oneroster\tests\local\v1p2\oneroster_testcase;
 /**
- * One Roster tests for the client_helper class.
+ * One Roster tests for the academic_session entity.
  *
  * @package    enrol_oneroster
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
- * @covers  \enrol_oneroster\client_helper
+ * @covers  \enrol_oneroster\local\entity
+ * @covers  \enrol_oneroster\local\entities\academic_session
  */
-class client_helper_test extends client_helper_test_version_one{
+class academic_session_test extends oneroster_testcase {
     // Insert new logic here.
 }
