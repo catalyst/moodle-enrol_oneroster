@@ -22,19 +22,26 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\v1p2;
+namespace enrol_oneroster\local\v1p2\endpoints;
 
-defined('MOODLE_INTERNAL') || die;
-require_once(__DIR__ . '/../oneroster_testcase.php');
-use enrol_oneroster\local\entities\entity_testcase as entity_testcase_version_one;
 
+require_once('/var/www/moodle/enrol/oneroster/tests/local/v1p2/oneroster_testcase.php');
+use enrol_oneroster\tests\local\v1p2\oneroster_testcase;
+use advanced_testcase;
+use stdClass;
+use InvalidArgumentException;
+use ReflectionClass;
 
 /**
- * One Roster Entity tests.
+ * One Roster tests for filters.
  *
  * @package    enrol_oneroster
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * @covers  \enrol_oneroster\local\endpoints\rostering
+ * @covers  \enrol_oneroster\local\v1p1\endpoints\rostering
  */
-abstract class entity_testcase extends entity_testcase_version_one {
+class rostering_test extends oneroster_testcase {
+    // Insert new logic here.
 }

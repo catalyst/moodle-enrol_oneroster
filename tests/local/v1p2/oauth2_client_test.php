@@ -22,12 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local;
+namespace enrol_oneroster\test\local\v1p2;
 
-defined('MOODLE_INTERNAL') || die;
-require_once(__DIR__ . '/oneroster_testcase.php');
+require_once('var/www/moodle/enrol/oneroster/tests/local/v1p2/oneroster_testcase.php');
 use enrol_oneroster\local\oneroster_testcase;
-use enrol_oneroster\local\oauth2_client_test as oauth2_client_test_version_one;
+use enrol_oneroster\classes\local\v1p2\oauth2_client;
+use enrol_oneroster\local\interfaces\container;
 
 /**
  * One Roster tests for OAuth2 Client.
@@ -38,7 +38,7 @@ use enrol_oneroster\local\oauth2_client_test as oauth2_client_test_version_one;
  *
  * @covers  \enrol_oneroster\local\oauth2_client
  */
-class oauth2_client_test extends oauth2_client_test_version_one {
+class oauth2_client_test extends oneroster_testcase {
     
         /**
      * Get a mock of the abstract container.

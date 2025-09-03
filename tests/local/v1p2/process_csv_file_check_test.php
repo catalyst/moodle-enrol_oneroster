@@ -13,13 +13,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-namespace enrol_oneroster\local\v1p2;
+namespace enrol_oneroster\tests\local\v1p2;
 
 defined('MOODLE_INTERNAL') || die();
 require(__DIR__ . '/csv_test_helper.php');
 
 use enrol_oneroster\process_csv_file_check_test as file_check_test_version_one;
-use enrol_oneroster\local\v1p2\csv_client_helper;
+use enrol_oneroster\classes\local\v1p2\csv_client_helper;
 
 /**
  * One Roster tests for the client_helper class.
