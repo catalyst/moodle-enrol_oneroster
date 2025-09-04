@@ -15,26 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * One Roster Enrolment Client.
+ * enum severity.
  *
  * @package    enrol_oneroster
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\v1p2\endpoints;
+namespace enrol_oneroster\local\v1p2\statusinfo_relations;
 
-use enrol_oneroster\client_helper;
-use enrol_oneroster\local\v1p1\endpoints\rostering as rostering_version_one;
-
-/**
- * One Roster Endpoint for the v1p2 client.
- *
- * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-class rostering extends rostering_version_one{
-    // Insert new logic here.
-
+enum severity: string {
+    case status = 'status';
+    case warning = 'warning';
+    case error = 'error';
 }

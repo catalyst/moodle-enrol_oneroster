@@ -27,6 +27,7 @@ namespace enrol_oneroster\local\v1p1\collections;
 use enrol_oneroster\local\interfaces\container as container_interface;
 use enrol_oneroster\local\v1p1\endpoints\rostering as rostering_endpoint;
 use enrol_oneroster\local\collections\classes as classes_collection;
+use tool_dataprivacy\output\defaults_page;
 
 /**
  * One Roster Courses collection.
