@@ -22,9 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\classes\local\v1p2;
+namespace enrol_oneroster\local\v1p2;
 
 use enrol_oneroster\local\v1p1\oauth2_client as abstract_oauth_client_version_one;
+use enrol_oneroster\local\v1p2\oneroster_client;
 
 /**
  * One Roster v1p2 client utilising OAuth 2.0.
@@ -34,5 +35,5 @@ use enrol_oneroster\local\v1p1\oauth2_client as abstract_oauth_client_version_on
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class oauth2_client extends abstract_oauth_client_version_one {
-    // Insert new logic here.
+    use oneroster_client;
 }

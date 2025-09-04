@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\v1p1\collections;
+namespace enrol_oneroster\local\v1p2\collections;
 
 use enrol_oneroster\local\interfaces\container as container_interface;
 use enrol_oneroster\local\v1p1\endpoints\rostering as rostering_endpoint;
@@ -35,7 +35,8 @@ use enrol_oneroster\local\collections\classes as classes_collection;
  * @copyright  Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class classes_for_user extends classes_collection {
+class classes_for_user extends classes_collection
+{
 
     /**
      * Get the operation ID for the endpoint, otherwise known as the name of the endpoint.
@@ -43,7 +44,9 @@ class classes_for_user extends classes_collection {
      * @param   container_interface $container The container to which this entity belongs
      * @return  string
      */
-    protected static function get_operation_id(container_interface $container): string {
+    protected static function get_operation_id(container_interface $container): string
+    {
         return rostering_endpoint::getClassesForUser;
     }
+
 }
