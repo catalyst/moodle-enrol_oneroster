@@ -2,10 +2,35 @@
 
 namespace enrol_oneroster\local\v1p2\responses;
 
+
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * class default_response.
+ * Responsible for wrapping the status info response into a standardised response object.
+ * @package    enrol_oneroster
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo Khushi Patel
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 use enrol_oneroster\local\v1p2\statusinfo_relations\statusInfo;
 use enrol_oneroster\local\v1p2\statusinfo_relations\severity;
 use enrol_oneroster\local\v1p2\statusinfo_relations\codeMinor;
 use enrol_oneroster\local\v1p2\statusinfo_relations\codeMajor;
+
 
 class default_response {
     // Properties
@@ -59,6 +84,11 @@ class default_response {
         return json_encode($this->toArray());
     }
 
+     /**
+     * Function that creates the success default response object type.
+     *
+     * @return default_response The success default response object type.
+     */
     public static function success(
         ?array $data = null,
         ?string $collectionName = null,
@@ -71,6 +101,11 @@ class default_response {
         );
     }
 
+     /**
+     * Function that creates the failure default response object type.
+     *
+     * @return default_response The failure default response object type.
+     */
     public static function failure(
         severity $severity,
         codeMinor $codeMinor,
@@ -84,6 +119,11 @@ class default_response {
 
     }
 
+     /**
+     * Function that creates the processing default response object type.
+     *
+     * @return default_response The processing default response object type.
+     */
     public static function processing(
         ?string $description = null
     ) : self {
@@ -94,6 +134,11 @@ class default_response {
         );
     }
 
+     /**
+     * Function that creates the unsupported default response object type.
+     *
+     * @return default_response The unsupported default response object type.
+     */
     public static function unsupported(
         ?string $description = null
     ) : self {
@@ -104,16 +149,25 @@ class default_response {
         );
     }
 
+    /**
+     * Function that checks if the default response object is a valid response.
+     *
+     * @return bool True if the default response object is a valid response, false otherwise.
+     */
     public function isInfoValid(): bool {
+        // Checks if there is no status info.
         if ($this->imsx_statusInfo === null) {
             return false;
         }
+        // Checks if there is no data or collection name.
         if ($this->data === null || $this->collectionName === null) {
             return false;
         }
+        // Checks if the status info is a failure type and if there is no data
         if ($this->imsx_statusInfo->getCodeMajor() === codeMajor::failure && $this->data !== null) {
             return false;
         }
+        // Checks if the status info is a success type and if there is no collection name.
         if ($this->imsx_statusInfo->getCodeMajor() === codeMajor::success &&
         $this->data !== null && $this->collectionName === null) {
             return false;

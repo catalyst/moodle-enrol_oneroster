@@ -16,7 +16,7 @@
 
 /**
  * class statusInfo.
- *
+ * Main status info object that combines all the status information into a centralised unit.
  * @package    enrol_oneroster
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

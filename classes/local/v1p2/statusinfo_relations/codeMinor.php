@@ -17,7 +17,7 @@
 
 /**
  * Class codeMinor.
- *
+ * Combines multiple code minor fields into a single object.
  * @package    enrol_oneroster
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -56,7 +56,7 @@ class codeMinor {
 
 /**
  * Class codeMinorField.
- *
+ * Represents a single field within the code minor object.
  * @package    enrol_oneroster
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -93,7 +93,7 @@ class codeMinorField {
 
 /**
  * enum codeMinorValues.
- *
+ * Defines the possible code minor values for any OneRoster operation.
  * @package    enrol_oneroster
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

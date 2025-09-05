@@ -16,7 +16,7 @@
 
 /**
  * enum codeMajor.
- *
+ * Defines the four possible code major status codes for any OneRoster operation.
  * @package    enrol_oneroster
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

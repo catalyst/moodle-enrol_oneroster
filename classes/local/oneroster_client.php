@@ -60,6 +60,9 @@ trait oneroster_client {
     /** @var plugin An instance of the enrol_oneroster_plugin enrolment plugin */
     protected $instance;
 
+    /** @var bool Whether to automatically wrap responses with status info */
+    protected $autoStatusInfo = false;
+
     /**
      * Get the enrol_oneroster_plugin instance.
      *
@@ -93,6 +96,24 @@ trait oneroster_client {
         }
 
         return $this->trace;
+    }
+
+    /**
+     * Enable or disable automatic status info wrapping for all execute calls.
+     *
+     * @param bool $enabled
+     */
+    public function setAutoStatusInfo(bool $enabled): void {
+        $this->autoStatusInfo = $enabled;
+    }
+
+    /**
+     * Check if auto status info is enabled.
+     *
+     * @return bool
+     */
+    public function isAutoStatusInfoEnabled(): bool {
+        return $this->autoStatusInfo;
     }
 
     /**
@@ -175,6 +196,123 @@ trait oneroster_client {
             'info' => $info,
             'response' => $response,
         ];
+    }
+
+    /**
+     * Execute command with the version 12 status info object.
+     *
+     * @param   command $command The command to execute
+     * @param   filter $filter
+     * @return  array OneRoster v1p2 response with status info
+     */
+    public function executeWithStatusInfo(command $command, filter $filter = null): array {
+        try {
+            $result = $this->execute($command, $filter);
+            $response = $result->response;
+
+            // Check if response already has status info
+            if (isset($response->imsx_statusInfo)) {
+                return (array) $response;
+            }
+
+            // Wrap in v1p2 status info response
+            return $this->wrapResponseWithStatusInfo($response, $command);
+
+        } catch (\Exception $error) {
+            return $this->createErrorStatusInfo($error);
+        }
+    }
+
+    /**
+     * Execute command with optional status info wrapping.
+     *
+     * @param   command $command The command to execute
+     * @param   filter $filter
+     * @param   bool $withStatusInfo Whether to wrap response with OneRoster v1p2 status info
+     * @return  stdClass|array
+     */
+    public function executeWithOptionalStatusInfo(command $command, filter $filter = null, bool $withStatusInfo = false) {
+        if ($withStatusInfo || $this->autoStatusInfo) {
+            return $this->executeWithStatusInfo($command, $filter);
+        }
+
+        return $this->execute($command, $filter);
+    }
+
+    /**
+     * Function that wraps the response with status info.
+     */
+    private function wrapResponseWithStatusInfo(stdClass $response, command $command): array {
+        $data = null;
+        $collectionName = null;
+
+        // Find the collection data
+        foreach ($command->get_collection_names() as $collectionName) {
+            if (property_exists($response, $collectionName)) {
+                $data = $response->{$collectionName};
+                break;
+            }
+        }
+
+        return [
+            'imsx_statusInfo' => [
+                'imsx_codeMajor' => 'success',
+                'imsx_severity' => 'status',
+                'imsx_description' => 'Request completed successfully'
+            ],
+            $collectionName => $data
+        ];
+    }
+
+    /**
+     * Function that creates an error status info response.
+     * @return array The error status info response array
+     */
+    private function createErrorStatusInfo(\Exception $error): array {
+        $statusCode = $error->getCode();
+        $codeMinor = $this->getCodeMinorForStatus($statusCode);
+
+        return [
+            'imsx_statusInfo' => [
+                'imsx_codeMajor' => 'failure',
+                'imsx_severity' => 'error',
+                'imsx_CodeMinor' => $codeMinor,
+                'imsx_description' => $error->getMessage()
+            ]
+        ];
+    }
+
+    /**
+     * Function that creates a specific code minor based on the http status code.
+     * @return array The code minor information array
+     */
+    private function getCodeMinorForStatus(int $statusCode): array {
+        switch ($statusCode) {
+            case 400:
+                return ['imsx_codeMinorField' => [
+                    ['imsx_codeMinorFieldName' => 'TargetEndSystem', 'imsx_codeMinorFieldValue' => 'invaliddata']
+                ]];
+            case 401:
+                return ['imsx_codeMinorField' => [
+                    ['imsx_codeMinorFieldName' => 'TargetEndSystem', 'imsx_codeMinorFieldValue' => 'unauthorisedrequest']
+                ]];
+            case 403:
+                return ['imsx_codeMinorField' => [
+                    ['imsx_codeMinorFieldName' => 'TargetEndSystem', 'imsx_codeMinorFieldValue' => 'forbidden']
+                ]];
+            case 404:
+                return ['imsx_codeMinorField' => [
+                    ['imsx_codeMinorFieldName' => 'TargetEndSystem', 'imsx_codeMinorFieldValue' => 'unknownobject']
+                ]];
+            case 429:
+                return ['imsx_codeMinorField' => [
+                    ['imsx_codeMinorFieldName' => 'TargetEndSystem', 'imsx_codeMinorFieldValue' => 'server_busy']
+                ]];
+            default:
+                return ['imsx_codeMinorField' => [
+                    ['imsx_codeMinorFieldName' => 'TargetEndSystem', 'imsx_codeMinorFieldValue' => 'internal_server_error']
+                ]];
+        }
     }
 
     /**

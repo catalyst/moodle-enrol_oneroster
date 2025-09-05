@@ -16,7 +16,7 @@
 
 /**
  * enum severity.
- *
+ * Describes the severity level of the status info response.
  * @package    enrol_oneroster
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
