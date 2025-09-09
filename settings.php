@@ -228,6 +228,21 @@ if ($ADMIN->fulltree) {
     // Mapping for the 'relative' role.
     \enrol_oneroster\settings::add_role_mapping($settings, 'relative', $allroles, $courseroles);
 
+    // Mapping for the 'counselor' role.
+    \enrol_oneroster\settings::add_role_mapping($settings, 'counselor', $allroles, $courseroles);
+
+    // Mapping for the 'districtAdmin' role.
+    \enrol_oneroster\settings::add_role_mapping($settings, 'districtAdmin', $allroles, $courseroles);
+
+    // Mapping for the 'principal' role.
+    \enrol_oneroster\settings::add_role_mapping($settings, 'principal', $allroles, $courseroles);
+
+    // Mapping for the 'siteAdmin' role.
+    \enrol_oneroster\settings::add_role_mapping($settings, 'siteAdmin', $allroles, $courseroles);
+
+    // Mapping for the 'systemAdmin' role.
+    \enrol_oneroster\settings::add_role_mapping($settings, 'systemAdmin', $allroles, $courseroles);
+
     // Data to synchronise:
     // - Fetch list of available schools button; and
     // - List of schools to sync.
