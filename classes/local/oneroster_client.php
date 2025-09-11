@@ -50,7 +50,8 @@ use stdClass;
  * @copyright  Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-trait oneroster_client {
+trait oneroster_client
+{
     /** @var progress_trace The logging system */
     protected $trace;
 
@@ -68,7 +69,8 @@ trait oneroster_client {
      *
      * @return  enrol_oneroster_plugin
      */
-    protected function get_plugin_instance(): enrol_oneroster_plugin {
+    protected function get_plugin_instance(): enrol_oneroster_plugin
+    {
         if ($this->instance === null) {
             $this->instance = new enrol_oneroster_plugin();
         }
@@ -81,7 +83,8 @@ trait oneroster_client {
      *
      * @param progress_trace $trace
      */
-    public function set_trace(progress_trace $trace): void {
+    public function set_trace(progress_trace $trace): void
+    {
         $this->trace = $trace;
     }
 
@@ -90,7 +93,8 @@ trait oneroster_client {
      *
      * @return progress_trace
      */
-    public function get_trace(): progress_trace {
+    public function get_trace(): progress_trace
+    {
         if ($this->trace === null) {
             return new null_progress_trace();
         }
@@ -98,23 +102,6 @@ trait oneroster_client {
         return $this->trace;
     }
 
-    /**
-     * Enable or disable automatic status info wrapping for all execute calls.
-     *
-     * @param bool $enabled
-     */
-    public function setAutoStatusInfo(bool $enabled): void {
-        $this->autoStatusInfo = $enabled;
-    }
-
-    /**
-     * Check if auto status info is enabled.
-     *
-     * @return bool
-     */
-    public function isAutoStatusInfoEnabled(): bool {
-        return $this->autoStatusInfo;
-    }
 
     /**
      * Execute the supplied command.
@@ -123,7 +110,8 @@ trait oneroster_client {
      * @param   filter $filter
      * @return  stdClass
      */
-    public function execute(command $command, filter $filter = null): stdClass {
+    public function execute(command $command, filter $filter = null): stdClass
+    {
         $url = new moodle_url($command->get_url($this->baseurl));
         $params = $command->get_params();
         $method = $command->get_method();
@@ -162,7 +150,7 @@ trait oneroster_client {
         if (!empty($params) && $method !== client_helper::POST) {
             throw new BadMethodCallException(sprintf(
                 'The http method called for %s is %s but it has to be POST' .
-                ' if you want to pass the JSON params %s',
+                    ' if you want to pass the JSON params %s',
                 $url,
                 $method,
                 json_encode($params)
@@ -192,57 +180,121 @@ trait oneroster_client {
             throw new moodle_exception($response->error . ' ' . $response->error_description);
         }
 
+        if (!isset($response->imsx_statusInfo)) {
+            throw new moodle_exception("No status info found in the response");
+        } else {
+            if (!$this->validateStatusInfo($response)) {
+                throw new moodle_exception("Invalid status info found in the response");
+            }
+        }
+
         return (object) [
             'info' => $info,
             'response' => $response,
         ];
     }
 
-    /**
-     * Execute command with the version 12 status info object.
-     *
-     * @param   command $command The command to execute
-     * @param   filter $filter
-     * @return  array OneRoster v1p2 response with status info
-     */
-    public function executeWithStatusInfo(command $command, filter $filter = null): array {
-        try {
-            $result = $this->execute($command, $filter);
-            $response = $result->response;
 
-            // Check if response already has status info
-            if (isset($response->imsx_statusInfo)) {
-                return (array) $response;
+    private function validateStatusInfo(stdClass $response): bool
+    {
+        // Check if the status info is an object.
+        if (!is_object($response->imsx_statusInfo)) {
+            return false;
+        }
+
+        // Transform the status info object into an array for further validation.
+        $statusInfo = (array) $response->imsx_statusInfo;
+
+        // Validate the code major, severity, and code minor.
+        $codeMajorValid = $this->validateCodeMajor($statusInfo);
+        $severityValid = $this->validateSeverity($statusInfo);
+        $codeMinorValid = $this->validateCodeMinor($statusInfo);
+
+        // If any of the validation fails, return false.
+        if (!$codeMajorValid || !$severityValid || !$codeMinorValid) return false;
+
+
+        return true;
+    }
+
+    private function validateCodeMajor(array $statusInfo): bool
+    {
+        // Check required fields exist
+        if (!isset($statusInfo['imsx_codeMajor'])) {
+            return false;
+        }
+
+        // Validate code major values
+        $validCodeMajors = ['success', 'failure', 'processing', 'unsupported'];
+        if (!in_array($statusInfo['imsx_codeMajor'], $validCodeMajors)) {
+            throw new moodle_exception('INVALID STRUCTURE: Invalid code major value found in the response, values must be either success, failure, processing, or unsupported');
+            return false;
+        }
+
+        return true;
+    }
+
+    private function validateSeverity(array $statusInfo): bool
+    {
+        // Validate severity if present
+        if (isset($statusInfo['imsx_severity'])) {
+            $validSeverities = ['status', 'warning', 'error'];
+            if (!in_array($statusInfo['imsx_severity'], $validSeverities)) {
+                throw new moodle_exception('INVALID STRUCTURE: Invalid severity value found in the response, values must be either status, warning, or error');
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function validateCodeMinor(array $statusInfo): bool
+    {
+        // Checking if the code major is failure.
+        if ($statusInfo['imsx_codeMajor'] === 'failure') {
+            // If code major is failure, checking if the code minor section is present.
+            if (!isset($statusInfo['imsx_CodeMinor'])) {
+                throw new moodle_exception('INVALID STRUCTURE: Failure status info must have a code minor');
+                return false;
             }
 
-            // Wrap in v1p2 status info response
-            return $this->wrapResponseWithStatusInfo($response, $command);
+            // Convert to array if it's an object (from JSON response)
+            $codeMinor = is_object($statusInfo['imsx_CodeMinor']) ? (array) $statusInfo['imsx_CodeMinor'] : $statusInfo['imsx_CodeMinor'];
 
-        } catch (\Exception $error) {
-            return $this->createErrorStatusInfo($error);
+            // If the code minor section is present, checking if the structure is valid.
+            if (!is_array($codeMinor) || !isset($codeMinor['imsx_codeMinorField'])) {
+                // If the structure is not valid, throw a moodle exception.
+                throw new moodle_exception('INVALID STRUCTURE: Invalid code minor value found in the response, values must be either fullsuccess, invalid_filter_field, invalid_selection_field, invaliddata, unauthorisedrequest, forbidden, server_busy, unknownobject, or internal_server_error');
+                return false;
+            }
+
+            // Validate the actual code minor values
+            $validCodeMinors = ['fullsuccess', 'invalid_filter_field', 'invalid_selection_field', 'invaliddata', 'unauthorisedrequest', 'forbidden', 'server_busy', 'unknownobject', 'internal_server_error'];
+            $codeMinorFields = $codeMinor['imsx_codeMinorField'];
+
+            if (is_array($codeMinorFields)) {
+                foreach ($codeMinorFields as $field) {
+                    // Convert to array if it's an object
+                    $fieldArray = is_object($field) ? (array) $field : $field;
+                    if (is_array($fieldArray) && isset($fieldArray['imsx_codeMinorFieldValue'])) {
+                        if (!in_array($fieldArray['imsx_codeMinorFieldValue'], $validCodeMinors)) {
+                            throw new moodle_exception('INVALID STRUCTURE: Invalid code minor value found in the response, values must be either fullsuccess, invalid_filter_field, invalid_selection_field, invaliddata, unauthorisedrequest, forbidden, server_busy, unknownobject, or internal_server_error');
+                            return false;
+                        }
+                    }
+                }
+            }
         }
+
+        return true;
     }
 
-    /**
-     * Execute command with optional status info wrapping.
-     *
-     * @param   command $command The command to execute
-     * @param   filter $filter
-     * @param   bool $withStatusInfo Whether to wrap response with OneRoster v1p2 status info
-     * @return  stdClass|array
-     */
-    public function executeWithOptionalStatusInfo(command $command, filter $filter = null, bool $withStatusInfo = false) {
-        if ($withStatusInfo || $this->autoStatusInfo) {
-            return $this->executeWithStatusInfo($command, $filter);
-        }
-
-        return $this->execute($command, $filter);
-    }
 
     /**
      * Function that wraps the response with status info.
      */
-    private function wrapResponseWithStatusInfo(stdClass $response, command $command): array {
+    private function wrapResponseWithStatusInfo(stdClass $response, command $command): array
+    {
         $data = null;
         $collectionName = null;
 
@@ -268,7 +320,8 @@ trait oneroster_client {
      * Function that creates an error status info response.
      * @return array The error status info response array
      */
-    private function createErrorStatusInfo(\Exception $error): array {
+    private function createErrorStatusInfo(\Exception $error): array
+    {
         $statusCode = $error->getCode();
         $codeMinor = $this->getCodeMinorForStatus($statusCode);
 
@@ -286,7 +339,8 @@ trait oneroster_client {
      * Function that creates a specific code minor based on the http status code.
      * @return array The code minor information array
      */
-    private function getCodeMinorForStatus(int $statusCode): array {
+    private function getCodeMinorForStatus(int $statusCode): array
+    {
         switch ($statusCode) {
             case 400:
                 return ['imsx_codeMinorField' => [
@@ -308,6 +362,10 @@ trait oneroster_client {
                 return ['imsx_codeMinorField' => [
                     ['imsx_codeMinorFieldName' => 'TargetEndSystem', 'imsx_codeMinorFieldValue' => 'server_busy']
                 ]];
+            case 500:
+                return ['imsx_codeMinorField' => [
+                    ['imsx_codeMinorFieldName' => 'TargetEndSystem', 'imsx_codeMinorFieldValue' => 'internal_server_error']
+                ]];
             default:
                 return ['imsx_codeMinorField' => [
                     ['imsx_codeMinorFieldName' => 'TargetEndSystem', 'imsx_codeMinorFieldValue' => 'internal_server_error']
@@ -327,7 +385,8 @@ trait oneroster_client {
      *
      * @param   int $onlysincetime
      */
-    public function synchronise(?int $onlysincetime = null): void {
+    public function synchronise(?int $onlysincetime = null): void
+    {
         if (class_implements($this, rostering_client::class)) {
             $this->sync_roster($onlysincetime);
         }
