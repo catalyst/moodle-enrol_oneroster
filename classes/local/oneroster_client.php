@@ -61,8 +61,6 @@ trait oneroster_client
     /** @var plugin An instance of the enrol_oneroster_plugin enrolment plugin */
     protected $instance;
 
-    /** @var bool Whether to automatically wrap responses with status info */
-
     /**
      * Get the enrol_oneroster_plugin instance.
      *
