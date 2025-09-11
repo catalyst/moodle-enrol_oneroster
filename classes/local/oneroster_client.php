@@ -62,7 +62,6 @@ trait oneroster_client
     protected $instance;
 
     /** @var bool Whether to automatically wrap responses with status info */
-    protected $autoStatusInfo = false;
 
     /**
      * Get the enrol_oneroster_plugin instance.
