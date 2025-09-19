@@ -26,7 +26,7 @@ namespace enrol_oneroster;
 
 use enrol_oneroster\form\oneroster_org_selection_form;
 use enrol_oneroster\form\oneroster_csv_form;
-use enrol_oneroster\local\csv_client_helper;
+use enrol_oneroster\local\v1p1\csv_client_helper;
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
