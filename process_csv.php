@@ -26,7 +26,8 @@ namespace enrol_oneroster;
 
 use enrol_oneroster\form\oneroster_org_selection_form;
 use enrol_oneroster\form\oneroster_csv_form;
-use enrol_oneroster\local\csv_client_helper;
+use enrol_oneroster\local\v1p1\csv_client_helper;
+use enrol_oneroster\classes\local\v1p2\csv_client_helper as versioned_csv_client_helper;
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
@@ -168,10 +169,13 @@ function process_selected_organization(string $selectedorgsourcedid, string $tem
     $manifest = $csvdata['manifest'] ?? [];
     $users = $csvdata['users'] ?? [];
     $classes = $csvdata['classes'] ?? [];
+    $courses = $csvdata['courses'] ?? [];
     $orgs = $csvdata['orgs'] ?? [];
     $enrollments = $csvdata['enrollments'] ?? [];
     $academicsessions = $csvdata['academicSessions'] ?? [];
     $userprofiles = $csvdata['userprofiles'] ?? [];
+    $roles = $csvdata['roles'] ?? [];
+    $demographics = $csvdata['demographics'] ?? [];
 
     $csvclient = client_helper::get_csv_client();
 
@@ -181,7 +185,9 @@ function process_selected_organization(string $selectedorgsourcedid, string $tem
         set_config('datasync_schools', $selectedorgsourcedid, 'enrol_oneroster');
     }
 
-    $csvclient->set_data($manifest, $users, $classes, $orgs, $enrollments, $academicsessions, $userprofiles);
+
+
+    $csvclient->versioned_set_data($manifest, $users, $classes, $courses, $orgs, $enrollments, $academicsessions, $roles, $demographics, $userprofiles);
 
     try {
         $csvclient->synchronise();

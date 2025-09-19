@@ -17,6 +17,7 @@ namespace enrol_oneroster\local\v1p2;
 
 use enrol_oneroster\local\v1p2\csv_client_const_helper;
 use enrol_oneroster\local\v1p1\csv_client_helper as csv_client_helper_version_one;
+use PHPUnit\Framework\Constraint\ArrayHasKey;
 
 use function PHPUnit\Framework\assertEquals;
 
@@ -36,8 +37,223 @@ class csv_client_helper extends csv_client_helper_version_one{
      * @return array An array containing the expected data types for each file.
      */
     public static function get_file_datatypes(): array {
-      //call parent
-      $data = parent::get_file_datatypes();
+        //call parent.
+        $data = parent::get_file_datatypes();
+        //var_dump($data);
+        //Remove v1p1 users.
+        unset($data[csv_client_const_helper::FILE_USERS]);
+
+        //Add new Users.
+        $users = [
+            csv_client_const_helper::FILE_USERS => [
+                csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_STATUS => [
+                    csv_client_const_helper::DATATYPE_ENUM_STATUS,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
+                    csv_client_const_helper::DATATYPE_DATETIME,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_ENABLED_USER => csv_client_const_helper::DATATYPE_ENUM_PRIMARY,
+                csv_client_const_helper::HEADER_USERNAME => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_USERIDS => [
+                    csv_client_const_helper::DATATYPE_ARRAY_USERIDS,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_GIVEN_NAME => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_FAMILY_NAME => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_MIDDLE_NAME => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_IDENTIFIER => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_EMAIL => [
+                    csv_client_const_helper::DATATYPE_STRING_EMAIL,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_SMS => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PHONE => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_AGENT_SOURCEDIDS => [
+                    csv_client_const_helper::DATATYPE_ARRAY_GUID,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_GRADES => [
+                    csv_client_const_helper::DATATYPE_ARRAY_GRADE,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PASSWORD => [
+                    csv_client_const_helper::DATATYPE_PASSWORD,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_MASTER_IDENTIFIER => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PREFERRED_GIVEN_NAME => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PREFERRED_MIDDLE_NAME => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PREFERRED_FAMILY_NAME => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PRIMARY_ORG_SOURCED_ID => [
+                    csv_client_const_helper::DATATYPE_GUID,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PRONOUNS => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+            ]
+        ];
+        $demographics = [
+            csv_client_const_helper::FILE_DEMOGRAPHICS =>[
+                csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_STATUS => [
+                    csv_client_const_helper::DATATYPE_ENUM_STATUS,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
+                    csv_client_const_helper::DATATYPE_DATETIME,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_BIRTHDATE =>[
+                    csv_client_const_helper::DATATYPE_DATE,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_SEX => [
+                    csv_client_const_helper::DATATYPE_SEX,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_AMERICAN_INDIAN_OR_ALASKA_NATIVE =>[
+                    csv_client_const_helper::DATATYPE_DEMOGRAPHIC_ENUM,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_ASIAN =>[
+                    csv_client_const_helper::DATATYPE_DEMOGRAPHIC_ENUM,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_BLACK_OR_AFRICAN_AMERICAN =>[
+                    csv_client_const_helper::DATATYPE_DEMOGRAPHIC_ENUM,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_NATIVE_HAWAIIAN_OR_OTHER_PACIFIC_ISLANDER =>[
+                    csv_client_const_helper::DATATYPE_DEMOGRAPHIC_ENUM,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_WHITE =>[
+                    csv_client_const_helper::DATATYPE_DEMOGRAPHIC_ENUM,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_DEMOGRAPHIC_RACE_TWO_OR_MORE_RACES =>[
+                    csv_client_const_helper::DATATYPE_DEMOGRAPHIC_ENUM,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_HISPANIC_OR_LATINO_ETHNICITY =>[
+                    csv_client_const_helper::DATATYPE_DEMOGRAPHIC_ENUM,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_COUNTRY_OF_BIRTH_CODE =>[
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_STATE_OF_BITH_ABBREVIATION =>[
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_CITY_OF_BIRTH =>[
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PUBLIC_SCHOOL_RESIDENCE_STATUS =>[
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ]
+            ]
+        ];
+        $courses = [
+            csv_client_const_helper::FILE_COURSES =>[
+                csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_STATUS => [
+                    csv_client_const_helper::DATATYPE_ENUM_STATUS,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
+                    csv_client_const_helper::DATATYPE_DATETIME,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_SCHOOL_YEAR_SOURCED_ID => [
+                    csv_client_const_helper::DATATYPE_GUID,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_TITLE => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_COURSE_CODE => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL,
+                ],
+                csv_client_const_helper::HEADER_COURSE_CODE => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL,
+                ],
+                csv_client_const_helper::HEADER_GRADES => [
+                    csv_client_const_helper::DATATYPE_ARRAY_GRADE,
+                    csv_client_const_helper::DATATYPE_NULL,
+                ],
+                csv_client_const_helper::HEADER_ORG_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_SUBJECTS => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL,
+                ],
+                csv_client_const_helper::HEADER_SUBJECT_CODES => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL,
+                ]
+            ]
+        ];
+
+        // add userprofiles.
+        $userprofiledata = [
+        csv_client_const_helper::FILE_USERPROFILES => [
+           csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+           csv_client_const_helper::HEADER_STATUS => [
+               csv_client_const_helper::DATATYPE_ENUM_STATUS,
+               csv_client_const_helper::DATATYPE_NULL
+           ],
+           csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
+               csv_client_const_helper::DATATYPE_DATETIME,
+               csv_client_const_helper::DATATYPE_NULL
+           ],
+           csv_client_const_helper::HEADER_USER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+           csv_client_const_helper::HEADER_PROFILE_TYPE => csv_client_const_helper::DATATYPE_STRING,
+           csv_client_const_helper::HEADER_VENDOR_ID => csv_client_const_helper::DATATYPE_STRING,
+           csv_client_const_helper::HEADER_APPLICATION_ID => [
+            csv_client_const_helper::DATATYPE_STRING,
+            csv_client_const_helper::DATATYPE_NULL],
+           csv_client_const_helper::HEADER_DESCRIPTION => [
+            csv_client_const_helper::DATATYPE_STRING,
+            csv_client_const_helper::DATATYPE_NULL],
+           csv_client_const_helper::HEADER_CREDENTIAL_TYPE => csv_client_const_helper::DATATYPE_STRING,
+           csv_client_const_helper::HEADER_USERNAME => csv_client_const_helper::DATATYPE_STRING,
+           csv_client_const_helper::HEADER_PASSWORD => [
+             csv_client_const_helper::DATATYPE_STRING,
+             csv_client_const_helper::DATATYPE_NULL]
+        ]
+     ];
       //add roles
       $roles=
          [
@@ -52,6 +268,8 @@ class csv_client_helper extends csv_client_helper_version_one{
                     csv_client_const_helper::DATATYPE_NULL
                 ],
                 csv_client_const_helper::HEADER_USER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_ROLE_TYPE => csv_client_const_helper::DATATYPE_ENUM_ROLE_TYPE,
+                csv_client_const_helper::HEADER_ROLE => csv_client_const_helper::DATATYPE_ENUM_ROLE_ROLE,
                 csv_client_const_helper::HEADER_BEGIN_DATE => [
                     csv_client_const_helper::DATATYPE_DATE,
                     csv_client_const_helper::DATATYPE_NULL
@@ -61,10 +279,12 @@ class csv_client_helper extends csv_client_helper_version_one{
                     csv_client_const_helper::DATATYPE_NULL
                 ],
                 csv_client_const_helper::HEADER_ORG_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
-                csv_client_const_helper::HEADER_USERPROFILE_SOURCEDID => csv_client_const_helper::DATATYPE_GUID
+                csv_client_const_helper::HEADER_USERPROFILE_SOURCEDID => [
+                    csv_client_const_helper::DATATYPE_GUID,
+                    csv_client_const_helper::DATATYPE_NULL]
             ]
          ];
-      $mergedarray = array_merge($data, $roles);
+      $mergedarray = array_merge($data, $demographics, $courses, $roles, $userprofiledata, $users);
       return $mergedarray;
       }
 
@@ -99,6 +319,8 @@ class csv_client_helper extends csv_client_helper_version_one{
             csv_client_const_helper::DATATYPE_PASSWORD => 'is_valid_password',
             csv_client_const_helper::DATATYPE_ARRAY_PERIODS => 'is_valid_periods',
             csv_client_const_helper::DATATYPE_STRING => 'is_valid_human_readable_string',
+            csv_client_const_helper::DATATYPE_DEMOGRAPHIC_ENUM => 'is_demographic_enum',
+            csv_client_const_helper::DATATYPE_SEX => 'is_sex_enum'
         ];
     }
     /**
@@ -111,10 +333,11 @@ class csv_client_helper extends csv_client_helper_version_one{
         $criticalfiles = [
             csv_client_const_helper::FILE_ACADEMIC_SESSIONS,
             csv_client_const_helper::FILE_CLASSES,
+            csv_client_const_helper::FILE_COURSES,
             csv_client_const_helper::FILE_ENROLLMENTS,
             csv_client_const_helper::FILE_ORGS,
             csv_client_const_helper::FILE_USERS,
-            csv_client_const_helper::FILE_ROLES
+            csv_client_const_helper::FILE_ROLES,
         ];
 
         $errormessage = '';
@@ -168,21 +391,189 @@ class csv_client_helper extends csv_client_helper_version_one{
      * @return array The header for the given file.
      */
     public static function get_header(string $filename): array {
-
-      $parentreturn = parent::get_header($filename);
-
-      if ($parentreturn != []) {
-         return $parentreturn;
-      }
-
-      switch ($filename) {
+        $data = [];
+        switch ($filename) {
             case csv_client_const_helper::FILE_ROLES:
-                return csv_client_const_helper::HEADER_ROLES;
+                $data = csv_client_const_helper::HEADER_ROLES;
+                break;
             case csv_client_const_helper::FILE_USERPROFILES:
-              return csv_client_const_helper::HEADER_USERPROFILES;
+                $data = csv_client_const_helper::HEADER_USERPROFILES;
+                break;
+            case csv_client_const_helper::FILE_COURSES:
+                $data = csv_client_const_helper::HEADER_COURSES;
+                break;
+            case csv_client_const_helper::FILE_USERS:
+                $data = csv_client_const_helper::HEADER_USERS;
+                break;
+            case csv_client_const_helper::FILE_DEMOGRAPHICS:
+                $data = csv_client_const_helper::HEADER_DEMOGRAPHICS;
+                break;
             default:
-                return [];
-      }
+                break;
+        }
+
+        if ($data!= []) {
+            return $data;
+        }
+        return parent::get_header($filename);
+    }
+
+    /**
+     * Function to validate CSV headers.
+     *
+     * @param string $filepath Path to the CSV file.
+     * @return bool True if the headers are valid, false otherwise.
+     */
+    public static function validate_csv_headers(string $filepath): bool {
+        $cleanfilepath = clean_param($filepath, PARAM_PATH);
+        $filename = basename($cleanfilepath);
+        $expectedheaders = self::get_header($filename);
+        if (($handle = fopen($cleanfilepath, 'r')) !== false) {
+            $headers = fgetcsv($handle, 0, ',');
+            fclose($handle);
+            return $headers === $expectedheaders;
+        }
+        return false;
+    }
+
+    /**
+     * Function to check if the manifest and required files are present.
+     *
+     * @param string $manifestpath Path to the manifest file.
+     * @param string $tempdir Path to the temporary directory.
+     * @return array An array containing the missing files and invalid headers.
+     */
+    public static function check_manifest_and_files(string $manifestpath, string $tempdir): array {
+        $invalidheaders = [];
+        $requiredfiles = [];
+
+        if (($handle = fopen($manifestpath, 'r')) !== false) {
+            while (($data = fgetcsv($handle, 0, ',')) !== false) {
+                if (in_array($data[1], ['bulk', 'delta'])) {
+                    // Remove 'file.' prefix and add '.csv' suffix in the manifest file to clean the param names.
+                    $requiredfiles[] = str_replace('file.', '', $data[0]) . '.csv';
+                }
+            }
+            fclose($handle);
+        }
+
+        $extractedfiles = array_diff(scandir($tempdir), ['.', '..', 'uploadedzip.zip']);
+        $missingfiles = array_diff($requiredfiles, $extractedfiles);
+        foreach ($requiredfiles as $file) {
+            $cleanfilepath = clean_param($file, PARAM_PATH);
+
+            if (in_array($cleanfilepath, $extractedfiles)) {
+                $filepath = $tempdir . '/' . $file;
+                if (!self::validate_csv_headers($filepath)) {
+                    $invalidheaders[] = $file;
+                }
+            }
+        }
+        return [
+            'missingfiles' => $missingfiles,
+            'invalidheaders' => $invalidheaders
+        ];
+    }
+    public static function get_data_types(string $filename): array {
+        return self::get_file_datatypes()[$filename] ?? [];
+    }
+    public static function validate_csv_data_types(string $directory): array {
+        $isvalid = true;
+        $invalidfiles = [];
+        $errormessages = [];
+
+        $files = scandir($directory);
+
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..' ||
+                pathinfo($file, PATHINFO_EXTENSION) !== 'csv' ||
+                $file === csv_client_const_helper::FILE_MANIFEST) {
+                continue;
+            }
+
+            $cleanfilepath = clean_param($directory . '/' . $file, PARAM_PATH);
+            $expecteddatatypes = self::get_data_types($file);
+            //var_dump($expecteddatatypes);
+            $detecteddatatypes = [];
+
+            if (($handle = fopen($cleanfilepath, 'r')) !== false) {
+                $headers = fgetcsv($handle, 0, ',');
+                if ($headers === false) {
+                    $isvalid = false;
+                    $invalidfiles[] = $file;
+                    $errormessages[] = "Failed to read headers from CSV file: $file";
+                    continue;
+                }
+
+                $detecteddatatypes = array_fill(0, count($headers), 'unknown');
+
+                while (($row = fgetcsv($handle, 0, ',')) !== false) {
+                    $row = array_slice($row, 0, count($headers));
+                    foreach ($row as $index => $value) {
+                        if (isset($headers[$index])) {
+                            $detectedtype = self::determine_data_type(
+                                $value,
+                                $expecteddatatypes[$headers[$index]] ?? []
+                            );
+
+                            if ($detecteddatatypes[$index] === 'unknown' ||
+                                $detecteddatatypes[$index] === csv_client_const_helper::DATATYPE_NULL ||
+                                $detecteddatatypes[$index] !== false) {
+                                $detecteddatatypes[$index] = $detectedtype;
+                            }
+                        }
+                    }
+                }
+
+                fclose($handle);
+
+                $fileisvalid = true;
+                foreach ($headers as $index => $header) {
+                    $expectedtypes = $expecteddatatypes[$header] ?? [get_string('na', 'enrol_oneroster')];
+                    $detectedtype = $detecteddatatypes[$index];
+                    if (!in_array($detectedtype, (array)$expectedtypes, true)) {
+                        $errormessages[] = get_string(
+                            'validation',
+                            'enrol_oneroster',
+                            (object)['header' => $header, 'file' => $file]
+                        );
+                        $isvalid = false;
+                        $fileisvalid = false;
+                    }
+                }
+
+                if (!$fileisvalid) {
+                    $invalidfiles[] = $file;
+                }
+            }
+        }
+
+        return [
+            'is_valid' => $isvalid,
+            'invalid_files' => $invalidfiles,
+            'error_messages' => $errormessages
+        ];
+    }
+
+    /**
+     * Determine the data type of a value.
+     *
+     * @param string $value The value to determine the data type of.
+     * @param array $expectedtypes The expected data types for the value.
+     * @return string The detected data type.
+     */
+    public static function determine_data_type($value, $expectedtypes): string {
+        if (trim($value) === '') {
+            return csv_client_const_helper::DATATYPE_NULL;
+        }
+
+        foreach ((array)$expectedtypes as $expectedtype) {
+            if (isset(static::get_validator()[$expectedtype]) &&
+                call_user_func([self::class, static::get_validator()[$expectedtype]], $value)) {
+                    return $expectedtype;
+            }
+        }
+        return 'unknown';
     }
 
     /**
@@ -236,4 +627,36 @@ class csv_client_helper extends csv_client_helper_version_one{
         return in_array(strtolower($value), csv_client_const_helper::VALID_ROLES_USERS, true);
     }
 
+    /**
+     * Check if a value is in the sex enum.
+     *
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type sex enum, false otherwise.
+     */
+    public static function is_sex_enum($value): bool {
+        return in_array(strtolower($value), csv_client_const_helper::VALID_DEMOGRAPHICS_SEX, true);
+
+    }
+    /**
+     * Ensure a demographic value is 'true' or 'false'.
+     *
+     * @param mixed $value The value to check.
+     * @return bool True if the value is 'true' or 'false', false otherwise.
+     */
+    public static function is_demographic_enum($value): bool {
+        return in_array(strtolower($value), csv_client_const_helper::VALID_DEMOGRAPHICS_ENUM, true);
+    }
+    /**
+     * Check if a birthDate value is in acceptable format.
+     *
+     * @param mixed $value The value to check.
+     * @return bool True if the value is in YYYY-MM-DD format.
+     */
+    public static function is_valid_birth_date ($value): bool {
+        // Check if the value matches the v1.0 format (YYYY-MM-DD).
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+            return true;
+        }
+        return false;
+    }
 }

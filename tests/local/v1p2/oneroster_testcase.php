@@ -67,9 +67,10 @@ abstract class oneroster_testcase extends oneroster_testcase_version_one{
      * @return rostering_endpoint_interface mocked rostering endpoint 
      */
     protected function mock_rostering_endpoint(container_interface $container, array $mockfunctions): rostering_endpoint_interface {
+        $functions = array_merge($mockfunctions, ['get_rostering_endpoint']);
         $mock = $this->getMockBuilder(rostering_endpoint::class)
             ->setConstructorArgs([$container])
-            ->onlyMethods(array_values($mockfunctions))
+            ->onlyMethods(array_values($functions))
             ->getMock();
     
         $container->method('get_rostering_endpoint')->willReturn($mock);
