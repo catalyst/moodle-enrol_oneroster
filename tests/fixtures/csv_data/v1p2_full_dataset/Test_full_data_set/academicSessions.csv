@@ -1,0 +1,6 @@
+sourcedId,status,dateLastModified,title,type,startDate,endDate,parentSourcedId,schoolYear
+as-grp-222-23456,tobedeleted,2023-05-01T18:25:43.511Z,2st Quarter,gradingPeriod,2022-10-02,2022-12-24,as-trm-222-1234,2023
+as-trm-222-1234,active,2023-05-01T18:25:43.511Z,Session Title,term,2022-09-01,2022-12-24,as-syr-222-2023,2023
+as-grp-222-2345,inactive,2023-05-01,Session Title,semester,2022-10-02,2022-12-24,as-trm-222-1234,2023
+as-grp-222-3456,active,2023-05-01,Session Title,schoolYear,2022-10-02,2022-12-24,as-trm-222-1234,2023
+as-trm-222-1235,active,2023-05-01T18:25:43.511Z,Session Title,term,2022-09-01,2022-12-24,as-syr-222-2023,2023

@@ -22,7 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace enrol_oneroster\tests\local\v1p2;
-use enrol_oneroster\tests\csv_test_helper as csv_client_test_version_one;
+use enrol_oneroster\csv_client_test as csv_client_test_version_one;
+use enrol_oneroster\classes\local\v1p2\csv_client_helper;
+use enrol_oneroster\client_helper;
+
 
 /**
  * One Roster tests for the client_helper class.
@@ -35,4 +38,120 @@ use enrol_oneroster\tests\csv_test_helper as csv_client_test_version_one;
  */
 class csv_client_test extends csv_client_test_version_one {
     // Insert new logic here.
+    
+
+
+
+    public function test_execute_full_data() {
+        $this->resetAfterTest(true);
+        $selectedorg = 'org-sch-222-456';
+        $zipfilepath = 'enrol/oneroster/tests/fixtures/csv_data/v1p2_full_dataset.zip';
+
+        // Prepare the test environment.
+        $csvclient = $this->prepare_test_environment($selectedorg, $zipfilepath);
+
+        // Perform synchronization.
+        $csvclient->synchronise();
+
+        // Assert database records.
+    }
+
+    /**
+     * Prepares the test environment by extracting and validating CSV data.
+     *
+     * @param string $org The organization ID to use.
+     * @param string $filepath The path to the ZIP file containing CSV data.
+     * @return \enrol_oneroster\local\csv_client The prepared CSV client.
+     */
+    private function prepare_test_environment($org, $filepath){
+        global $DB;
+
+        $uniqueid = uniqid();
+        $tempdir = make_temp_directory('oneroster_csv/' . $uniqueid);
+
+        // Extract ZIP file.
+        $zip = new \ZipArchive();
+        $res = $zip->open($filepath);
+        $this->assertTrue($res === true, 'The ZIP file should open successfully.');
+        $zip->extractTo($tempdir);
+        $zip->close();
+
+        $manifestpath = $tempdir . '/manifest.csv';
+
+        // Check manifest and files.
+        $missingfiles = csv_client_helper::check_manifest_and_files($manifestpath, $tempdir);
+        $this->assertEmpty($missingfiles['missingfiles'], 'There should be no missing files according to the manifest.');
+        $this->assertEmpty($missingfiles['invalidheaders'], 'There should be no invalid headers in the extracted CSV files.');
+
+        // Validate CSV data types.
+        $isvalid = csv_client_helper::validate_csv_data_types($tempdir);
+        $this->assertArrayHasKey('is_valid', $isvalid);
+        $this->assertTrue($isvalid['is_valid']);
+
+        // Extract CSV data to arrays.
+        $csvdata = csv_client_helper::extract_csvs_to_arrays($tempdir);
+        $this->assertNotEmpty($csvdata, 'The extracted CSV data should not be empty.');
+
+        // Validate user data and set configuration.
+        if (csv_client_helper::validate_user_data($csvdata) === true) {
+            set_config('datasync_schools', $org, 'enrol_oneroster');
+        }
+        // Initialize CSV client.
+        $csvclient = client_helper::get_csv_client();
+        $csvclient->set_org_id($org);
+
+        // Set CSV data.
+        $manifest = $csvdata['manifest'] ?? [];
+        $users = $csvdata['users'] ?? [];
+        $classes = $csvdata['classes'] ?? [];
+        $orgs = $csvdata['orgs'] ?? [];
+        $enrollments = $csvdata['enrollments'] ?? [];
+        $academicsessions = $csvdata['academicSessions'] ?? [];
+        $roles = $csvdata['roles'] ?? [];
+        $userprofiles = $csvdata['userProfiles'] ?? [];
+
+        $csvclient->versioned_set_data($manifest, $users, $classes, $orgs, $enrollments, $academicsessions, $roles, $userprofiles);
+
+        return $csvclient;
+    }
+
+    //assert_user_agents
+    /**
+     * check's that agents have been associated to a student
+     *
+     * @param string $studentId the student to check
+     * @param array $the ID's of the agents associated with user
+     */
+    private function assert_user_agents($studentId, $agentIDs,){
+        global $DB;
+        $users = $DB->get_records('user');
+        
+
+    //$ra->roleid       = $roleid;
+    //$ra->contextid    = $context->id;
+    //$ra->userid       = $userid;
+
+    }
+    /**
+     * check's that agents have been associated to a student
+     *
+     * @param string $userID the user to check
+     * @param array $roles that should be associated with user
+     */
+    private function assert_user_roles($userID, $roles){
+        global $DB;
+        $ras = $DB->get_records('role_assignments', ['userid'=>$userid]);
+        
+        foreach ($ras as $ra ){
+            //
+        }
+        //get the role type of the roles
+        //
+        
+        //for each
+            //find the mapping
+            //assert the the moodle mapping alligns with one of the role assignments
+
+
+    }
 }

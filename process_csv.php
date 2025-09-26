@@ -27,6 +27,7 @@ namespace enrol_oneroster;
 use enrol_oneroster\form\oneroster_org_selection_form;
 use enrol_oneroster\form\oneroster_csv_form;
 use enrol_oneroster\local\v1p1\csv_client_helper;
+use enrol_oneroster\classes\local\v1p2\csv_client_helper as versioned_csv_client_helper;
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
@@ -180,6 +181,8 @@ function process_selected_organization(string $selectedorgsourcedid, string $tem
     if (csv_client_helper::validate_user_data($csvdata) === true) {
         set_config('datasync_schools', $selectedorgsourcedid, 'enrol_oneroster');
     }
+
+
 
     $csvclient->set_data($manifest, $users, $classes, $orgs, $enrollments, $academicsessions, $userprofiles);
 

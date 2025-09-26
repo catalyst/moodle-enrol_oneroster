@@ -1,0 +1,3 @@
+sourcedId,status,dateLastModified,title,grades,courseSourcedId,classCode,classType,location,schoolSourcedId,termSourcedIds,subjects,subjectCodes,periods
+cls-222-123456,active,2023-05-01T18:25:43.511Z,Introduction to Physics,"09,10,11",crs-222-2023-456-12345,Phys 100 - 1,Scheduled,Room 2-B,org-sch-222-456,as-trm-222-1234,"Science, Physics, Biology","PHY123, ASV120",1
+cls-222-123478,tobedeleted,2023-05-01T18:25:43.511Z,History - 2,10,crs-222-2023-456-23456,2,homeroom,Room 18-C,org-sch-222-456,"as-trm-222-1234,as-trm-222-1235",History,HIS123,"1,2,3"

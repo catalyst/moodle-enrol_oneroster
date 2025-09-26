@@ -183,11 +183,8 @@ class csv_client extends csv_client_version_one{
                     }else{
                         $user->primaryOrg = [];
                     }
-
                     //remove sourcedIds that have been processed
                     unset($user->agentSourcedIds, $user->primaryOrgSourcedId);
-                    
-                    
                     //add to array of users
                     $users[$userid] = $user;
                 }
@@ -199,7 +196,6 @@ class csv_client extends csv_client_version_one{
                     ]
                 ];
                 
-
             default:
                 return new stdClass();
         }
