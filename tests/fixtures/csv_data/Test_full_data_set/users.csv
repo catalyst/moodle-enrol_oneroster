@@ -1,0 +1,7 @@
+sourcedId,status,dateLastModified,enabledUser,orgSourcedIds,role,username,userIds,givenName,familyName,middleName,identifier,email,sms,phone,agentSourcedIds,grades,password
+usr-222-123456,active,2023-05-01,TRUE,org-sch-222-456,teacher,john.doe,,John,Doe,Michael,john.doe,john.doe@myschool.com,6037778888,6032221111,,12,Password1-
+usr-222-66778899,,,TRUE,org-sch-222-456,student,mary.jones,{LDAP:12},Mary,Jones,Jane,mary.jones,mary.jones@myschool.com,6031234567,6031234567,usr-222-123456,12,Password1-
+usr-222-1234561,active,2023-05-01,TRUE,org-sch-222-456,parent,thomas.joness,"{LDAP:12},{LTI:15},{Fed:23}",Thomas,Jones,Paul,thomas.joness,thomas.jones@testemail.com,6039876543,6039876543,usr-222-66778899,10,Password1-
+usr-222-987654,active,2023-05-01,TRUE,org-sch-222-456,teacher,jim.smith,"{LDAP:12},{LTI:15}",Jim,Smith,Ash,jim.smith,jim.smith@myschool.com,6031234567,6031234567,usr-222-123456,11,Password1-
+usr-222-1234561232,active,2023-05-01,TRUE,org-sch-222-456,student,mmichel.jones,{LDAP:12},mmichel,Jones,Jane,mmichel.jones,mmichel.jones2@myschool.com,603121567,60312323567,usr-222-123456,12,Password1-
+usr-222-567891,active,2023-06-15,TRUE,org-sch-222-456,student,anna.brown,{LDAP:34},Anna,Brown,Mary,anna.brown,anna.brown@myschool.com,6039991234,6038885678,usr-222-987654,11,Password1-

@@ -47,6 +47,15 @@ class csv_client_test extends csv_client_test_version_one {
         $selectedorg = 'org-sch-222-456';
         $zipfilepath = 'enrol/oneroster/tests/fixtures/csv_data/v1p2_full_dataset.zip';
 
+        // Define Role mapping.
+        set_config('role_mapping_student', 'student', 'enrol_oneroster');
+        set_config('role_mapping_teacher', 'teacher', 'enrol_oneroster');
+        set_config('role_mapping_aide', 'non_editing_teacher', 'enrol_oneroster');
+        set_config('role_mapping_proctor', 'authenticated_user', 'enrol_oneroster');
+        set_config('role_mapping_parent', 'guest', 'enrol_oneroster');
+        set_config('role_mapping_guardian', 'guest', 'enrol_oneroster');
+        set_config('role_mapping_relative', 'guest', 'enrol_oneroster');
+
         // Prepare the test environment.
         $csvclient = $this->prepare_test_environment($selectedorg, $zipfilepath);
 
@@ -54,6 +63,9 @@ class csv_client_test extends csv_client_test_version_one {
         $csvclient->synchronise();
 
         // Assert database records.
+        
+
+
     }
 
     /**
@@ -115,43 +127,38 @@ class csv_client_test extends csv_client_test_version_one {
         return $csvclient;
     }
 
-    //assert_user_agents
+    //Assert_user_agents.
     /**
-     * check's that agents have been associated to a student
+     * Check's that agents have been associated to a student.
      *
-     * @param string $studentId the student to check
-     * @param array $the ID's of the agents associated with user
+     * @param string $studentId the student to check.
+     * @param array $the ID's of the agents associated with user.
      */
     private function assert_user_agents($studentId, $agentIDs,){
         global $DB;
         $users = $DB->get_records('user');
         
 
-    //$ra->roleid       = $roleid;
-    //$ra->contextid    = $context->id;
-    //$ra->userid       = $userid;
-
     }
     /**
-     * check's that agents have been associated to a student
-     *
+     * Check's that agents roles have been assigned properly
+     * note: this test is hard coded to the v1p2 fixture with asssuming that all
+     * role mappings are default
+     * 
      * @param string $userID the user to check
-     * @param array $roles that should be associated with user
+     * @param array $roles that should be associated with user, no keys just indexed
      */
     private function assert_user_roles($userID, $roles){
         global $DB;
-        $ras = $DB->get_records('role_assignments', ['userid'=>$userid]);
-        
-        foreach ($ras as $ra ){
-            //
+        $ras = $DB->get_records('role_assignments', ['userid'=>$userID]);
+        $mapped = array_map(function($el) {
+            global $DB;
+            $role = $DB->get_record('roles', ['id' => $el->roleid]);
+            return $role->shortname;
+        }, $ras);
+
+        foreach($roles as $role){
+            $this->assertArrayHasKey($role, $mapped); 
         }
-        //get the role type of the roles
-        //
-        
-        //for each
-            //find the mapping
-            //assert the the moodle mapping alligns with one of the role assignments
-
-
     }
 }
