@@ -160,7 +160,7 @@ class csv_client implements client_interface {
         $basepath = $tokens[1];
         // The third token represents the Organisation ID.
         $param = $tokens[2] ?? '';
-        // The fourth token represents the type of data to fetch ('terms', 'classes', 'enrollments').
+        // The fourth token represents the type of data to fetch ('terms', 'classes', 'enrollments'). --> if this says users go though new function if not goes through old
         $type = $tokens[3] ?? '';
         // Get the organisation ID.
         $orgid = $this->orgid ?? null;
