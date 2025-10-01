@@ -33,19 +33,11 @@ use enrol_oneroster\local\v1p2\statusinfo_relations\codeMajor;
 
 
 class default_response {
-    // Properties
-    private statusInfo $imsx_statusInfo;
-    private ?array $data = null;
-    private ?string $collectionName = null;
-
     public function __construct(
-        statusInfo $imsx_statusInfo,
-        ?array $data = null,
-        ?string $collectionName = null
+        private statusInfo $imsx_statusInfo,
+        private ?array $data = null,
+        private ?string $collectionName = null
     ) {
-        $this->imsx_statusInfo = $imsx_statusInfo;
-        $this->data = $data;
-        $this->collectionName = $collectionName;
     }
 
     public function getstatusInfo(): statusInfo {

@@ -63,15 +63,10 @@ class codeMinor {
  */
 
 class codeMinorField {
-    private string $fieldName;
-    private codeMinorValues $fieldValue;
-
     public function __construct(
-        string $fieldName = 'TargetEndSystem',
-        codeMinorValues $fieldValue
+        private string $fieldName = 'TargetEndSystem',
+        private codeMinorValues $fieldValue
     ) {
-        $this->fieldName = $fieldName;
-        $this->fieldValue = $fieldValue;
     }
 
     public function getFieldName(): string {
@@ -88,7 +83,6 @@ class codeMinorField {
             'imsx_codeMinorFieldValue' => $this->getFieldValue()->value,
         ];
     }
-
 }
 
 /**

@@ -24,22 +24,50 @@
 
 namespace enrol_oneroster\local\v1p2\statusinfo_relations;
 
+/**
+ * enum codeMajor.
+ * Defines the four possible code major status codes for any OneRoster operation.
+ * @package    enrol_oneroster
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+enum codeMajor: string {
+    case success = 'success';
+    case processing = 'processing';
+    case failure = 'failure';
+    case unsupported = 'unsupported';
+}
+
+/**
+ * enum severity.
+ * Describes the severity level of the status info response.
+ * @package    enrol_oneroster
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+enum severity: string {
+    case status = 'status';
+    case warning = 'warning';
+    case error = 'error';
+}
+
 class statusInfo {
-    private codeMajor $codeMajor;
-    private ?codeMinor $codeMinor;
-    private severity $severity;
-    private ?string $description;
+    /** Constants for containing relevant error messages. */
+    const validCodeMajors = ['success', 'failure', 'processing', 'unsupported'];
+    const validSeverities = ['status', 'warning', 'error'];
+    const validCodeMinors = ['fullsuccess', 'invalid_filter_field', 'invalid_selection_field', 'invaliddata', 'unauthorisedrequest', 'forbidden', 'server_busy', 'unknownobject', 'internal_server_error'];
+    const invalidCodeMajorMessage = 'INVALID STRUCTURE: Invalid code major value found in the response, values must be either success, failure, processing, or unsupported';
+    const invalidSeverityMessage = 'INVALID STRUCTURE: Invalid severity value found in the response, values must be either status, warning, or error';
+    const noCodeMinorMessage = 'INVALID STRUCTURE: Failure status info must have a code minor';
+    const invalidCodeMinorStructureMessage = 'INVALID STRUCTURE: Invalid code minor structure found in the response';
+    const invalidCodeMinorMessage = 'INVALID STRUCTURE: Invalid code minor value found in the response, values must be either fullsuccess, invalid_filter_field, invalid_selection_field, invaliddata, unauthorisedrequest, forbidden, server_busy, unknownobject, or internal_server_error';
 
     public function __construct(
-        codeMajor $codeMajor,
-        ?codeMinor $codeMinor = null,
-        severity $severity,
-        ?string $description = null
+        private codeMajor $codeMajor,
+        private ?codeMinor $codeMinor = null,
+        private severity $severity,
+        private ?string $description = null
     ) {
-        $this->codeMajor = $codeMajor;
-        $this->codeMinor = $codeMinor;
-        $this->severity = $severity;
-        $this->description = $description;
     }
 
     public function getCodeMajor(): codeMajor {
@@ -58,6 +86,11 @@ class statusInfo {
         return $this->description;
     }
 
+    /**
+     * Method that converts the status info object type to an array.
+     *
+     * @return array The array representation of the status info object type.
+     */
     public function toArray(): array {
         $result = [
             'imsx_codeMajor' => $this->codeMajor->value,
@@ -75,6 +108,12 @@ class statusInfo {
         return $result;
     }
 
+    /**
+     * Method that creates a success status info object type.
+     *
+     * @param string|null $description The description of the status info object type.
+     * @return statusInfo The success status info object type.
+     */
     public static function success(?string $description = null): self {
         return new self(
             codeMajor::success,
@@ -84,6 +123,14 @@ class statusInfo {
         );
     }
 
+    /**
+     * Method that creates a failure status info object type.
+     *
+     * @param severity $severity The severity of the status info object type.
+     * @param codeMinor $codeMinor The code minor of the status info object type.
+     * @param string|null $description The description of the status info object type.
+     * @return statusInfo The failure status info object type.
+     */
     public static function failure(severity $severity, codeMinor $codeMinor, ?string $description = null) : self {
         return new self(
             codeMajor::failure,
@@ -93,6 +140,12 @@ class statusInfo {
         );
     }
 
+    /**
+     * Method that creates a processing status info object type.
+     *
+     * @param string|null $description The description of the status info object type.
+     * @return statusInfo The processing status info object type.
+     */
     public static function processing(?string $description = null): self {
         return new self(
             codeMajor::processing,
@@ -102,6 +155,12 @@ class statusInfo {
         );
     }
 
+    /**
+     * Method that creates a unsupported status info object type.
+     *
+     * @param string|null $description The description of the status info object type.
+     * @return statusInfo The unsupported status info object type.
+     */
     public static function unsupported(?string $description = null): self {
         return new self(
             codeMajor::unsupported,

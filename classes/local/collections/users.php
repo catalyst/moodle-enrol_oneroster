@@ -59,9 +59,4 @@ class users extends collection {
     protected static function parse_returned_row(container_interface $container, stdClass $data): entity {
         return $container->get_entity_factory()->get_user_from_result($data);
     }
-
-    public function getAllUsersWithStatusInfo(): array {
-        $command = $this->container->get_rostering_endpoint()->get_http_method('getAllUsers', []);
-        return $this->container->get_client()->executeWithStatusInfo($command, $this->get_filter());
-    }
 }
