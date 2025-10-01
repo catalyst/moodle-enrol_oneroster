@@ -57,4 +57,117 @@ use stdClass;
 trait oneroster_client {
     use client_version_one;
     // Add new methods or override methods from v1p1 trait here.
+
+        /**
+     * Synchronise user agents for a user.
+     *
+     * @param   user_entity $entity The user to sync agents for
+     * @param   stdClass $localuser The local record for the user
+     */
+    protected function sync_user_agents(user_entity $entity, stdClass $localuser): void {
+
+        $roles = $entity->get('roles');
+        foreach(array_values($roles) as $role){
+            if ($role->get('role') == 'student') {
+                // Only applied for students as per section 4.1.2 of the specification.
+                $student = True;
+                continue;
+            }
+        }
+        if(!$role || !$student) return;
+
+        $localusercontext = context_user::instance($localuser->id);
+            
+        // Create a mapping of userid => [roleid] for current user agents.
+        $localuseragents = [];
+        foreach (get_users_roles($localusercontext, [], false) as $userid => $roleassignments) {
+            foreach (array_values($roleassignments) as $ra) {
+                if ($ra->component === 'enrol_oneroster') {
+                    if (!array_key_exists($userid, $localuseragents)) {
+                        $localuseragents[$userid] = [];
+                    }
+                    $localuseragents[$userid][$ra->roleid] = true;
+                }
+            }
+        }
+        
+        // Update remote user agents.
+        foreach ($entity->get_agent_entities() as $remoteagent) {
+            if (!$remoteagent) {
+                continue;
+            }
+
+            // Ensure that the local user exists.
+            $localagent = $this->update_or_create_user($remoteagent);
+            if (!$localagent) {
+                // Unable to create the local agent.
+                $this->get_trace()->output(sprintf(
+                    "Unable to assign %s (%s) as a %s of %s (%s). Local user not found.",
+                    $remoteagent->get('username'),
+                    $remoteagent->get('idnumber'),
+                    $role,
+                    $entity->get('username'),
+                    $entity->get('idnumber')
+                ), 4);
+                continue;
+            }
+
+        
+
+            // Fetch the local role for the remote agent.
+            foreach(array_values($roles) as $role){
+                $roleid = $this->get_role_mapping($role, CONTEXT_USER);
+                if (!$roleid) {
+                    // No local mapping for this role.
+                    $this->get_trace()->output(sprintf(
+                        "Unable to assign %s (%s) as a %s of %s (%s). Role mapping not found.",
+                        $remoteagent->get('username'),
+                        $remoteagent->get('idnumber'),
+                        $role,
+                        $entity->get('username'),
+                        $entity->get('idnumber')
+                    ), 4);
+                    continue;
+                }
+
+                $assignrole = !array_key_exists($localagent->id, $localuseragents);
+                $assignrole = $assignrole || !array_key_exists($roleid, $localuseragents[$localagent->id]);
+
+                if ($assignrole) {
+                    // Assign the role.
+                    role_assign($roleid, $localagent->id, $localusercontext, 'enrol_oneroster');
+                    $this->get_trace()->output(sprintf(
+                        "Assigned %s (%s) as a %s of %s (%s).",
+                        $remoteagent->get('username'),
+                        $remoteagent->get('idnumber'),
+                        $role,
+                        $entity->get('username'),
+                        $entity->get('idnumber')
+                    ), 4);
+                    $this->add_metric('user_mapping', 'create');
+                } else {
+                    // Unset the local agent mapping.
+                    unset($localuseragents[$localagent->id][$roleid]);
+                }
+
+            }
+        }
+        
+        // Unenrol stale mappings.
+        foreach ($localuseragents as $localagentid => $localagentroles) {
+            foreach ($localagentroles as $roleid) {
+                $this->get_trace()->output(sprintf(
+                    "Unasssigned user with id %s from being a %s of %s (%s).",
+                    $localagentid,
+                    $roleid,
+                    $localuser->username,
+                    $localuser->idnumber
+                ), 4);
+                role_unassign($roleid, $localagentid, $localusercontext, 'enrol_oneroster');
+                $this->add_metric('user_mapping', 'delete');
+            }
+        }
+
+
+}
 }

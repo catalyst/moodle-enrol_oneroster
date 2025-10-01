@@ -22,12 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\entities;
+namespace enrol_oneroster\classes\local\v1p2\entities;
 
 use coding_exception;
 use enrol_oneroster\local\endpoints\rostering as rostering_endpoint;
 use enrol_oneroster\local\entity;
-use enrol_oneroster\local\interfaces\role_representation;
+use enrol_oneroster\local\interfaces\user_representation;
 use enrol_oneroster\local\interfaces\container as container_interface;
 use stdClass;
 
@@ -38,36 +38,9 @@ use stdClass;
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class role extends entity implements role_representation {
+class role extends entity implements user_representation {
 
-    /**
-     * csv do not do
-     * sourcedid - unique ID for role same method as user ID
-     * status - same as user?
-     * dateLastModified
-     * userSourcedid - user source ID same as sourceID in user
-     * roleType
-     * role
-     * beginDate -nr
-     * endDate -nr
-     * orgSourcedid
-     * userProfileSourcedid -nr
-     * 
-     * 
-     * roleType - RoleTypeEnum
-     * role
-     * org
-     * userProfile
-     * beginDate
-     * endDate
-     * 
-     * only org and userProfile will link to other objects
-     * everything else is inturnal 
-     * RoleTypeEnum
-     * primary 
-     * secondary
-     * 
-     */
+
 
     /**
      * Get the operation ID for the endpoint, otherwise known as the name of the endpoint.
@@ -101,7 +74,7 @@ class role extends entity implements role_representation {
      * @throws coding_exception
      */
     protected static function parse_returned_row(container_interface $container, stdClass $data): stdClass {
-        if (!property_exists($data, 'user')) {
+        if (!property_exists($data, 'role')) {
             throw new coding_exception("The returned data is missing the 'role' property");
         }
         return $data->role;
@@ -109,6 +82,7 @@ class role extends entity implements role_representation {
 
     /**
      * Fetch the related User entity
+     * optional only needed if userSourceId is included
      * 
      * @return user|null
      */
@@ -135,20 +109,27 @@ class role extends entity implements role_representation {
     }
 
     /**
+     * Fetching the User profile link
+     * 
+     */
+    public function get_userprofile(): ?userprofile {
+        $userProfileId = $this->get('userProfileSourceId');
+        if (empty($userProfileId)) {
+            return null;
+        }
+        return $this->container->get_entity_factory()->fetch_userprofile_by_id($userProfileId);
+    }
+
+    /**
      * Get the data which represents this One Roster Object as a Moodle User.
      *
      * @return  stdClass
-     * reuse
+     * 
      */
     public function get_role_data(): stdClass {
         return (object) [
             'sourcedId' => $this->get('sourcedId'),
             'status' => $this->get('status'),
-            'username' => strtolower($this->get('identifier')),
-            'email' => $this->get('email'),
-            'password' => $this->get('password') ?? '',
-            'firstname' => $this->get('givenName'),
-            'lastname' => $this->get('familyName'),
         ];
     }
 
