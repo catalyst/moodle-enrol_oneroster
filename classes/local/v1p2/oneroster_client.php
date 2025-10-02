@@ -69,11 +69,11 @@ trait oneroster_client {
         $roles = $entity->get('roles');
         foreach(array_values($roles) as $role){
             if ($role->get('role') == 'student') {
-                // Only applied for students as per section 4.1.2 of the specification.
                 $student = True;
                 continue;
             }
         }
+        // Only applied for students as per section 4.1.2 of the specification.
         if(!$role || !$student) return;
 
         $localusercontext = context_user::instance($localuser->id);
@@ -105,25 +105,23 @@ trait oneroster_client {
                     "Unable to assign %s (%s) as a %s of %s (%s). Local user not found.",
                     $remoteagent->get('username'),
                     $remoteagent->get('idnumber'),
-                    $role,
+                    $role->get('role'),
                     $entity->get('username'),
                     $entity->get('idnumber')
                 ), 4);
                 continue;
             }
 
-        
-
             // Fetch the local role for the remote agent.
             foreach(array_values($roles) as $role){
-                $roleid = $this->get_role_mapping($role, CONTEXT_USER);
+                $roleid = $this->get_role_mapping($role -> get('role'), CONTEXT_USER);
                 if (!$roleid) {
                     // No local mapping for this role.
                     $this->get_trace()->output(sprintf(
                         "Unable to assign %s (%s) as a %s of %s (%s). Role mapping not found.",
                         $remoteagent->get('username'),
                         $remoteagent->get('idnumber'),
-                        $role,
+                        $role->get('role'),
                         $entity->get('username'),
                         $entity->get('idnumber')
                     ), 4);
@@ -140,7 +138,7 @@ trait oneroster_client {
                         "Assigned %s (%s) as a %s of %s (%s).",
                         $remoteagent->get('username'),
                         $remoteagent->get('idnumber'),
-                        $role,
+                        $role->get('role'),
                         $entity->get('username'),
                         $entity->get('idnumber')
                     ), 4);
@@ -167,7 +165,5 @@ trait oneroster_client {
                 $this->add_metric('user_mapping', 'delete');
             }
         }
-
-
 }
 }
