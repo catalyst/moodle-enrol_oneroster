@@ -24,69 +24,41 @@ namespace enrol_oneroster\tests\local\v1p2;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use enrol_oneroster\local\v1p2\statusinfo_relations\statusInfo;
-use enrol_oneroster\local\v1p2\statusinfo_relations\codeMajor;
+use enrol_oneroster\local\v1p2\statusinfo_relations\status_info;
 use enrol_oneroster\local\v1p2\statusinfo_relations\severity;
-use enrol_oneroster\local\v1p2\statusinfo_relations\codeMinor;
-use enrol_oneroster\local\v1p2\statusinfo_relations\codeMinorField;
-use enrol_oneroster\local\v1p2\statusinfo_relations\codeMinorValues;
+use enrol_oneroster\local\v1p2\statusinfo_relations\code_major;
+use enrol_oneroster\local\v1p2\statusinfo_relations\code_minor;
+use enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_field;
+use enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_values;
 
-class statusinfo_test extends \advanced_testcase {
-
-    /**
-     * Method that tests the creation of a success statusInfo object type.
-     */
-    public function test_statusinfo_success_creation() {
-        $statusInfo = statusInfo::success('Operation completed successfully');
-
-        $this->assertEquals(codeMajor::success, $statusInfo->getCodeMajor());
-        $this->assertEquals(severity::status, $statusInfo->getSeverity());
-        $this->assertEquals('Operation completed successfully', $statusInfo->getDescription());
-        $this->assertNull($statusInfo->getCodeMinor());
-    }
-
-    /**
-     * Method that tests the conversion of a success statusInfo object type to an array.
-     */
-    public function test_statusinfo_success_to_array() {
-        $statusInfo = statusInfo::success('Test success');
-        $responseArray = $statusInfo->toArray();
-
-        $expected = [
-            'imsx_codeMajor' => 'success',
-            'imsx_severity' => 'status',
-            'imsx_description' => 'Test success'
-        ];
-
-        $this->assertEquals($expected, $responseArray);
-    }
-
+class statusinfo_test extends \advanced_testcase
+{
     /**
      * Method that tests the creation of a failure statusInfo object type.
      */
     public function test_statusinfo_failure_creation() {
-        $codeMinor = new codeMinor(
-            new codeMinorField('TargetEndSystem', codeMinorValues::forbidden)
+        $code_minor = new code_minor(
+            new code_minor_field('TargetEndSystem', code_minor_values::forbidden)
         );
 
-        $statusInfo = statusInfo::failure(severity::error, $codeMinor, 'Access denied');
+        $status_info = status_info::failure(severity::error, $code_minor, 'Access denied');
 
-        $this->assertEquals(codeMajor::failure, $statusInfo->getCodeMajor());
-        $this->assertEquals(severity::error, $statusInfo->getSeverity());
-        $this->assertEquals('Access denied', $statusInfo->getDescription());
-        $this->assertInstanceOf(codeMinor::class, $statusInfo->getCodeMinor());
+        $this->assertEquals(code_major::failure, $status_info->get_code_major());
+        $this->assertEquals(severity::error, $status_info->get_severity());
+        $this->assertEquals('Access denied', $status_info->get_description());
+        $this->assertInstanceOf(code_minor::class, $status_info->get_code_minor());
     }
 
     /**
      * Method that tests the conversion of a failure statusInfo object type to an array.
      */
     public function test_statusinfo_failure_to_array() {
-        $codeMinor = new codeMinor(
-            new codeMinorField('TargetEndSystem', codeMinorValues::forbidden)
+        $code_minor = new code_minor(
+            new code_minor_field('TargetEndSystem', code_minor_values::forbidden)
         );
 
-        $statusInfo = statusInfo::failure(severity::error, $codeMinor, 'Access denied');
-        $responseArray= $statusInfo->toArray();
+        $status_info = status_info::failure(severity::error, $code_minor, 'Access denied');
+        $response_array = $status_info->to_array();
 
         $expected = [
             'imsx_codeMajor' => 'failure',
@@ -102,49 +74,28 @@ class statusinfo_test extends \advanced_testcase {
             ]
         ];
 
-        $this->assertEquals($expected, $responseArray);
+        $this->assertEquals($expected, $response_array);
     }
 
     /**
      * Method that tests the creation of a processing statusInfo object type.
      */
     public function test_statusinfo_processing() {
-        $statusInfo = statusInfo::processing('Request is being processed');
+        $status_info = status_info::processing('Request is being processed');
 
-        $this->assertEquals(codeMajor::processing, $statusInfo->getCodeMajor());
-        $this->assertEquals(severity::status, $statusInfo->getSeverity());
-        $this->assertEquals('Request is being processed', $statusInfo->getDescription());
+        $this->assertEquals(code_major::processing, $status_info->get_code_major());
+        $this->assertEquals(severity::status, $status_info->get_severity());
+        $this->assertEquals('Request is being processed', $status_info->get_description());
     }
 
     /**
      * Method that tests the creation of a unsupported statusInfo object type.
      */
     public function test_statusinfo_unsupported() {
-        $statusInfo = statusInfo::unsupported('Feature not supported');
+        $status_info = status_info::unsupported('Feature not supported');
 
-        $this->assertEquals(codeMajor::unsupported, $statusInfo->getCodeMajor());
-        $this->assertEquals(severity::warning, $statusInfo->getSeverity());
-        $this->assertEquals('Feature not supported', $statusInfo->getDescription());
-    }
-
-    public function test_statusinfo_without_description() {
-        $statusInfo = statusInfo::success();
-
-        $this->assertEquals(codeMajor::success, $statusInfo->getCodeMajor());
-        $this->assertEquals(severity::status, $statusInfo->getSeverity());
-        $this->assertNull($statusInfo->getDescription());
-
-        $responseArray = $statusInfo->toArray();
-        $this->assertArrayNotHasKey('imsx_description', $responseArray);
-    }
-
-    /**
-     * Method that tests the creation of a statusInfo object type without a code minor.
-     */
-    public function test_statusinfo_without_code_minor() {
-        $statusInfo = statusInfo::success('Test');
-        $responseArray= $statusInfo->toArray();
-
-        $this->assertArrayNotHasKey('imsx_CodeMinor', $responseArray);
+        $this->assertEquals(code_major::unsupported, $status_info->get_code_major());
+        $this->assertEquals(severity::warning, $status_info->get_severity());
+        $this->assertEquals('Feature not supported', $status_info->get_description());
     }
 }

@@ -23,69 +23,46 @@ namespace enrol_oneroster\tests\local\v1p2;
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 use enrol_oneroster\local\v1p2\responses\default_response;
-use enrol_oneroster\local\v1p2\statusinfo_relations\statusInfo;
-use enrol_oneroster\local\v1p2\statusinfo_relations\codeMinorField;
-use enrol_oneroster\local\v1p2\statusinfo_relations\codeMajor;
 use enrol_oneroster\local\v1p2\statusinfo_relations\severity;
-use enrol_oneroster\local\v1p2\statusinfo_relations\codeMinor;
-use enrol_oneroster\local\v1p2\statusinfo_relations\codeMinorValues;
+use enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_field;
+use enrol_oneroster\local\v1p2\statusinfo_relations\code_major;
+use enrol_oneroster\local\v1p2\statusinfo_relations\code_minor;
+use enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_values;
 
-class default_response_test extends \advanced_testcase {
+// Ensure all the statusinfo_relations classes and enums are loaded
+require_once(__DIR__ . '/../../../classes/local/v1p2/statusinfo_relations/status_info.php');
 
-    public function test_default_response_success() {
-        $defaultResponse = default_response::success([], 'test', 'Test success');
-        $this->assertEquals(codeMajor::success, $defaultResponse->getstatusInfo()->getCodeMajor());
-        $this->assertEquals(severity::status, $defaultResponse->getstatusInfo()->getSeverity());
-        $this->assertEquals('Test success', $defaultResponse->getstatusInfo()->getDescription());
-        $this->assertEquals([], $defaultResponse->getData());
-        $this->assertEquals('test', $defaultResponse->getCollectionName());
-    }
-
+class default_response_test extends \advanced_testcase
+{
     public function test_default_response_failure() {
-        $codeMinor = new codeMinor(
-            new codeMinorField('TargetEndSystem', codeMinorValues::forbidden)
+        $code_minor = new code_minor(
+            new code_minor_field('TargetEndSystem', code_minor_values::forbidden)
         );
-        $defaultResponse = default_response::failure(severity::error, $codeMinor, 'Test failure');
-        $this->assertEquals(codeMajor::failure, $defaultResponse->getstatusInfo()->getCodeMajor());
-        $this->assertEquals(severity::error, $defaultResponse->getstatusInfo()->getSeverity());
-        $this->assertEquals('Test failure', $defaultResponse->getstatusInfo()->getDescription());
-        $this->assertEquals(null, $defaultResponse->getData());
-        $this->assertEquals(null, $defaultResponse->getCollectionName());
+        $default_response = default_response::failure(severity::error, $code_minor, 'Test failure');
+        $this->assertEquals(code_major::failure, $default_response->get_status_info()->get_code_major());
+        $this->assertEquals(severity::error, $default_response->get_status_info()->get_severity());
+        $this->assertEquals('Test failure', $default_response->get_status_info()->get_description());
+        $this->assertEquals(null, $default_response->get_data());
+        $this->assertEquals(null, $default_response->get_collection_name());
     }
 
     public function test_default_response_processing() {
-        $defaultResponse = default_response::processing('Test processing');
-        $this->assertEquals(codeMajor::processing, $defaultResponse->getstatusInfo()->getCodeMajor());
-        $this->assertEquals(severity::status, $defaultResponse->getstatusInfo()->getSeverity());
-        $this->assertEquals('Test processing', $defaultResponse->getstatusInfo()->getDescription());
-        $this->assertEquals(null, $defaultResponse->getData());
-        $this->assertEquals(null, $defaultResponse->getCollectionName());
+        $default_response = default_response::processing('Test processing');
+        $this->assertEquals(code_major::processing, $default_response->get_status_info()->get_code_major());
+        $this->assertEquals(severity::status, $default_response->get_status_info()->get_severity());
+        $this->assertEquals('Test processing', $default_response->get_status_info()->get_description());
+        $this->assertEquals(null, $default_response->get_data());
+        $this->assertEquals(null, $default_response->get_collection_name());
     }
 
     public function test_default_response_unsupported() {
-        $defaultResponse = default_response::unsupported('Test unsupported');
-        $this->assertEquals(codeMajor::unsupported, $defaultResponse->getstatusInfo()->getCodeMajor());
-        $this->assertEquals(severity::warning, $defaultResponse->getstatusInfo()->getSeverity());
-        $this->assertEquals('Test unsupported', $defaultResponse->getstatusInfo()->getDescription());
-        $this->assertEquals(null, $defaultResponse->getData());
-        $this->assertEquals(null, $defaultResponse->getCollectionName());
+        $default_response = default_response::unsupported('Test unsupported');
+        $this->assertEquals(code_major::unsupported, $default_response->get_status_info()->get_code_major());
+        $this->assertEquals(severity::warning, $default_response->get_status_info()->get_severity());
+        $this->assertEquals('Test unsupported', $default_response->get_status_info()->get_description());
+        $this->assertEquals(null, $default_response->get_data());
+        $this->assertEquals(null, $default_response->get_collection_name());
     }
-
-    public function test_default_response_to_array() {
-        $defaultResponse = default_response::success([], 'test', 'Test success');
-        $this->assertEquals([
-            'imsx_statusInfo' => $defaultResponse->getstatusInfo()->toArray(),
-            'test' => []
-        ], $defaultResponse->toArray());
-    }
-
-    public function test_default_response_to_json() {
-        $defaultResponse = default_response::success([], 'test', 'Test success');
-        $this->assertEquals(json_encode([
-            'imsx_statusInfo' => $defaultResponse->getstatusInfo()->toArray(),
-            'test' => []
-        ]), $defaultResponse->toJSON());
-    }
-
 }

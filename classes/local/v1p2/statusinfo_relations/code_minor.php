@@ -26,29 +26,29 @@
 namespace enrol_oneroster\local\v1p2\statusinfo_relations;
 
 
-class codeMinor {
-    private array $codeMinorfields = [];
+class code_minor {
+    private array $code_minor_fields = [];
 
-    public function __construct(codeMinorField ...$fields) {
-        $this->codeMinorfields = $fields;
+    public function __construct(code_minor_field ...$fields) {
+        $this->code_minor_fields = $fields;
     }
 
    public function getFields(): array {
-        return $this->codeMinorfields;
+        return $this->code_minor_fields;
     }
 
-    public function toArray(): array {
+    public function to_array(): array {
         return [
             'imsx_codeMinorField' => array_map(fn($field) => [
                 'imsx_codeMinorFieldName' => 'codeMinor',
                 'imsx_codeMinorFieldValue' => $field->getFieldValue()->value
             ],
-            $this->codeMinorfields
+            $this->code_minor_fields
         ),
     ];
     }
 
-   public function createCodeMinor(codeMinorField $field): self {
+   public function create_code_minor(code_minor_field $field): self {
         return new self($field);
     }
 
@@ -62,10 +62,10 @@ class codeMinor {
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class codeMinorField {
+class code_minor_field {
     public function __construct(
         private string $fieldName = 'TargetEndSystem',
-        private codeMinorValues $fieldValue
+        private code_minor_values $field_value
     ) {
     }
 
@@ -73,11 +73,11 @@ class codeMinorField {
         return $this->fieldName;
     }
 
-    public function getFieldValue(): codeMinorValues {
-        return $this->fieldValue;
+    public function getFieldValue(): code_minor_values {
+        return $this->field_value;
     }
 
-    public function toArray(): array {
+    public function to_array(): array {
         return [
             'imsx_codeMinorFieldName' => $this->getFieldName(),
             'imsx_codeMinorFieldValue' => $this->getFieldValue()->value,
@@ -92,7 +92,7 @@ class codeMinorField {
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-enum codeMinorValues: string {
+enum code_minor_values: string {
     case fullsuccess = 'fullsuccess';
     case invalid_filter_field = 'invalid_filter_field';
     case invalid_selection_field = 'invalid_selection_field';

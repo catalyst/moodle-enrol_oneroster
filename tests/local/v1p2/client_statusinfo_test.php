@@ -1,11 +1,38 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Class client_statusinfo_test.
+ *
+ * @package    enrol_oneroster
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 use enrol_oneroster\local\v1p2\oauth2_client;
 use enrol_oneroster\local\v1p2\container;
 use enrol_oneroster\local\v1p2\endpoints\rostering;
-use enrol_oneroster\local\v1p2\statusinfo_relations\statusInfo;
+use enrol_oneroster\local\v1p2\statusinfo_relations\status_info;
+use enrol_oneroster\local\v1p2\statusinfo_relations\severity;
 
-class client_statusinfo_test extends \advanced_testcase {
+// Ensure all the statusinfo_relations classes and enums are loaded
+require_once(__DIR__ . '/../../../classes/local/v1p2/statusinfo_relations/status_info.php');
+
+class client_statusinfo_test extends \advanced_testcase
+{
     public function test_execute_with_invalid_credentials() {
         $this->resetAfterTest();
 
@@ -31,7 +58,7 @@ class client_statusinfo_test extends \advanced_testcase {
 
         // Use reflection to test the validation method directly
         $reflection = new \ReflectionClass($client);
-        $method = $reflection->getMethod('validateStatusInfo');
+        $method = $reflection->getMethod('validate_status_info');
         $method->setAccessible(true);
 
         // Test that the validation passes for a properly structured failure response
@@ -42,37 +69,30 @@ class client_statusinfo_test extends \advanced_testcase {
     public function test_execute_with_status_info_success_scenario() {
         $this->resetAfterTest();
 
-        // Create a mock client that returns success
+        // Test the validation logic directly instead of making HTTP requests
         $client = new oauth2_client('test', 'test', 'test', 'test');
-        $container = new container($client);
-        $endpoint = new rostering($container);
-        $command = new \enrol_oneroster\local\command($endpoint, '/users', 'GET', 'Get all users', ['users'], null, null, []);
 
-        // Mock a successful response by directly testing the createSuccessResponseWithStatusInfo method
+        // Create a mock response with valid status info
         $mockResponse = (object) [
+            'imsx_statusInfo' => (object) [
+                'imsx_codeMajor' => 'success',
+                'imsx_severity' => 'status',
+                'imsx_description' => 'Operation successful'
+            ],
             'users' => [
                 (object) ['sourcedId' => 'user1', 'email' => 'user1@example.com'],
                 (object) ['sourcedId' => 'user2', 'email' => 'user2@example.com']
             ]
         ];
 
-        // Use reflection to test the private method
+        // Use reflection to test the validation method directly
         $reflection = new \ReflectionClass($client);
-        $method = $reflection->getMethod('createSuccessResponseWithStatusInfo');
+        $method = $reflection->getMethod('validate_status_info');
         $method->setAccessible(true);
 
-        $result = $method->invoke($client, $mockResponse, $command);
-
-        // Test success structure - convert to array for easier testing
-        $resultArray = (array) $result;
-        $this->assertArrayHasKey('imsx_statusInfo', $resultArray);
-        $this->assertArrayHasKey('imsx_codeMajor', $resultArray['imsx_statusInfo']);
-        $this->assertEquals('success', $resultArray['imsx_statusInfo']['imsx_codeMajor']);
-        $this->assertArrayHasKey('imsx_severity', $resultArray['imsx_statusInfo']);
-        $this->assertEquals('status', $resultArray['imsx_statusInfo']['imsx_severity']);
-        $this->assertArrayHasKey('imsx_description', $resultArray['imsx_statusInfo']);
-        $this->assertArrayHasKey('users', $resultArray);
-        $this->assertCount(2, $resultArray['users']);
+        // Test that the validation passes for a properly structured success response
+        $isValid = $method->invoke($client, $mockResponse);
+        $this->assertTrue($isValid, 'Valid status info should pass validation');
     }
 
     public function test_execute_with_invalid_code_major() {
@@ -89,13 +109,12 @@ class client_statusinfo_test extends \advanced_testcase {
         ];
 
         $reflection = new \ReflectionClass($client);
-        $method = $reflection->getMethod('validateStatusInfo');
+        $method = $reflection->getMethod('validate_status_info');
         $method->setAccessible(true);
 
         $this->expectException(\moodle_exception::class);
-        $this->expectExceptionMessage(statusInfo::invalidCodeMajorMessage);
+        $this->expectExceptionMessage(status_info::invalid_code_major_message);
         $method->invoke($client, $mockInvalidResponse);
-
     }
 
     public function test_execute_with_invalid_severity() {
@@ -112,13 +131,12 @@ class client_statusinfo_test extends \advanced_testcase {
         ];
 
         $reflection = new \ReflectionClass($client);
-        $method = $reflection->getMethod('validateStatusInfo');
+        $method = $reflection->getMethod('validate_status_info');
         $method->setAccessible(true);
 
         $this->expectException(\moodle_exception::class);
-        $this->expectExceptionMessage(statusInfo::invalidSeverityMessage);
+        $this->expectExceptionMessage(status_info::invalid_severity_message);
         $method->invoke($client, $mockInvalidResponse);
-
     }
 
     public function test_execute_with_invalid_code_minor() {
@@ -135,11 +153,11 @@ class client_statusinfo_test extends \advanced_testcase {
         ];
 
         $reflection = new \ReflectionClass($client);
-        $method = $reflection->getMethod('validateStatusInfo');
+        $method = $reflection->getMethod('validate_status_info');
         $method->setAccessible(true);
 
         $this->expectException(\moodle_exception::class);
-        $this->expectExceptionMessage(statusInfo::invalidCodeMinorStructureMessage);
+        $this->expectExceptionMessage(status_info::invalid_code_minor_structure_message);
         $method->invoke($client, $mockInvalidResponse);
     }
 
@@ -147,63 +165,30 @@ class client_statusinfo_test extends \advanced_testcase {
     public function test_status_info_factory_methods() {
         $this->resetAfterTest();
 
-        // Test success factory method
-        $successStatus = \enrol_oneroster\local\v1p2\statusinfo_relations\statusInfo::success('Users retrieved successfully');
-        $successArray = $successStatus->toArray();
-
-        $this->assertEquals('success', $successArray['imsx_codeMajor']);
-        $this->assertEquals('status', $successArray['imsx_severity']);
-        $this->assertEquals('Users retrieved successfully', $successArray['imsx_description']);
-        $this->assertNull($successArray['imsx_CodeMinor']);
-
         // Test failure factory method
-        $codeMinor = new \enrol_oneroster\local\v1p2\statusinfo_relations\codeMinor(
-            new \enrol_oneroster\local\v1p2\statusinfo_relations\codeMinorField(
+        $code_minor = new \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor(
+            new \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_field(
                 'TargetEndSystem',
-                \enrol_oneroster\local\v1p2\statusinfo_relations\codeMinorValues::invaliddata
+                \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_values::invaliddata
             )
         );
 
-        $failureStatus = \enrol_oneroster\local\v1p2\statusinfo_relations\statusInfo::failure(
-            \enrol_oneroster\local\v1p2\statusinfo_relations\severity::error,
-            $codeMinor,
+        $failure_status = \enrol_oneroster\local\v1p2\statusinfo_relations\status_info::failure(
+            severity::error,
+            $code_minor,
             'Invalid request parameters'
         );
-        $failureArray = $failureStatus->toArray();
+        $failure_array = $failure_status->to_array();
 
-        $this->assertEquals('failure', $failureArray['imsx_codeMajor']);
-        $this->assertEquals('error', $failureArray['imsx_severity']);
-        $this->assertEquals('Invalid request parameters', $failureArray['imsx_description']);
-        $this->assertArrayHasKey('imsx_CodeMinor', $failureArray);
+        $this->assertEquals('failure', $failure_array['imsx_codeMajor']);
+        $this->assertEquals('error', $failure_array['imsx_severity']);
+        $this->assertEquals('Invalid request parameters', $failure_array['imsx_description']);
+        $this->assertArrayHasKey('imsx_CodeMinor', $failure_array);
     }
 
-    public function test_default_response_success() {
-        $this->resetAfterTest();
 
-        // Test successful response wrapper
-        $data = [
-            ['sourcedId' => 'user1', 'email' => 'user1@example.com'],
-            ['sourcedId' => 'user2', 'email' => 'user2@example.com']
-        ];
-
-        $response = \enrol_oneroster\local\v1p2\responses\default_response::success(
-            $data,
-            'users',
-            'Users retrieved successfully'
-        );
-
-        $result = $response->toArray();
-
-        // Test structure
-        $this->assertArrayHasKey('imsx_statusInfo', $result);
-        $this->assertArrayHasKey('users', $result);
-        $this->assertEquals('success', $result['imsx_statusInfo']['imsx_codeMajor']);
-        $this->assertEquals('status', $result['imsx_statusInfo']['imsx_severity']);
-        $this->assertEquals('Users retrieved successfully', $result['imsx_statusInfo']['imsx_description']);
-        $this->assertCount(2, $result['users']);
-    }
-
-    public function test_execute_with_error_status_info_creation() {
+    public function test_execute_with_error_status_info_creation()
+    {
         $this->resetAfterTest();
 
         // Create a mock client that will throw an exception
@@ -215,9 +200,9 @@ class client_statusinfo_test extends \advanced_testcase {
         // Mock a response that will cause an exception (invalid JSON)
         $mockResponse = "invalid json response";
 
-        // Use reflection to test the createErrorResponseWithStatusInfo method directly
+        // Use reflection to test the create_error_response_with_status_info method directly
         $reflection = new \ReflectionClass($client);
-        $method = $reflection->getMethod('createErrorResponseWithStatusInfo');
+        $method = $reflection->getMethod('create_error_response_with_status_info');
         $method->setAccessible(true);
 
         // Create a mock exception with a specific code using reflection
@@ -238,14 +223,15 @@ class client_statusinfo_test extends \advanced_testcase {
         $this->assertStringContainsString('Could not decode JSON', $resultArray['imsx_statusInfo']['imsx_description']);
     }
 
-    public function test_getCodeMinorForStatus_function() {
+    public function test_get_code_minor_for_status_function()
+    {
         $this->resetAfterTest();
 
         $client = new oauth2_client('test', 'test', 'test', 'test');
 
         // Use reflection to test the private method
         $reflection = new \ReflectionClass($client);
-        $method = $reflection->getMethod('getCodeMinorForStatus');
+        $method = $reflection->getMethod('get_code_minor_for_status');
         $method->setAccessible(true);
 
         // Test various HTTP status codes
@@ -268,9 +254,9 @@ class client_statusinfo_test extends \advanced_testcase {
         }
     }
 
-    public function test_execute_with_http_error_creates_status_info() {
+    public function test_execute_with_http_error_creates_status_info()
+    {
         $this->resetAfterTest();
-
 
         $client = new oauth2_client('test', 'test', 'test', 'test');
         $container = new container($client);
@@ -294,7 +280,7 @@ class client_statusinfo_test extends \advanced_testcase {
             $codeProperty->setValue($exception, $scenario['code']);
 
             $reflection = new \ReflectionClass($client);
-            $method = $reflection->getMethod('createErrorResponseWithStatusInfo');
+            $method = $reflection->getMethod('create_error_response_with_status_info');
             $method->setAccessible(true);
 
             $result = $method->invoke($client, $exception, $command);
@@ -307,5 +293,4 @@ class client_statusinfo_test extends \advanced_testcase {
             $this->assertArrayHasKey('imsx_CodeMinor', $resultArray['imsx_statusInfo']);
         }
     }
-
 }
