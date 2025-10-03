@@ -45,7 +45,6 @@ enum severity: string
     case warning = 'warning';
     case error = 'error';
 }
-
 /**
  * class statusInfo.
  * Main status info object that combines all the status information into a centralised unit.
