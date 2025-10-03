@@ -36,4 +36,5 @@ use enrol_oneroster\local\v1p1\endpoints\rostering as rostering_version_one;
  */
 class rostering extends rostering_version_one{
     // Insert new logic here.
+
 }
