@@ -22,9 +22,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace enrol_oneroster\tests\local\v1p2;
-use enrol_oneroster\csv_client_test as csv_client_test_version_one;
-use enrol_oneroster\classes\local\v1p2\csv_client_helper;
+
+use advanced_testcase;
+use enrol_oneroster\local\csv_client_test as csv_client_test_version_one;
+use enrol_oneroster\local\v1p2\csv_client_helper;
 use enrol_oneroster\client_helper;
+
+require_once(__DIR__ . '/../csv_client_test.php');
+require_once(__DIR__ . '/../../../classes/local/v1p2/csv_client_helper.php');
 
 
 /**
@@ -36,16 +41,30 @@ use enrol_oneroster\client_helper;
  *
  * @covers  \enrol_oneroster\local\csv_client_helper
  */
-class csv_client_test extends csv_client_test_version_one {
-    // Insert new logic here.
-    
+class csv_client_test extends advanced_testcase {
 
-
-
+    /**
+     * Sets role mappings, runs test environment, runs syncronise on csv data, tests role mappings.
+     */
     public function test_execute_full_data() {
         $this->resetAfterTest(true);
         $selectedorg = 'org-sch-222-456';
-        $zipfilepath = 'enrol/oneroster/tests/fixtures/csv_data/v1p2_full_dataset.zip';
+        $zipfilepath = 'enrol/oneroster/tests/fixtures/csv_data/VRd118.zip';
+
+
+        global $DB;
+        set_config('role_mapping_teacher', 'student', 'enrol_oneroster');
+        set_config('role_mapping_student', 'student', 'enrol_oneroster');
+        set_config('role_mapping_aide', 'student', 'enrol_oneroster');
+        set_config('role_mapping_proctor', 'student', 'enrol_oneroster');
+        set_config('role_mapping_parent', 'student', 'enrol_oneroster');
+        set_config('role_mapping_guardian', 'student', 'enrol_oneroster');
+        set_config('role_mapping_relative', 'student', 'enrol_oneroster');
+        set_config('role_mapping_counselor', 'student', 'enrol_oneroster');
+        set_config('role_mapping_districtAdmin', 'student', 'enrol_oneroster');
+        set_config('role_mapping_principal', 'student', 'enrol_oneroster');
+        set_config('role_mapping_siteAdmin', 'student', 'enrol_oneroster');
+        set_config('role_mapping_systemAdmin', 'student', 'enrol_oneroster');
 
         // Prepare the test environment.
         $csvclient = $this->prepare_test_environment($selectedorg, $zipfilepath);
@@ -54,6 +73,12 @@ class csv_client_test extends csv_client_test_version_one {
         $csvclient->synchronise();
 
         // Assert database records.
+        $users = $DB->get_records('user');
+
+        foreach ($users as $userid => $data){
+            $this->assert_user_roles($userid);
+        }
+
     }
 
     /**
@@ -124,7 +149,8 @@ class csv_client_test extends csv_client_test_version_one {
      */
     private function assert_user_agents($studentId, $agentIDs,){
         global $DB;
-        $users = $DB->get_records('user');
+        $users = $DB->get_records('user', ['userid' => $studentId]);
+
         
 
     //$ra->roleid       = $roleid;
@@ -138,20 +164,21 @@ class csv_client_test extends csv_client_test_version_one {
      * @param string $userID the user to check
      * @param array $roles that should be associated with user
      */
-    private function assert_user_roles($userID, $roles){
+
+    private function assert_user_roles($userID){
         global $DB;
-        $ras = $DB->get_records('role_assignments', ['userid'=>$userid]);
         
-        foreach ($ras as $ra ){
-            //
-        }
-        //get the role type of the roles
-        //
-        
-        //for each
-            //find the mapping
-            //assert the the moodle mapping alligns with one of the role assignments
+        $ras = $DB->get_records('role_assignments', ['userid'=>$userID]);
 
+        $mapped = array_map(function($el) {
+            global $DB;
+            $role = $DB->get_record('roles', ['id' => $el->roleid]);
+            return $role->shortname;
+        }, $ras);
 
+        //assert the oneroster roles to find which moodle keys you're looking to assert
+        if (!empty($mapped)){
+            $this->assertArrayHasKey('student', $mapped);
+        };
     }
 }

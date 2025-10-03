@@ -169,6 +169,7 @@ function process_selected_organization(string $selectedorgsourcedid, string $tem
     $manifest = $csvdata['manifest'] ?? [];
     $users = $csvdata['users'] ?? [];
     $classes = $csvdata['classes'] ?? [];
+    $courses = $csvdata['courses'] ?? [];
     $orgs = $csvdata['orgs'] ?? [];
     $enrollments = $csvdata['enrollments'] ?? [];
     $academicsessions = $csvdata['academicSessions'] ?? [];
@@ -184,7 +185,7 @@ function process_selected_organization(string $selectedorgsourcedid, string $tem
 
 
 
-    $csvclient->set_data($manifest, $users, $classes, $orgs, $enrollments, $academicsessions, $userprofiles);
+    $csvclient->versioned_set_data($manifest, $users, $classes, $courses, $orgs, $enrollments, $academicsessions, $userprofiles);
 
     try {
         $csvclient->synchronise();

@@ -13,10 +13,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-namespace enrol_oneroster\classes\local\v1p2;
+namespace enrol_oneroster\local\v1p2;
 
 use enrol_oneroster\local\v1p2\csv_client_const_helper;
 use enrol_oneroster\local\v1p1\csv_client_helper as csv_client_helper_version_one;
+use PHPUnit\Framework\Constraint\ArrayHasKey;
 
 use function PHPUnit\Framework\assertEquals;
 
@@ -36,10 +37,131 @@ class csv_client_helper extends csv_client_helper_version_one{
      * @return array An array containing the expected data types for each file.
      */
     public static function get_file_datatypes(): array {
-      //call parent
-      $data = parent::get_file_datatypes();
-      
-       // add userprofiles
+        //call parent.
+        $data = parent::get_file_datatypes();
+        //Remove v1p1 users.
+        unset($data[csv_client_const_helper::FILE_USERS]);
+
+        //Add new Users.
+        $users = [
+            csv_client_const_helper::FILE_USERS => [
+                csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_STATUS => [
+                    csv_client_const_helper::DATATYPE_ENUM_STATUS,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
+                    csv_client_const_helper::DATATYPE_DATETIME,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_ENABLED_USER => csv_client_const_helper::DATATYPE_ENUM_PRIMARY,
+                csv_client_const_helper::HEADER_USERNAME => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_USERIDS => [
+                    csv_client_const_helper::DATATYPE_ARRAY_USERIDS,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_GIVEN_NAME => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_FAMILY_NAME => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_MIDDLE_NAME => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_IDENTIFIER => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_EMAIL => [
+                    csv_client_const_helper::DATATYPE_STRING_EMAIL,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_SMS => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PHONE => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_AGENT_SOURCEDIDS => [
+                    csv_client_const_helper::DATATYPE_ARRAY_GUID,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_GRADES => [
+                    csv_client_const_helper::DATATYPE_ARRAY_GRADE,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PASSWORD => [
+                    csv_client_const_helper::DATATYPE_PASSWORD,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_MASTER_IDENTIFIER => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PREFERRED_GIVEN_NAME => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PREFERRED_MIDDLE_NAME => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PREFERRED_FAMILY_NAME => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PRIMARY_ORG_SOURCED_ID => [
+                    csv_client_const_helper::DATATYPE_GUID,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PRONOUNS => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+            ]
+        ];
+
+        $courses = [
+            csv_client_const_helper::FILE_COURSES =>[
+                csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_STATUS => [
+                    csv_client_const_helper::DATATYPE_ENUM_STATUS,
+                    csv_client_const_helper::DATATYPE_NULL 
+                ],
+                csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
+                    csv_client_const_helper::DATATYPE_DATETIME,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_SCHOOL_YEAR_SOURCED_ID => [
+                    csv_client_const_helper::DATATYPE_GUID,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_TITLE => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_COURSE_CODE => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL,
+                ],
+                csv_client_const_helper::HEADER_COURSE_CODE => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL,
+                ],
+                csv_client_const_helper::HEADER_GRADES => [
+                    csv_client_const_helper::DATATYPE_ARRAY_GRADE,
+                    csv_client_const_helper::DATATYPE_NULL,
+                ],
+                csv_client_const_helper::HEADER_ORG_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_SUBJECTS => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL,
+                ],
+                csv_client_const_helper::HEADER_SUBJECT_CODES => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL,
+                ]
+            ]
+        ];
+
+        // add userprofiles.
         $userprofiledata = [
         csv_client_const_helper::FILE_USERPROFILES => [
            csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
@@ -87,7 +209,7 @@ class csv_client_helper extends csv_client_helper_version_one{
                 csv_client_const_helper::HEADER_USERPROFILE_SOURCEDID => csv_client_const_helper::DATATYPE_GUID
             ]
          ];
-      $mergedarray = array_merge($data, $roles);
+      $mergedarray = array_merge($data, $roles, $users, $courses);
       $totalmergeddata = array_merge($mergedarray, $userprofiledata);
       return $totalmergeddata;
       }
@@ -135,11 +257,11 @@ class csv_client_helper extends csv_client_helper_version_one{
         $criticalfiles = [
             csv_client_const_helper::FILE_ACADEMIC_SESSIONS,
             csv_client_const_helper::FILE_CLASSES,
+            csv_client_const_helper::FILE_COURSES,
             csv_client_const_helper::FILE_ENROLLMENTS,
             csv_client_const_helper::FILE_ORGS,
             csv_client_const_helper::FILE_USERS,
             csv_client_const_helper::FILE_ROLES,
-            csv_client_const_helper::FILE_USERPROFILES,
         ];
 
         $errormessage = '';
@@ -193,21 +315,29 @@ class csv_client_helper extends csv_client_helper_version_one{
      * @return array The header for the given file.
      */
     public static function get_header(string $filename): array {
-        
-      $parentreturn = parent::get_header($filename);
-      
-      if ($parentreturn != []) {
-         return $parentreturn;
-      }
-   
-      switch ($filename) {
+    
+        switch ($filename) {
             case csv_client_const_helper::FILE_ROLES:
-                return csv_client_const_helper::HEADER_ROLES;
+                $data = csv_client_const_helper::HEADER_ROLES;
+                break;
             case csv_client_const_helper::FILE_USERPROFILES:
-              return csv_client_const_helper::HEADER_USERPROFILES;
-            default:
+                $data = csv_client_const_helper::HEADER_USERPROFILES;
+                break;
+            case csv_client_const_helper::FILE_COURSES:
+                $data = csv_client_const_helper::HEADER_COURSES;
+                break;
+            case csv_client_const_helper::FILE_USERS:
+                $data = csv_client_const_helper::HEADER_USERS;
+                break;
+              default:
                 return [];
-      }
+        }
+      
+        if ($data!= []) {
+            return $data;
+        }      
+      
+        return parent::get_header($filename);
     }
 
     /**
