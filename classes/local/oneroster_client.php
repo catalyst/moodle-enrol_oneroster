@@ -147,7 +147,7 @@ trait oneroster_client
         if (!empty($params) && $method !== client_helper::POST) {
             throw new BadMethodCallException(sprintf(
                 'The http method called for %s is %s but it has to be POST' .
-                    ' if you want to pass the JSON params %s',
+               ' if you want to pass the JSON params %s',
                 $url,
                 $method,
                 json_encode($params)
