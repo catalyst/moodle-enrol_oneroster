@@ -151,8 +151,4 @@ class default_response {
         return true;
 
     }
-
-
-
-
 }
