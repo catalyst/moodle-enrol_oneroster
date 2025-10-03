@@ -341,6 +341,140 @@ class csv_client_helper extends csv_client_helper_version_one{
     }
 
     /**
+     * Function to validate CSV headers.
+     *
+     * @param string $filepath Path to the CSV file.
+     * @return bool True if the headers are valid, false otherwise.
+     */
+    public static function validate_csv_headers(string $filepath): bool {
+        $cleanfilepath = clean_param($filepath, PARAM_PATH);
+        $filename = basename($cleanfilepath);
+        $expectedheaders = self::get_header($filename);
+        if (($handle = fopen($cleanfilepath, 'r')) !== false) {
+            $headers = fgetcsv($handle, 0, ',');
+            fclose($handle);
+            return $headers === $expectedheaders;
+        }
+        return false;
+    }
+
+    /**
+     * Function to check if the manifest and required files are present.
+     *
+     * @param string $manifestpath Path to the manifest file.
+     * @param string $tempdir Path to the temporary directory.
+     * @return array An array containing the missing files and invalid headers.
+     */
+    public static function check_manifest_and_files(string $manifestpath, string $tempdir): array {
+        $invalidheaders = [];
+        $requiredfiles = [];
+
+        if (($handle = fopen($manifestpath, 'r')) !== false) {
+            while (($data = fgetcsv($handle, 0, ',')) !== false) {
+                if (in_array($data[1], ['bulk', 'delta'])) {
+                    // Remove 'file.' prefix and add '.csv' suffix in the manifest file to clean the param names.
+                    $requiredfiles[] = str_replace('file.', '', $data[0]) . '.csv';
+                }
+            }
+            fclose($handle);
+        }
+
+        $extractedfiles = array_diff(scandir($tempdir), ['.', '..', 'uploadedzip.zip']);
+        $missingfiles = array_diff($requiredfiles, $extractedfiles);
+        foreach ($requiredfiles as $file) {
+            $cleanfilepath = clean_param($file, PARAM_PATH);
+
+            if (in_array($cleanfilepath, $extractedfiles)) {
+                $filepath = $tempdir . '/' . $file;
+                if (!self::validate_csv_headers($filepath)) {
+                    $invalidheaders[] = $file;
+                }
+            }
+        }
+        return [
+            'missingfiles' => $missingfiles,
+            'invalidheaders' => $invalidheaders
+        ];
+    }
+
+    public static function validate_csv_data_types(string $directory): array {
+        $isvalid = true;
+        $invalidfiles = [];
+        $errormessages = [];
+
+        $files = scandir($directory);
+
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..' ||
+                pathinfo($file, PATHINFO_EXTENSION) !== 'csv' ||
+                $file === csv_client_const_helper::FILE_MANIFEST) {
+                continue;
+            }
+
+            $cleanfilepath = clean_param($directory . '/' . $file, PARAM_PATH);
+            $expecteddatatypes = self::get_data_types($file);
+            $detecteddatatypes = [];
+
+            if (($handle = fopen($cleanfilepath, 'r')) !== false) {
+                $headers = fgetcsv($handle, 0, ',');
+                if ($headers === false) {
+                    $isvalid = false;
+                    $invalidfiles[] = $file;
+                    $errormessages[] = "Failed to read headers from CSV file: $file";
+                    continue;
+                }
+
+                $detecteddatatypes = array_fill(0, count($headers), 'unknown');
+
+                while (($row = fgetcsv($handle, 0, ',')) !== false) {
+                    $row = array_slice($row, 0, count($headers));
+                    foreach ($row as $index => $value) {
+                        if (isset($headers[$index])) {
+                            $detectedtype = self::determine_data_type(
+                                $value,
+                                $expecteddatatypes[$headers[$index]] ?? []
+                            );
+
+                            if ($detecteddatatypes[$index] === 'unknown' ||
+                                $detecteddatatypes[$index] === csv_client_const_helper::DATATYPE_NULL ||
+                                $detecteddatatypes[$index] !== false) {
+                                $detecteddatatypes[$index] = $detectedtype;
+                            }
+                        }
+                    }
+                }
+
+                fclose($handle);
+
+                $fileisvalid = true;
+                foreach ($headers as $index => $header) {
+                    $expectedtypes = $expecteddatatypes[$header] ?? [get_string('na', 'enrol_oneroster')];
+                    $detectedtype = $detecteddatatypes[$index];
+                    if (!in_array($detectedtype, (array)$expectedtypes, true)) {
+                        $errormessages[] = get_string(
+                            'validation',
+                            'enrol_oneroster',
+                            (object)['header' => $header, 'file' => $file]
+                        );
+                        $isvalid = false;
+                        $fileisvalid = false;
+                    }
+                }
+
+                if (!$fileisvalid) {
+                    $invalidfiles[] = $file;
+                }
+            }
+        }
+
+        return [
+            'is_valid' => $isvalid,
+            'invalid_files' => $invalidfiles,
+            'error_messages' => $errormessages
+        ];
+    }
+
+    /**
      * Check if a value is of type role enum.
      *
      * @param string $value The value to check.

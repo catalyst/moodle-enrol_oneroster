@@ -24,11 +24,9 @@
 namespace enrol_oneroster\tests\local\v1p2;
 
 use advanced_testcase;
-use enrol_oneroster\local\csv_client_test as csv_client_test_version_one;
 use enrol_oneroster\local\v1p2\csv_client_helper;
 use enrol_oneroster\client_helper;
 
-require_once(__DIR__ . '/../csv_client_test.php');
 require_once(__DIR__ . '/../../../classes/local/v1p2/csv_client_helper.php');
 
 
