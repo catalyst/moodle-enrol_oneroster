@@ -39,6 +39,7 @@ class csv_client_helper extends csv_client_helper_version_one{
     public static function get_file_datatypes(): array {
         //call parent.
         $data = parent::get_file_datatypes();
+        //var_dump($data);
         //Remove v1p1 users.
         unset($data[csv_client_const_helper::FILE_USERS]);
 
@@ -120,7 +121,71 @@ class csv_client_helper extends csv_client_helper_version_one{
                 ],
             ]
         ];
-
+        $demographics = [
+            csv_client_const_helper::FILE_DEMOGRAPHICS =>[
+                csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_STATUS => [
+                    csv_client_const_helper::DATATYPE_ENUM_STATUS,
+                    csv_client_const_helper::DATATYPE_NULL 
+                ],
+                csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
+                    csv_client_const_helper::DATATYPE_DATETIME,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_BIRTHDATE =>[
+                    csv_client_const_helper::DATATYPE_DATE,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_SEX => [
+                    csv_client_const_helper::DATATYPE_SEX,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_AMERICAN_INDIAN_OR_ALASKA_NATIVE =>[
+                    csv_client_const_helper::DATATYPE_DEMOGRAPHIC_ENUM,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_ASIAN =>[
+                    csv_client_const_helper::DATATYPE_DEMOGRAPHIC_ENUM,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_BLACK_OR_AFRICAN_AMERICAN =>[
+                    csv_client_const_helper::DATATYPE_DEMOGRAPHIC_ENUM,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_NATIVE_HAWAIIAN_OR_OTHER_PACIFIC_ISLANDER =>[
+                    csv_client_const_helper::DATATYPE_DEMOGRAPHIC_ENUM,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_WHITE =>[
+                    csv_client_const_helper::DATATYPE_DEMOGRAPHIC_ENUM,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_DEMOGRAPHIC_RACE_TWO_OR_MORE_RACES =>[
+                    csv_client_const_helper::DATATYPE_DEMOGRAPHIC_ENUM,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_HISPANIC_OR_LATINO_ETHNICITY =>[
+                    csv_client_const_helper::DATATYPE_DEMOGRAPHIC_ENUM,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_COUNTRY_OF_BIRTH_CODE =>[
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_STATE_OF_BITH_ABBREVIATION =>[
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_CITY_OF_BIRTH =>[
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_PUBLIC_SCHOOL_RESIDENCE_STATUS =>[
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL
+                ]
+            ]
+        ];
         $courses = [
             csv_client_const_helper::FILE_COURSES =>[
                 csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
@@ -176,11 +241,17 @@ class csv_client_helper extends csv_client_helper_version_one{
            csv_client_const_helper::HEADER_USER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
            csv_client_const_helper::HEADER_PROFILE_TYPE => csv_client_const_helper::DATATYPE_STRING,
            csv_client_const_helper::HEADER_VENDOR_ID => csv_client_const_helper::DATATYPE_STRING,
-           csv_client_const_helper::HEADER_APPLICATION_ID => csv_client_const_helper::DATATYPE_STRING,
-           csv_client_const_helper::HEADER_DESCRIPTION => csv_client_const_helper::DATATYPE_STRING,
+           csv_client_const_helper::HEADER_APPLICATION_ID => [
+            csv_client_const_helper::DATATYPE_STRING,
+            csv_client_const_helper::DATATYPE_NULL],
+           csv_client_const_helper::HEADER_DESCRIPTION => [
+            csv_client_const_helper::DATATYPE_STRING,
+            csv_client_const_helper::DATATYPE_NULL],
            csv_client_const_helper::HEADER_CREDENTIAL_TYPE => csv_client_const_helper::DATATYPE_STRING,
            csv_client_const_helper::HEADER_USERNAME => csv_client_const_helper::DATATYPE_STRING,
-           csv_client_const_helper::HEADER_PASSWORD => csv_client_const_helper::DATATYPE_STRING
+           csv_client_const_helper::HEADER_PASSWORD => [
+             csv_client_const_helper::DATATYPE_STRING,
+             csv_client_const_helper::DATATYPE_NULL]
         ]
      ];
       //add roles
@@ -197,6 +268,8 @@ class csv_client_helper extends csv_client_helper_version_one{
                     csv_client_const_helper::DATATYPE_NULL
                 ],
                 csv_client_const_helper::HEADER_USER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_ROLE_TYPE => csv_client_const_helper::DATATYPE_ENUM_ROLE_TYPE,
+                csv_client_const_helper::HEADER_ROLE => csv_client_const_helper::DATATYPE_ENUM_ROLE_ROLE,
                 csv_client_const_helper::HEADER_BEGIN_DATE => [
                     csv_client_const_helper::DATATYPE_DATE,
                     csv_client_const_helper::DATATYPE_NULL
@@ -206,12 +279,13 @@ class csv_client_helper extends csv_client_helper_version_one{
                     csv_client_const_helper::DATATYPE_NULL
                 ],
                 csv_client_const_helper::HEADER_ORG_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
-                csv_client_const_helper::HEADER_USERPROFILE_SOURCEDID => csv_client_const_helper::DATATYPE_GUID
+                csv_client_const_helper::HEADER_USERPROFILE_SOURCEDID => [
+                    csv_client_const_helper::DATATYPE_GUID,
+                    csv_client_const_helper::DATATYPE_NULL] 
             ]
          ];
-      $mergedarray = array_merge($data, $roles, $users, $courses);
-      $totalmergeddata = array_merge($mergedarray, $userprofiledata);
-      return $totalmergeddata;
+      $mergedarray = array_merge($data, $demographics, $courses, $roles, $userprofiledata, $users);
+      return $mergedarray;
       }
 
     /**
@@ -245,6 +319,8 @@ class csv_client_helper extends csv_client_helper_version_one{
             csv_client_const_helper::DATATYPE_PASSWORD => 'is_valid_password',
             csv_client_const_helper::DATATYPE_ARRAY_PERIODS => 'is_valid_periods',
             csv_client_const_helper::DATATYPE_STRING => 'is_valid_human_readable_string',
+            csv_client_const_helper::DATATYPE_DEMOGRAPHIC_ENUM => 'is_demographic_enum',
+            csv_client_const_helper::DATATYPE_SEX => 'is_sex_enum'
         ];
     }
     /**
@@ -315,7 +391,7 @@ class csv_client_helper extends csv_client_helper_version_one{
      * @return array The header for the given file.
      */
     public static function get_header(string $filename): array {
-    
+        $data = [];
         switch ($filename) {
             case csv_client_const_helper::FILE_ROLES:
                 $data = csv_client_const_helper::HEADER_ROLES;
@@ -329,14 +405,16 @@ class csv_client_helper extends csv_client_helper_version_one{
             case csv_client_const_helper::FILE_USERS:
                 $data = csv_client_const_helper::HEADER_USERS;
                 break;
-              default:
-                return [];
+            case csv_client_const_helper::FILE_DEMOGRAPHICS:
+                $data = csv_client_const_helper::HEADER_DEMOGRAPHICS;
+                break;
+            default:
+                break;
         }
       
         if ($data!= []) {
             return $data;
         }      
-      
         return parent::get_header($filename);
     }
 
@@ -396,7 +474,9 @@ class csv_client_helper extends csv_client_helper_version_one{
             'invalidheaders' => $invalidheaders
         ];
     }
-
+    public static function get_data_types(string $filename): array {
+        return self::get_file_datatypes()[$filename] ?? [];
+    }
     public static function validate_csv_data_types(string $directory): array {
         $isvalid = true;
         $invalidfiles = [];
@@ -413,6 +493,7 @@ class csv_client_helper extends csv_client_helper_version_one{
 
             $cleanfilepath = clean_param($directory . '/' . $file, PARAM_PATH);
             $expecteddatatypes = self::get_data_types($file);
+            //var_dump($expecteddatatypes);
             $detecteddatatypes = [];
 
             if (($handle = fopen($cleanfilepath, 'r')) !== false) {
@@ -475,6 +556,27 @@ class csv_client_helper extends csv_client_helper_version_one{
     }
 
     /**
+     * Determine the data type of a value.
+     *
+     * @param string $value The value to determine the data type of.
+     * @param array $expectedtypes The expected data types for the value.
+     * @return string The detected data type.
+     */
+    public static function determine_data_type($value, $expectedtypes): string {
+        if (trim($value) === '') {
+            return csv_client_const_helper::DATATYPE_NULL;
+        }
+
+        foreach ((array)$expectedtypes as $expectedtype) {
+            if (isset(static::get_validator()[$expectedtype]) &&
+                call_user_func([self::class, static::get_validator()[$expectedtype]], $value)) {
+                    return $expectedtype;
+            }
+        }
+        return 'unknown';
+    }
+
+    /**
      * Check if a value is of type role enum.
      *
      * @param string $value The value to check.
@@ -525,4 +627,36 @@ class csv_client_helper extends csv_client_helper_version_one{
         return in_array(strtolower($value), csv_client_const_helper::VALID_ROLES_USERS, true);
     }
 
+    /**
+     * Check if a value is in the sex enum.
+     *
+     * @param mixed $value The value to check.
+     * @return bool True if the value is of type sex enum, false otherwise.
+     */
+    public static function is_sex_enum($value): bool {
+        return in_array(strtolower($value), csv_client_const_helper::VALID_DEMOGRAPHICS_SEX, true);
+
+    }
+    /**
+     * Ensure a demographic value is 'true' or 'false'.
+     *
+     * @param mixed $value The value to check.
+     * @return bool True if the value is 'true' or 'false', false otherwise.
+     */
+    public static function is_demographic_enum($value): bool {
+        return in_array(strtolower($value), csv_client_const_helper::VALID_DEMOGRAPHICS_ENUM, true);
+    }
+    /**
+     * Check if a birthDate value is in acceptable format.
+     *
+     * @param mixed $value The value to check.
+     * @return bool True if the value is in YYYY-MM-DD format.
+     */
+    public static function is_valid_birth_date ($value): bool {
+        // Check if the value matches the v1.0 format (YYYY-MM-DD).
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+            return true;
+        }
+        return false;
+    }
 }

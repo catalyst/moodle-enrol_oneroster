@@ -103,13 +103,15 @@ class csv_client_test extends advanced_testcase {
 
         // Check manifest and files.
         $missingfiles = csv_client_helper::check_manifest_and_files($manifestpath, $tempdir);
+        
         $this->assertEmpty($missingfiles['missingfiles'], 'There should be no missing files according to the manifest.');
         $this->assertEmpty($missingfiles['invalidheaders'], 'There should be no invalid headers in the extracted CSV files.');
-
+        
         // Validate CSV data types.
         $isvalid = csv_client_helper::validate_csv_data_types($tempdir);
         $this->assertArrayHasKey('is_valid', $isvalid);
         $this->assertTrue($isvalid['is_valid']);
+        
 
         // Extract CSV data to arrays.
         $csvdata = csv_client_helper::extract_csvs_to_arrays($tempdir);
@@ -122,19 +124,19 @@ class csv_client_test extends advanced_testcase {
         // Initialize CSV client.
         $csvclient = client_helper::get_csv_client();
         $csvclient->set_org_id($org);
-
         // Set CSV data.
         $manifest = $csvdata['manifest'] ?? [];
         $users = $csvdata['users'] ?? [];
         $classes = $csvdata['classes'] ?? [];
+        $courses = $csvdata['courses'] ?? [];
         $orgs = $csvdata['orgs'] ?? [];
         $enrollments = $csvdata['enrollments'] ?? [];
         $academicsessions = $csvdata['academicSessions'] ?? [];
         $roles = $csvdata['roles'] ?? [];
+        $demographics = $csvdata['demographics'] ?? [];
         $userprofiles = $csvdata['userProfiles'] ?? [];
 
-        $csvclient->versioned_set_data($manifest, $users, $classes, $orgs, $enrollments, $academicsessions, $roles, $userprofiles);
-
+        $csvclient->versioned_set_data($manifest, $users, $classes, $courses, $orgs, $enrollments, $academicsessions, $roles, $demographics, $userprofiles);
         return $csvclient;
     }
 
@@ -148,12 +150,6 @@ class csv_client_test extends advanced_testcase {
     private function assert_user_agents($studentId, $agentIDs,){
         global $DB;
         $users = $DB->get_records('user', ['userid' => $studentId]);
-
-        
-
-    //$ra->roleid       = $roleid;
-    //$ra->contextid    = $context->id;
-    //$ra->userid       = $userid;
 
     }
     /**

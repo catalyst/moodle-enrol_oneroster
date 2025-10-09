@@ -39,7 +39,11 @@ class csv_client extends csv_client_version_one{
     const BASEPATH_ROLES = 'roles';
 
     private $data;
+    private $orgid;
 
+    public function set_org_id($orgid) {
+        $this->orgid = $orgid;
+    }
    /**
      * Set the data retrieved from the CSV file.
      *
@@ -52,14 +56,15 @@ class csv_client extends csv_client_version_one{
      */
     public function versioned_set_data(
         array $manifest,
-        array $users,
-        array $classes,
+        array $users, 
+        array $classes, 
         array $courses,
-        array $orgs,
-        array $enrollments,
-        array $academicsessions,
-        array $userprofiles,
-        array $roles
+        array $orgs, 
+        array $enrollments, 
+        array $academicsessions, 
+        array $roles, 
+        array $demographics, 
+        array $userprofiles
     ): void {
         $this->data = [
             'manifest' => $manifest,
@@ -69,8 +74,9 @@ class csv_client extends csv_client_version_one{
             'orgs' => $orgs,
             'enrollments' => $enrollments,
             'academicSessions' => $academicsessions,
-            'userProfiles' => $userprofiles,
             'roles' => $roles,
+            'demographics' => $demographics,
+            'userProfiles' => $userprofiles,
         ];
     }
    

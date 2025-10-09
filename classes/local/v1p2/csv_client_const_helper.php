@@ -79,7 +79,24 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
      * @var array
      */
     const VALID_ROLE_TYPE =[ 'primary', 'secondary'];
+    
+    /**
+     * Valid sexes.
+     *
+     * @var array
+     */
+    const VALID_DEMOGRAPHICS_SEX = ['male', 'female', 'unspecified', 'other'];
+    
+    /**
+     * Valid demographic values.
+     *
+     * @var array
+     */
+    const VALID_DEMOGRAPHICS_ENUM = ['true', 'false'];
 
+    const DATATYPE_DEMOGRAPHIC_ENUM = 'enum_demographic';
+    
+    const DATATYPE_SEX = 'sex';
 
     /**
    * Id field for the vendor id.
@@ -109,7 +126,7 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
    /**
     * File name for the user profiles.
     */
-   const FILE_USERPROFILES = 'userprofiles.csv';
+   const FILE_USERPROFILES = 'userProfiles.csv';
 
    /**
     * User master identifier field for users.
@@ -119,17 +136,17 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
    /**
     *  Preferred given name field for users.
     */
-   const HEADER_PREFERRED_GIVEN_NAME = 'preferredGiveName';
+   const HEADER_PREFERRED_GIVEN_NAME = 'preferredGivenName';
    
    /**
     *  Preferred middle name field for users.
     */
-   const HEADER_PREFERRED_MIDDLE_NAME = 'preferredMiddeName';
+   const HEADER_PREFERRED_MIDDLE_NAME = 'preferredMiddleName';
 
    /**
     *  Preferred family name field for users.
     */
-   const HEADER_PREFERRED_FAMILY_NAME = 'preferredFamiyName';
+   const HEADER_PREFERRED_FAMILY_NAME = 'preferredFamilyName';
 
    /**
     *  Primary sourced ID field for users.
@@ -156,6 +173,75 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
     */
    const HEADER_COURSE_CODE = 'courseCode';
 
+   
+   /**
+   * File name for demographics.
+   */
+   const FILE_DEMOGRAPHICS = 'demographics.csv';
+   
+   /**
+   * Sex field for demographics.
+   */
+   const HEADER_SEX = 'sex';
+   
+   /**
+   * American Indian of Alaksa Native field for demographics.
+   */
+   const HEADER_AMERICAN_INDIAN_OR_ALASKA_NATIVE = 'americanIndianOrAlaskaNative';
+
+   /**
+   * Asian field for demographics.
+   */
+   const HEADER_ASIAN = 'asian';
+
+   /**
+   * Black or african american field for demographics.
+   */
+   const HEADER_BLACK_OR_AFRICAN_AMERICAN = 'blackOrAfricanAmerican';
+   
+   /**
+   * Native hawaiian or other pacific islander field for demographics.
+   */
+   const HEADER_NATIVE_HAWAIIAN_OR_OTHER_PACIFIC_ISLANDER = 'nativeHawaiianOrOtherPacificIslander';
+   
+   /**
+   * White field for demographics.
+   */
+   const HEADER_WHITE = 'white';
+
+   /**
+   * Two or more races field for demographics.
+   */
+   const HEADER_DEMOGRAPHIC_RACE_TWO_OR_MORE_RACES = 'demographicRaceTwoOrMoreRaces';
+
+   /**
+   * Hispanic or latino field for demographics.
+   */
+   const HEADER_HISPANIC_OR_LATINO_ETHNICITY = 'hispanicOrLatinoEthnicity';
+   /**
+   * Country of birth code field for demographics.
+   */
+   const HEADER_COUNTRY_OF_BIRTH_CODE = 'countryOfBirthCode';
+
+   /**
+   * State of birth abbreviation field for demographics.
+   */
+   const HEADER_STATE_OF_BITH_ABBREVIATION = 'stateOfBirthAbbreviation';
+   
+   /**
+   * City of birth field for demographics.
+   */
+   const HEADER_CITY_OF_BIRTH = 'cityOfBirth';
+
+   /**
+   * Public school residence status field for demographics.
+   */
+   const HEADER_PUBLIC_SCHOOL_RESIDENCE_STATUS = 'publicSchoolResidenceStatus';
+   
+   /**
+   * Birth Date field for demographics.
+   */
+   const HEADER_BIRTHDATE = 'birthDate';
     /**
      * Header fields for courses
      *
@@ -246,6 +332,29 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
     ];
 
    /**
+     * Header fields for the demographics file.
+     *
+     * @var array
+     */
+    const HEADER_DEMOGRAPHICS = [
+        self::HEADER_SOURCEDID,
+        self::HEADER_STATUS,
+        self::HEADER_DATE_LAST_MODIFIED,
+        self::HEADER_BIRTHDATE,
+        self::HEADER_SEX,
+        self::HEADER_AMERICAN_INDIAN_OR_ALASKA_NATIVE,
+        self::HEADER_ASIAN,
+        self::HEADER_BLACK_OR_AFRICAN_AMERICAN,
+        self::HEADER_NATIVE_HAWAIIAN_OR_OTHER_PACIFIC_ISLANDER,
+        self::HEADER_WHITE,
+        self::HEADER_DEMOGRAPHIC_RACE_TWO_OR_MORE_RACES,
+        self::HEADER_HISPANIC_OR_LATINO_ETHNICITY,
+        self::HEADER_COUNTRY_OF_BIRTH_CODE,
+        self::HEADER_STATE_OF_BITH_ABBREVIATION,
+        self::HEADER_CITY_OF_BIRTH,
+        self::HEADER_PUBLIC_SCHOOL_RESIDENCE_STATUS
+    ];
+   /**
      * Required files and their corresponding headers.
      *
      * @var array
@@ -259,5 +368,6 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
         self::FILE_USERS => self::HEADER_USERS,
         self::FILE_USERPROFILES => self::HEADER_USERPROFILES,
         self::FILE_ROLES => self:: HEADER_ROLES,
+        self::FILE_DEMOGRAPHICS => self:: HEADER_DEMOGRAPHICS
     ];
 }
