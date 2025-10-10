@@ -31,8 +31,7 @@ use enrol_oneroster\local\v1p2\statusinfo_relations\severity;
 // Ensure all the statusinfo_relations classes and enums are loaded
 require_once(__DIR__ . '/../../../classes/local/v1p2/statusinfo_relations/status_info.php');
 
-class client_statusinfo_test extends \advanced_testcase
-{
+class client_statusinfo_test extends \advanced_testcase {
     public function test_execute_with_invalid_credentials() {
         $this->resetAfterTest();
 
@@ -187,8 +186,7 @@ class client_statusinfo_test extends \advanced_testcase
     }
 
 
-    public function test_execute_with_error_status_info_creation()
-    {
+    public function test_execute_with_error_status_info_creation() {
         $this->resetAfterTest();
 
         // Create a mock client that will throw an exception
@@ -223,8 +221,7 @@ class client_statusinfo_test extends \advanced_testcase
         $this->assertStringContainsString('Could not decode JSON', $resultArray['imsx_statusInfo']['imsx_description']);
     }
 
-    public function test_get_code_minor_for_status_function()
-    {
+    public function test_get_code_minor_for_status_function() {
         $this->resetAfterTest();
 
         $client = new oauth2_client('test', 'test', 'test', 'test');
@@ -254,8 +251,7 @@ class client_statusinfo_test extends \advanced_testcase
         }
     }
 
-    public function test_execute_with_http_error_creates_status_info()
-    {
+    public function test_execute_with_http_error_creates_status_info() {
         $this->resetAfterTest();
 
         $client = new oauth2_client('test', 'test', 'test', 'test');
