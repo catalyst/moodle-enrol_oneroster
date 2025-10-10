@@ -20,6 +20,7 @@ use enrol_oneroster\local\v1p1\csv_client as csv_client_version_one;
 use enrol_oneroster\local\interfaces\client as client_interface;
 use enrol_oneroster\local\oneroster_client as root_oneroster_client;
 use enrol_oneroster\local\v1p2\oneroster_client as versioned_oneroster_client;
+use enrol_oneroster\local\user_entity;
 use enrol_oneroster\local\command;
 use enrol_oneroster\local\interfaces\filter;
 use stdClass;
