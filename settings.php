@@ -20,7 +20,7 @@
  * This plugin synchronises enrolment and roles with a One Roster endpoint.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright Andrew Nicols <andrew@nicols.co.uk> 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -227,6 +227,21 @@ if ($ADMIN->fulltree) {
 
     // Mapping for the 'relative' role.
     \enrol_oneroster\settings::add_role_mapping($settings, 'relative', $allroles, $courseroles);
+
+    // Mapping for the 'counselor' role.
+    \enrol_oneroster\settings::add_role_mapping($settings, 'counselor', $allroles, $courseroles);
+
+    // Mapping for the 'districtAdmin' role.
+    \enrol_oneroster\settings::add_role_mapping($settings, 'districtAdmin', $allroles, $courseroles);
+
+    // Mapping for the 'principal' role.
+    \enrol_oneroster\settings::add_role_mapping($settings, 'principal', $allroles, $courseroles);
+
+    // Mapping for the 'siteAdmin' role.
+    \enrol_oneroster\settings::add_role_mapping($settings, 'siteAdmin', $allroles, $courseroles);
+
+    // Mapping for the 'systemAdmin' role.
+    \enrol_oneroster\settings::add_role_mapping($settings, 'systemAdmin', $allroles, $courseroles);
 
     // Data to synchronise:
     // - Fetch list of available schools button; and
