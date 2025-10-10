@@ -34,7 +34,7 @@ use DateTime;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class csv_client extends csv_client_version_one{
-   
+    use root_oneroster_client;
    
     const BASEPATH_ROLES = 'roles';
 
