@@ -28,6 +28,7 @@ namespace enrol_oneroster\local\v1p2;
 use enrol_oneroster\local\v1p1\oneroster_client as client_version_one;
 use enrol_oneroster\local\v1p2\responses\default_response;
 use enrol_oneroster\local\v1p2\statusinfo_relations\status_info;
+use enrol_oneroster\local\entities\user as user_entity;
 use enrol_oneroster\local\command;
 use enrol_oneroster\local\interfaces\filter;
 use enrol_oneroster\client_helper;
@@ -35,6 +36,7 @@ use BadMethodCallException;
 use moodle_exception;
 use moodle_url;
 use stdClass;
+use context_user;
 
 /**
  * One Roster v1p2 client.
@@ -46,8 +48,6 @@ use stdClass;
 trait oneroster_client
 {
     use client_version_one;
-    // Add new methods or override methods from v1p1 trait here.
-
     /**
      * Synchronise user agents for a user.
      *
