@@ -54,7 +54,7 @@ trait oneroster_client
      * @param   user_entity $entity The user to sync agents for
      * @param   stdClass $localuser The local record for the user
      */
-    protected function sync_user_agents(user_entity $entity, stdClass $localuser): void {
+    protected function sync_user_agents(user_entity $entity, stdClass $localuser) {
 
         $roles = $entity->get('roles');
 
