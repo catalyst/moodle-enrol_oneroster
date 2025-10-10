@@ -18,7 +18,7 @@
  * Strings for component 'enrol_oneroster', language 'en'.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
