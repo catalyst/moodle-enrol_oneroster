@@ -46,7 +46,7 @@ class csv_client_test extends advanced_testcase {
      */
     public function test_execute_full_data() {
         $this->resetAfterTest(true);
-        $selectedorg = 'org-sch-222-456';
+        $selectedorg = 'ORG_1';
         $zipfilepath = 'enrol/oneroster/tests/fixtures/csv_data/VRd118.zip';
 
 

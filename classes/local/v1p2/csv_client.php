@@ -39,8 +39,7 @@ class csv_client extends csv_client_version_one{
     use versioned_oneroster_client;
     const BASEPATH_ROLES = 'roles';
 
-    private $data;
-    private $orgid;
+    protected $data;
 
     public function set_org_id($orgid) {
         $this->orgid = $orgid;
@@ -96,19 +95,18 @@ class csv_client extends csv_client_version_one{
         $type = $tokens[3] ?? '';
         // Get the organisation ID.
         $orgid = $this->orgid ?? null;
-
         if ($orgid == null) {
             throw new \Exception('Organization ID is not set.');
         }      
         switch ($basepath) {
             case self::BASEPATH_ORGS:
-                $data = parent::execute($command, $filter);
-                return $data;
+                $new = parent::execute($command, $filter);
+                return $new;
                 break;
 
             case self::BASEPATH_SCHOOLS:
-                $data = parent::execute($command, $filter);
-                return $data;
+                $new = parent::execute($command, $filter);
+                return $new;
                 break;
 
             case self::BASEPATH_USERS:
