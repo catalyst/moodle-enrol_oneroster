@@ -58,7 +58,7 @@ trait oneroster_client {
     use client_version_one;
     // Add new methods or override methods from v1p1 trait here.
 
-        /**
+    /**
      * Synchronise user agents for a user.
      *
      * @param   user_entity $entity The user to sync agents for
@@ -67,9 +67,12 @@ trait oneroster_client {
     protected function sync_user_agents(user_entity $entity, stdClass $localuser): void {
 
         $roles = $entity->get('roles');
+
+        $student = false;
+
         foreach(array_values($roles) as $role){
             if ($role->get('role') == 'student') {
-                $student = True;
+                $student = true;
                 continue;
             }
         }
@@ -165,5 +168,5 @@ trait oneroster_client {
                 $this->add_metric('user_mapping', 'delete');
             }
         }
-}
+    }
 }
