@@ -542,7 +542,7 @@ EOF;
 
         // See whether this user is an agent for any other user.
         // Note: This is only applied for students as per section 4.1.2 of the specification.
-        $this->sync_user_agents($entity, $localuser);
+        static::sync_user_agents($entity, $localuser);
 
         return $localuser;
     }
@@ -631,7 +631,7 @@ EOF;
      * @param   user_entity $entity The user to sync agents for
      * @param   stdClass $localuser The local record for the user
      */
-    protected function sync_user_agents(user_entity $entity, stdClass $localuser): void {
+    protected static function sync_user_agents(user_entity $entity, stdClass $localuser): void {
         if ($entity->get('role') !== 'student') {
             // Only applied for students as per section 4.1.2 of the specification.
             return;
