@@ -60,7 +60,7 @@ class endpoint_test extends oneroster_testcase {
                 null,
                 $params
             ])
-            ->setMethods(null)
+            ->setMethods([])
             ->getMock();
     }
 

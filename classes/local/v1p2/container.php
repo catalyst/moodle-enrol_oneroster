@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\v1p1;
+namespace enrol_oneroster\local\v1p2;
 
 use enrol_oneroster\local\container as abstract_container;
 use enrol_oneroster\local\interfaces\cache_factory as cache_factory_interface;
@@ -31,9 +31,9 @@ use enrol_oneroster\local\interfaces\container as container_interface;
 use enrol_oneroster\local\interfaces\entity_factory as entity_factory_interface;
 use enrol_oneroster\local\interfaces\filter as filter_interface;
 use enrol_oneroster\local\interfaces\rostering_endpoint as rostering_endpoint_interface;
-use enrol_oneroster\local\v1p1\factories\cache_factory;
-use enrol_oneroster\local\v1p1\factories\collection_factory;
-use enrol_oneroster\local\v1p1\factories\entity_factory;
+use enrol_oneroster\local\v1p2\factories\cache_factory;
+use enrol_oneroster\local\v1p2\factories\collection_factory;
+use enrol_oneroster\local\v1p2\factories\entity_factory;
 
 /**
  * One Roster 1.1 Factory Manager.
