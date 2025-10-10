@@ -25,12 +25,26 @@
 namespace enrol_oneroster\local\v1p2;
 
 // Entities which represent Moodle objects.
+use enrol_oneroster\local\interfaces\course_representation;
+use enrol_oneroster\local\interfaces\coursecat_representation;
+use enrol_oneroster\local\interfaces\user_representation;
+use enrol_oneroster\local\interfaces\enrollment_representation;
+
+use enrol_oneroster\local\collections\orgs as orgs_collection;
+use enrol_oneroster\local\collections\schools as schools_collection;
+use enrol_oneroster\local\collections\terms as terms_collection;
+use enrol_oneroster\local\v1p1\endpoints\rostering as rostering_endpoint;
+use enrol_oneroster\local\entities\org as org_entity;
+use enrol_oneroster\local\entities\school as school_entity;
+use enrol_oneroster\local\v1p2\entities\user as user_entity;
+use enrol_oneroster\local\entities\user as root_user_entity;
+
+
+
 use enrol_oneroster\local\v1p1\oneroster_client as client_version_one;
 use enrol_oneroster\local\v1p2\responses\default_response;
 use enrol_oneroster\local\v1p2\statusinfo_relations\status_info;
-use enrol_oneroster\local\entities\user as user_entity;
 use enrol_oneroster\local\command;
-use enrol_oneroster\local\user_entity;
 use enrol_oneroster\local\interfaces\filter;
 use enrol_oneroster\client_helper;
 use BadMethodCallException;
@@ -38,6 +52,7 @@ use moodle_exception;
 use moodle_url;
 use stdClass;
 use context_user;
+use DateTime;
 
 /**
  * One Roster v1p2 client.
@@ -49,6 +64,7 @@ use context_user;
 trait oneroster_client
 {
     use client_version_one;
+
     /**
      * Execute the supplied command.
      *
@@ -318,19 +334,111 @@ trait oneroster_client
     }
 
     /**
-     * Checks if a User is a student, creates required user agents and assigns those agent's roles
-     * @param user_entity The selected user
-     * @param stdClass $localuser
-     * @return array The code minor information array
+     * Sync the roster.
+     *
+     * @param   int $onlysincetime
      */
-    protected static function sync_user_agents(user_entity $entity, stdClass $localuser): void {
+    public function sync_roster(?int $onlysincetime = null): void {
+        global $DB;
+
+        // Most systems do not have many organisations in them.
+        // Fetch all organisations to add them to the cache.
+        $this->fetch_organisation_list();
+
+        $schoolidstosync = explode(',', get_config('enrol_oneroster', 'datasync_schools'));
+        $countofschools = count($schoolidstosync);
+        $this->get_trace()->output("Processing {$countofschools} schools");
+
+        $onlysince = null;
+        if ($onlysincetime) {
+            // Only fetch users last modified in the onlysince period.
+            $onlysince = new DateTime();
+            $onlysince->setTimestamp($onlysincetime);
+        }
+
+        // Synchronise all users.
+        // One Roster does not provide a way of fetching users relating to a specific school.
+        // All users for all supported schools will be created first.
+        $this->get_trace()->output("Updating the user roster", 1);
+
+        // Only fetch users last modified in the past day.
+        // All timezones in One Roster are Zulu.
+        $this->sync_users_in_schools($schoolidstosync, $onlysince);
+
+        // Fetch the details of all enrolment instances before running the sync.
+        $this->cache_enrolment_instances();
+
+        $this->fetch_current_enrolment_data();
+
+        // Synchronise all courses, classes, and enrolments.
+        foreach ($schoolidstosync as $schoolidtosync) {
+            $this->get_trace()->output("Fetching school with sourcedId '{$schoolidtosync}'", 2);
+            $school = $this->get_container()->get_entity_factory()->fetch_org_by_id($schoolidtosync);
+            if ($school instanceof school_entity) {
+                $this->get_trace()->output("Synchronising school '{$schoolidtosync}'", 2);
+                $this->sync_school($school, $onlysince);
+            } else {
+                $this->get_trace()->output("Organisation with sourcedId '{$schoolidtosync}' is not a school. Skipping.", 3);
+            }
+        }
+
+        $this->get_trace()->output("Processing unenrolments", 3);
+        foreach ($this->existingroleassignments as $instanceid => $ra) {
+            $instance = $DB->get_record('enrol', ['id' => $instanceid]);
+            if ($instance === null) {
+                $this->get_trace()->output("No enrolment instance found with id {$instanceid}");
+                continue;
+            }
+
+            $context = \context_course::instance($instance->courseid);
+
+            // Unassign roles for this user.
+            foreach ($ra as $userid => $roleids) {
+                foreach (array_keys($roleids) as $roleid) {
+                    if ($roleid) {
+                        role_unassign($roleid, $userid, $context->id, 'enrol_oneroster', $instance->id);
+                    }
+                }
+            }
+
+            // Unenrol the user if they have no remaining roles in this enrolment instance.
+            // Note: A manual enrolment in the same course is a separate instance.
+            $this->get_plugin_instance()->unenrol_user(
+                $instance,
+                $userid
+            );
+        }
+
+        $this->get_trace()->output("Completed synchronisation of Rostering information");
+        $this->get_trace()->output(sprintf("Entity\t\tCreate\tUpdate\tDelete"), 1);
+        foreach ($this->get_metrics() as $thing => $actions) {
+            $this->get_trace()->output(
+                sprintf(
+                    "Entity '%s'\t%d\t%d\t%d",
+                    $thing,
+                    $actions['create'],
+                    $actions['update'],
+                    $actions['delete']
+                ),
+                1
+            );
+        }
+    }
+
+    /**
+     * Synchronise user agents for a user.
+     *
+     * @param   user_entity $entity The user to sync agents for
+     * @param   stdClass $localuser The local record for the user
+     */
+    protected function sync_user_agents(root_user_entity $entity, stdClass $localuser): void {
 
         $roles = $entity->get('roles');
 
         $student = false;
 
         foreach(array_values($roles) as $role){
-            if ($role->get('role') == 'student') {
+            if ($role->role == 'student') {
                 $student = true;
                 continue;
             }
@@ -428,4 +536,76 @@ trait oneroster_client
             }
         }
     }
+
+    /**
+     * Synchronise all users in the Schools.
+     *
+     * @param   int[] $schoolids
+     * @param   DateTime|null $onlysince Only sync users which have been remotely modified since the specified date
+     */
+    public function sync_users_in_schools(array $schoolids, ?DateTime $onlysince = null): void {
+        $filter = null;
+        if ($onlysince) {
+            // Only fetch users last modified in the onlysince period.
+            $filter = new filter('dateLastModified',  $onlysince->format('o-m-d'), '>');
+        }
+        // Note: Some Endpoints do not sort properly on Array properties.
+        $users = $this->get_container()->get_collection_factory()->get_users(
+            [],
+            $filter,
+            function($data) use ($schoolids) {
+                $roles = $data->get('roles');
+                $roleids = [];
+
+                foreach ($roles as $role) {
+                    $orgid = $role->orgSourcedId;
+                    if (!empty($orgid)) {
+                        $roleids[] = $orgid;
+                    }
+                }
+
+            $foundids = array_unique($roleids);
+            return !!count(array_intersect($schoolids, $foundids));
+            }
+        );
+        $usercount = 0;
+        foreach ($users as $user) {
+            $this->update_or_create_user($user);
+            $usercount++;
+        }
+        $this->get_trace()->output("Finished processing users. Processed {$usercount} users", 3);
+    }
+
+    /**
+     * Update or create a Moodle User based on an entity representing a user.
+     *
+     * @param   user_representation $entity An entity representing a user category
+     * @return  stdClass
+     */
+    protected function update_or_create_user(user_representation $entity): stdClass {
+        global $CFG, $DB;
+
+        // Note: This is _usually_ the responsibility of an authentication plugin but One Roster can work with different
+        // authentication sources which do not know anything about One Roster.
+        require_once("{$CFG->dirroot}/user/lib.php");
+
+        // Fetch the user representation for this entity.
+        $remoteuser = $entity->get_user_data();
+        $remoteuser->auth = $this->get_config_setting('newuser_auth');
+        $remoteuser->confirmed = true;
+
+        if ($this->get_user_mapping($remoteuser->idnumber)) {
+            $localuser = $this->update_existing_user($entity, $remoteuser);
+        } else {
+            // Create a new uesr.
+            $localuser = $this->create_new_user($entity, $remoteuser);
+        }
+
+        // See whether this user is an agent for any other user.
+        // Note: This is only applied for students as per section 4.1.2 of the specification.
+        $this->sync_user_agents($entity, $localuser);
+
+        return $localuser;
+    }
+
 }

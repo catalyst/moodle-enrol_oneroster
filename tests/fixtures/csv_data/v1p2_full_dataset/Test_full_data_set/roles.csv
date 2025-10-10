@@ -1,8 +1,0 @@
-sourcedId,status,dataLastModified,userSourcedId,roleType,role,beginDate,endDate,orgSourcedId,,
-rol-123-1234,active,2025-01-01,usr-222-123456,primary,teacher,2024-03-06,2025-09-23,org-sch-222-456
-rol-321-3333,active,2025-01-01,usr-222-66778899,primary,student,2024-03-06,2025-09-23,org-sch-222-456
-rol-654-4564,active,2025-01-01,usr-222-1234561,secondary,siteAdministrator,2024-03-06,2025-09-23,org-sch-222-456
-rol-345-9876,active,2025-01-01,usr-222-987654,primary,teacher,2024-03-06,2025-09-23,org-sch-222-456
-rol-222-1122,active,2025-01-01,usr-222-1234561232,primary,student,2024-03-06,2025-09-23,org-sch-222-456
-rol-321-3211,active,2025-01-01,usr-222-567891,primary,student,2024-03-06,2025-09-23,org-sch-222-456
-rol-333-9898,active,2025-01-01,usr-222-123456,secondary,guardian,2024-03-06,2025-09-23,org-sch-222-456

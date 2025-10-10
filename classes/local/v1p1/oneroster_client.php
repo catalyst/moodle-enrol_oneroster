@@ -147,7 +147,6 @@ trait oneroster_client {
 
         $schoolidstosync = explode(',', get_config('enrol_oneroster', 'datasync_schools'));
         $countofschools = count($schoolidstosync);
-
         $this->get_trace()->output("Processing {$countofschools} schools");
 
         $onlysince = null;
@@ -269,13 +268,12 @@ EOF;
      * @param   int[] $schoolids
      * @param   DateTime|null $onlysince Only sync users which have been remotely modified since the specified date
      */
-    public function sync_users_in_schools(array $schoolids, ?DateTime $onlysince = null): void {
+    public function sync_users_in_schools (array $schoolids, ?DateTime $onlysince = null): void {
         $filter = null;
         if ($onlysince) {
             // Only fetch users last modified in the onlysince period.
             $filter = new filter('dateLastModified',  $onlysince->format('o-m-d'), '>');
         }
-
         // Note: Some Endpoints do not sort properly on Array properties.
         $users = $this->get_container()->get_collection_factory()->get_users(
             [],
@@ -288,7 +286,6 @@ EOF;
                 return !!count(array_intersect($schoolids, $foundids));
             }
         );
-
         $usercount = 0;
         foreach ($users as $user) {
             $this->update_or_create_user($user);
@@ -542,7 +539,7 @@ EOF;
 
         // See whether this user is an agent for any other user.
         // Note: This is only applied for students as per section 4.1.2 of the specification.
-        static::sync_user_agents($entity, $localuser);
+        $this->sync_user_agents($entity, $localuser);
 
         return $localuser;
     }
@@ -575,7 +572,6 @@ EOF;
             $remoteuser->username,
             $remoteuser->idnumber
         ), 4);
-
         $localuserid = user_create_user($remoteuser);
         $this->add_metric('user', 'create');
 
@@ -631,7 +627,7 @@ EOF;
      * @param   user_entity $entity The user to sync agents for
      * @param   stdClass $localuser The local record for the user
      */
-    protected static function sync_user_agents(user_entity $entity, stdClass $localuser): void {
+    protected function sync_user_agents(user_entity $entity, stdClass $localuser): void {
         if ($entity->get('role') !== 'student') {
             // Only applied for students as per section 4.1.2 of the specification.
             return;
@@ -876,7 +872,7 @@ EOF;
      */
     protected function get_role_mapping(string $rolename, int $intendedcontextlevel): ?int {
         $roleid = $this->get_config_setting("role_mapping_{$rolename}");
-
+        var_dump($roleid);
         if (empty($roleid)) {
             // This is user is not configured.
             return null;

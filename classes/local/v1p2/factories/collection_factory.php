@@ -25,6 +25,9 @@
 namespace enrol_oneroster\local\v1p2\factories;
 
 use enrol_oneroster\local\v1p1\factories\collection_factory as collection_factory_version_one;
+use enrol_oneroster\local\collections\users as users_collection;
+use enrol_oneroster\local\v1p2\collections\users as versioned_users_collection;
+use enrol_oneroster\local\filter;
 
 /**
  * One Roster v1p2 Collection Factory.
@@ -34,5 +37,15 @@ use enrol_oneroster\local\v1p1\factories\collection_factory as collection_factor
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class collection_factory extends collection_factory_version_one{
-    // Insert new logic here.
+    /**
+     * Fetch a collection of users.
+     *
+     * @param   array $params The parameters to use when fetching the collection
+     * @param   filter $filter The filter to use when fetching the collection
+     * @param   callable $recordfilter Any subsequent filter to apply to the results
+     * @return  users_collection
+     */
+    public function get_users(array $params = [], ?filter $filter = null, ?callable $recordfilter = null): users_collection {
+        return new versioned_users_collection($this->container, $params, $filter, $recordfilter);
+    }
 }
