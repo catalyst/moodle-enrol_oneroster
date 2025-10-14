@@ -41,9 +41,6 @@ class csv_client extends csv_client_version_one{
 
     protected $data;
 
-    public function set_org_id($orgid) {
-        $this->orgid = $orgid;
-    }
    /**
      * Set the data retrieved from the CSV file.
      *
@@ -118,31 +115,27 @@ class csv_client extends csv_client_version_one{
                 }, $usersdata);
                 $mappedUserData = array_combine($keys, $usersdata);
                 $users = [];
-
-
                 //collecting role data to be associated with users
                 $roledata = $this->data[self::BASEPATH_ROLES];
                 $keys = array_map(function($role) {
                     return $role['sourcedId'];
                 }, $roledata);
-                $mappedRoleData = array_combine($keys, $usersdata);
-
+                $mappedRoleData = array_combine($keys, $roledata);
                 foreach ($mappedUserData as $userid => $userdata){
                     $user = (object) $userdata;
                     $userroles = [];
                     foreach($mappedRoleData as $roleid => $roledata){ 
                         $role = (object) $roledata;
                         //check role is associated with current organisation being processed
-                        if ($role->orgSourcedId !== $this->$orgid) continue;
+                        if ($role->orgSourcedId != $orgid) continue;
                         //check if role is associated with current user being constructed
                         if ($role->userSourcedId === $userid){
+                            //remove sourcedId, required for construction but not present in completed object
+                            unset($role->userSourcedId);
                             //add current role to array
                             $userroles[$roleid] = $role;
                         }  
-                        //remove sourcedId, required for construction but not present in completed object
-                        unset($role->userSourcedId);
                     }
-
                     //set constructed array into user object or move to next user
                     if(!empty($userroles)){
                         $user->roles = $userroles;
@@ -151,7 +144,6 @@ class csv_client extends csv_client_version_one{
                         //they will not be included in return, no point counstructing them.
                         continue;
                     }
-
                     if ($user->status === 'inactive') {
                         $user->status = 'tobedeleted';
                     }
@@ -195,7 +187,7 @@ class csv_client extends csv_client_version_one{
                     //add to array of users
                     $users[$userid] = $user;
                 }
-                
+                    var_dump($users);
                     //return
                     return (object) [
                     'response' => (object) [
