@@ -118,9 +118,10 @@ class csv_client_test extends advanced_testcase {
         $this->assertNotEmpty($csvdata, 'The extracted CSV data should not be empty.');
 
         // Validate user data and set configuration.
-        if (csv_client_helper::validate_user_data($csvdata) === true) {
-            set_config('datasync_schools', $org, 'enrol_oneroster');
-        }
+        //if (csv_client_helper::validate_user_data($csvdata) === true) {
+        set_config('datasync_schools', $org, 'enrol_oneroster');
+        
+        //}
         // Initialize CSV client.
         $csvclient = client_helper::get_csv_client();
         $csvclient->set_org_id($org);

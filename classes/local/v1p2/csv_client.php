@@ -38,7 +38,6 @@ use DateTime;
 class csv_client extends csv_client_version_one{
     use versioned_oneroster_client;
     const BASEPATH_ROLES = 'roles';
-
     protected $data;
 
    /**
@@ -187,7 +186,6 @@ class csv_client extends csv_client_version_one{
                     //add to array of users
                     $users[$userid] = $user;
                 }
-                    var_dump($users);
                     //return
                     return (object) [
                     'response' => (object) [
