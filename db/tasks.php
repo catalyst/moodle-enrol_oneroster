@@ -34,4 +34,15 @@ $tasks = [
         'dayofweek' => '*',
         'disabled' => 1,
     ],
+    
+    [
+        'classname' => '\enrol_oneroster\task\csv_sync',
+        'blocking' => 0,
+        'minute' => 'R',
+        'hour' => 'R',
+        'day' => '*',
+        'month' => '*',
+        'dayofweek' => '*',
+        'disabled' => 1,
+    ],
 ];
