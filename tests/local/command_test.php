@@ -27,6 +27,8 @@ namespace enrol_oneroster\tests\local;
 defined('MOODLE_INTERNAL') || die;
 require_once('/var/www/moodle/enrol/oneroster/tests/local/v1p2/oneroster_testcase.php');
 use enrol_oneroster\tests\local\v1p2\oneroster_testcase;
+use enrol_oneroster\local\command;
+use enrol_oneroster\local\v1p1\endpoints\rostering;
 
 /**
  * One Roster tests for the `command` class.
@@ -49,14 +51,14 @@ class command_test extends oneroster_testcase {
      * @param   array $finalparams
      */
     public function test_construct_url($url, $params, $expectedurl, array $finalparams): void {
-        $endpoint = $this->getMockBuilder(endpoint::class)
+        $endpoint = $this->getMockBuilder(rostering::class)
             ->disableOriginalConstructor()
-            ->setMethods(['get_url_for_command'])
+            ->onlyMethods(['get_url_for_command'])
             ->getMock();
 
         $endpoint
             ->method('get_url_for_command')
-            ->will($this->returnArgument(1));
+            ->willReturnArgument(1);
 
         $command = new command(
             $endpoint,
@@ -80,7 +82,7 @@ class command_test extends oneroster_testcase {
      *
      * @return  array
      */
-    public function param_and_url_provider(): array {
+    public static function param_and_url_provider(): array {
         return [
             'URL without params' => [
                 '/someMethod',
@@ -120,14 +122,14 @@ class command_test extends oneroster_testcase {
      * @param   array|null $params
      */
     public function test_construct_url_invalid_params($url, $params): void {
-        $endpoint = $this->getMockBuilder(endpoint::class)
+        $endpoint = $this->getMockBuilder(rostering::class)
             ->disableOriginalConstructor()
-            ->setMethods(['get_url_for_command'])
+            ->onlyMethods(['get_url_for_command'])
             ->getMock();
 
         $endpoint
             ->method('get_url_for_command')
-            ->will($this->returnArgument(1));
+            ->willReturnArgument(1);
 
         $this->expectException(\OutOfRangeException::class);
         $command = new command(
@@ -147,7 +149,7 @@ class command_test extends oneroster_testcase {
      *
      * @return  array
      */
-    public function invalid_param_and_url_provider(): array {
+    public static function invalid_param_and_url_provider(): array {
         return [
             'Value provided in params without a placeholder' => [
                 '/someMethod',
@@ -169,7 +171,7 @@ class command_test extends oneroster_testcase {
      * @param   array|null $collectionnames
      */
     public function test_get_collections(?array $collectionnames): void {
-        $endpoint = $this->getMockBuilder(endpoint::class)
+        $endpoint = $this->getMockBuilder(rostering::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -192,7 +194,7 @@ class command_test extends oneroster_testcase {
      *
      * @return  array
      */
-    public function get_collection_names_provider(): array {
+    public static function get_collection_names_provider(): array {
         return [
             [null],
             [['org']],
@@ -209,7 +211,7 @@ class command_test extends oneroster_testcase {
      * @param   bool $iscollection
      */
     public function test_is_collection(?array $collectionnames, bool $iscollection): void {
-        $endpoint = $this->getMockBuilder(endpoint::class)
+        $endpoint = $this->getMockBuilder(rostering::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -232,7 +234,7 @@ class command_test extends oneroster_testcase {
      *
      * @return  array
      */
-    public function is_collection_provider(): array {
+    public static function is_collection_provider(): array {
         return [
             [null, false],
             [[], false],
@@ -250,7 +252,7 @@ class command_test extends oneroster_testcase {
      * @param   array|null $collectionnames
      */
     public function test_require_collection_valid(?array $collectionnames): void {
-        $endpoint = $this->getMockBuilder(endpoint::class)
+        $endpoint = $this->getMockBuilder(rostering::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -273,9 +275,9 @@ class command_test extends oneroster_testcase {
      *
      * @return  array
      */
-    public function require_collection_valid_provider(): array {
+    public static function require_collection_valid_provider(): array {
         return array_filter(
-            $this->is_collection_provider(),
+            self::is_collection_provider(),
             function($values) {
                 return $values[1];
             }
@@ -289,7 +291,7 @@ class command_test extends oneroster_testcase {
      * @param   array|null $collectionnames
      */
     public function test_require_collection_invalid(?array $collectionnames): void {
-        $endpoint = $this->getMockBuilder(endpoint::class)
+        $endpoint = $this->getMockBuilder(rostering::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -313,9 +315,9 @@ class command_test extends oneroster_testcase {
      *
      * @return  array
      */
-    public function require_collection_invalid_provider(): array {
+    public static function require_collection_invalid_provider(): array {
         return array_filter(
-            $this->is_collection_provider(),
+            self::is_collection_provider(),
             function($values) {
                 return !$values[1];
             }
@@ -326,7 +328,7 @@ class command_test extends oneroster_testcase {
      * Tests for `get_method` function.
      */
     public function test_get_method(): void {
-        $endpoint = $this->getMockBuilder(endpoint::class)
+        $endpoint = $this->getMockBuilder(rostering::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -348,7 +350,7 @@ class command_test extends oneroster_testcase {
      * Tests for `get_description` function.
      */
     public function test_get_description(): void {
-        $endpoint = $this->getMockBuilder(endpoint::class)
+        $endpoint = $this->getMockBuilder(rostering::class)
             ->disableOriginalConstructor()
             ->getMock();
 

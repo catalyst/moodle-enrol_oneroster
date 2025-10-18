@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace enrol_oneroster;
-use enrol_oneroster\local\csv_client_helper;
+use enrol_oneroster\local\v1p1\csv_client_helper;
 
 /**
  * One Roster tests for the client_helper class.

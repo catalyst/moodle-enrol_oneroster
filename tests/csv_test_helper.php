@@ -14,7 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster;
-use \enrol_oneroster\local\csv_client_const_helper;
+use \enrol_oneroster\local\v1p1\csv_client_const_helper;
+use \enrol_oneroster\local\v1p2\csv_client_const_helper as csv_client_const_helper_v1p2;
 
 /**
  * Helper class for tests that involve CSV files.
@@ -142,5 +143,19 @@ class csv_test_helper {
             ]
         ];
         self::createcsvfiles($testdir . DIRECTORY_SEPARATOR . 'users.csv', $userscontent);
+
+        // Creating userprofiles.csv (v1p2 specific).
+        $userprofilescontent = [
+            csv_client_const_helper_v1p2::HEADER_USERPROFILES,
+            [
+                'up-222-123456', 'active', '2023-05-01T18:25:43.511Z', 'usr-222-123456',
+                'teacher', 'vendor123', 'app456', 'Teacher profile', 'password', 'john.doe', 'Password1*'
+            ],
+            [
+                'up-222-987654', 'active', '2023-05-01T18:25:43.511Z', 'usr-222-987654',
+                'student', 'vendor123', 'app456', 'Student profile', 'password', 'mary.jones', 'Password1*'
+            ]
+        ];
+        self::createcsvfiles($testdir . DIRECTORY_SEPARATOR . 'userprofiles.csv', $userprofilescontent);
     }
 }

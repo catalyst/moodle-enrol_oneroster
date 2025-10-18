@@ -54,7 +54,7 @@ trait oneroster_client
      * @param   user_entity $entity The user to sync agents for
      * @param   stdClass $localuser The local record for the user
      */
-    protected function sync_user_agents(user_entity $entity, stdClass $localuser) {
+    protected function sync_user_agents(user_entity $entity, stdClass $localuser): void {
 
         $roles = $entity->get('roles');
 
@@ -70,7 +70,7 @@ trait oneroster_client
         if(!$role || !$student) return;
 
         $localusercontext = context_user::instance($localuser->id);
-            
+
         // Create a mapping of userid => [roleid] for current user agents.
         $localuseragents = [];
         foreach (get_users_roles($localusercontext, [], false) as $userid => $roleassignments) {
@@ -83,7 +83,7 @@ trait oneroster_client
                 }
             }
         }
-        
+
         // Update remote user agents.
         foreach ($entity->get_agent_entities() as $remoteagent) {
             if (!$remoteagent) {
@@ -143,7 +143,7 @@ trait oneroster_client
 
             }
         }
-        
+
         // Unenrol stale mappings.
         foreach ($localuseragents as $localagentid => $localagentroles) {
             foreach ($localagentroles as $roleid) {

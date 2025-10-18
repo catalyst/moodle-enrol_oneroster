@@ -15,8 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster;
 
-use \enrol_oneroster\local\csv_client_helper;
-use \enrol_oneroster\local\csv_client_const_helper;
+use \enrol_oneroster\local\v1p1\csv_client_helper;
+use \enrol_oneroster\local\v1p1\csv_client_const_helper;
 use \enrol_oneroster\csv_test_helper;
 
 /**

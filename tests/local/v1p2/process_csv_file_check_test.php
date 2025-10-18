@@ -16,10 +16,10 @@
 namespace enrol_oneroster\tests\local\v1p2;
 
 defined('MOODLE_INTERNAL') || die();
-require(__DIR__ . '/csv_test_helper.php');
+require_once(__DIR__ . '/../../process_csv_file_check_test.php');
 
 use enrol_oneroster\process_csv_file_check_test as file_check_test_version_one;
-use enrol_oneroster\classes\local\v1p2\csv_client_helper;
+use enrol_oneroster\local\v1p2\csv_client_helper;
 
 /**
  * One Roster tests for the client_helper class.
@@ -27,9 +27,16 @@ use enrol_oneroster\classes\local\v1p2\csv_client_helper;
  * @package    enrol_oneroster
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \enrol_oneroster\local\csv_client_helper
+ * @covers     \enrol_oneroster\local\v1p2\csv_client_helper
  */
 class process_csv_file_check_test extends file_check_test_version_one {
+    /**
+     * Set up the test environment.
+     */
+    protected function setUp(): void {
+        parent::setUp();
+    }
+
     /**
      * Test the validate_csv_headers function with valid headers.
      *

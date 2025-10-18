@@ -88,6 +88,6 @@ class client_helper {
      * @return client
      */
     public static function get_csv_client(): client_interface {
-        return new \enrol_oneroster\local\csv_client();
+        return new \enrol_oneroster\local\v1p1\csv_client();
     }
 }

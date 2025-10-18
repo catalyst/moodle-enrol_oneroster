@@ -53,7 +53,7 @@ abstract class v1p1_testcase extends oneroster_testcase {
         $client = $this->mock_client();
         $mock = $this->getMockBuilder(container::class)
             ->setConstructorArgs([$client])
-            ->setMethods([
+            ->onlyMethods([
                 '__construct',
                 'get_client',
                 'get_rostering_endpoint',

@@ -22,7 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace enrol_oneroster\tests\local\v1p2;
-use enrol_oneroster\tests\csv_test_helper as csv_client_test_version_one;
+require_once(__DIR__ . '/csv_test_helper.php');
+use enrol_oneroster\tests\local\v1p2\csv_test_helper_v1p2 as csv_client_test_version_one;
+use PHPUnit\Framework\TestCase;
 
 /**
  * One Roster tests for the client_helper class.
