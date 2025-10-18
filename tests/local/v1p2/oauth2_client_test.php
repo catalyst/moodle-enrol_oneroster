@@ -22,11 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\test\local\v1p2;
+namespace enrol_oneroster\tests\local\v1p2;
 
-require_once('var/www/moodle/enrol/oneroster/tests/local/v1p2/oneroster_testcase.php');
-use enrol_oneroster\local\oneroster_testcase;
-use enrol_oneroster\classes\local\v1p2\oauth2_client;
+require_once(__DIR__ . '/../oneroster_testcase.php');
+use enrol_oneroster\tests\local\oneroster_testcase;
+use enrol_oneroster\local\v1p2\oauth2_client;
 use enrol_oneroster\local\interfaces\container;
 
 /**
@@ -39,20 +39,22 @@ use enrol_oneroster\local\interfaces\container;
  * @covers  \enrol_oneroster\local\oauth2_client
  */
 class oauth2_client_test extends oneroster_testcase {
-    
+
         /**
      * Get a mock of the abstract container.
      *
      * @return  container
      */
     //need to overide test
-    public function test_auth_url_is_unused(): container {
-        $client = $this->getMockBuilder(oauth2_client::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods([])
-            ->getMock();
+    public function test_auth_url_is_unused(): void {
+        $client = new \enrol_oneroster\local\v1p2\oauth2_client(
+            'https://example.org/token',
+            'https://example.org',
+            'clientid',
+            'clientsecret'
+        );
 
-        $rc = new \ReflectionClass(oauth2_client::class);
+        $rc = new \ReflectionClass(\enrol_oneroster\local\v1p2\oauth2_client::class);
         $rcm = $rc->getMethod('auth_url');
         $rcm->setAccessible(true);
 
@@ -77,11 +79,12 @@ class oauth2_client_test extends oneroster_testcase {
                 $clientsecret
             ])
             ->onlyMethods([
+                'authenticate',
                 'get_all_scopes',
                 'post',
-                'get_request_info'
-            ])
-            ->getMock();
+                'get_request_info',
+                'get_base_url',
+            ])->getMock();
 
         $scopes = [
             'https://example.org/spec/example/v1p1/scope/example.dosoemthing',

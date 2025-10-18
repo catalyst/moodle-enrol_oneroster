@@ -38,6 +38,13 @@ class csv_client implements client_interface {
     use versioned_client;
 
     /**
+     * CSV data array.
+     *
+     * @var array
+     */
+    private array $data;
+
+    /**
      * Base path for organisations.
      */
     const BASEPATH_ORGS = 'orgs';
@@ -137,6 +144,46 @@ class csv_client implements client_interface {
     }
 
     /**
+     * Set the CSV data for synchronization with v1p2 additional fields.
+     *
+     * @param array $manifest The manifest data.
+     * @param array $users The users data.
+     * @param array $classes The classes data.
+     * @param array $courses The courses data.
+     * @param array $orgs The orgs data.
+     * @param array $enrollments The enrollments data.
+     * @param array $academicsessions The academic sessions data.
+     * @param array $roles The roles data.
+     * @param array $demographics The demographics data.
+     * @param array $userprofiles The user profiles data.
+     */
+    public function versioned_set_data(
+        array $manifest,
+        array $users,
+        array $classes,
+        array $courses,
+        array $orgs,
+        array $enrollments,
+        array $academicsessions,
+        array $roles,
+        array $demographics,
+        array $userprofiles
+    ): void {
+        $this->data = [
+            'manifest' => $manifest,
+            'users' => $users,
+            'classes' => $classes,
+            'courses' => $courses,
+            'orgs' => $orgs,
+            'enrollments' => $enrollments,
+            'academicSessions' => $academicsessions,
+            'roles' => $roles,
+            'demographics' => $demographics,
+            'userProfiles' => $userprofiles,
+        ];
+    }
+
+    /**
      * Set the organisation ID.
      *
      * @param string $orgid The organisation ID.
@@ -160,7 +207,7 @@ class csv_client implements client_interface {
         $basepath = $tokens[1];
         // The third token represents the Organisation ID.
         $param = $tokens[2] ?? '';
-        // The fourth token represents the type of data to fetch ('terms', 'classes', 'enrollments'). 
+        // The fourth token represents the type of data to fetch ('terms', 'classes', 'enrollments').
         $type = $tokens[3] ?? '';
         // Get the organisation ID.
         $orgid = $this->orgid ?? null;
@@ -412,6 +459,160 @@ class csv_client implements client_interface {
                 ];
             default:
                 return new stdClass();
+        }
+    }
+
+    /**
+     * Synchronise CSV data with Moodle.
+     * This is a simplified version for CSV data that doesn't use the full entity system.
+     *
+     * @param int|null $onlysincetime Only sync data modified after this time
+     */
+    public function synchronise(?int $onlysincetime = null): void {
+        global $DB;
+
+        // Process courses first
+        if (isset($this->data['classes'])) {
+            foreach ($this->data['classes'] as $class) {
+                $this->create_or_update_course($class);
+            }
+        }
+
+        // Process users
+        if (isset($this->data['users'])) {
+            foreach ($this->data['users'] as $user) {
+                $this->create_or_update_user($user);
+            }
+        }
+
+        // Process enrollments
+        if (isset($this->data['enrollments'])) {
+            foreach ($this->data['enrollments'] as $enrollment) {
+                $this->create_or_update_enrollment($enrollment);
+            }
+        }
+    }
+
+    /**
+     * Create or update a course from CSV data.
+     */
+    private function create_or_update_course($class): void {
+        global $DB;
+
+        $course = new stdClass();
+        $course->fullname = $class['title'] ?? 'Untitled Course';
+        $course->shortname = !empty($class['classCode']) ? $class['classCode'] : $class['sourcedId'];
+        $course->category = 1; // Default category
+        $course->visible = 1;
+        $course->startdate = time();
+
+        // Check if course already exists
+        $existing = $DB->get_record('course', ['shortname' => $course->shortname]);
+        if ($existing) {
+            $course->id = $existing->id;
+            $DB->update_record('course', $course);
+        } else {
+            $course->id = $DB->insert_record('course', $course);
+        }
+
+        // Ensure enrollment instance exists
+        $this->ensure_enrollment_instance($course->id);
+    }
+
+    /**
+     * Create or update a user from CSV data.
+     */
+    private function create_or_update_user($user): void {
+        global $DB;
+
+        $userobj = new stdClass();
+        $userobj->username = $user['username'] ?? 'user' . time();
+        $userobj->firstname = $user['givenName'] ?? '';
+        $userobj->lastname = $user['familyName'] ?? '';
+        $userobj->email = $user['email'] ?? $userobj->username . '@example.com';
+        $userobj->confirmed = 1;
+        $userobj->mnethostid = 1;
+
+        // Check if user already exists
+        $existing = $DB->get_record('user', ['username' => $userobj->username]);
+        if ($existing) {
+            $userobj->id = $existing->id;
+            $DB->update_record('user', $userobj);
+        } else {
+            $userobj->id = $DB->insert_record('user', $userobj);
+        }
+    }
+
+    /**
+     * Create or update an enrollment from CSV data.
+     */
+    private function create_or_update_enrollment($enrollment): void {
+        global $DB;
+
+        // Get the course by sourcedId
+        $course = $DB->get_record('course', ['shortname' => $enrollment['classSourcedId'] ?? '']);
+        if (!$course) {
+            return; // Skip if course doesn't exist
+        }
+
+        // Get the user by sourcedId
+        $user = $DB->get_record('user', ['username' => $enrollment['userSourcedId'] ?? '']);
+        if (!$user) {
+            return; // Skip if user doesn't exist
+        }
+
+        // Get the enrollment instance
+        $enrolinstance = $DB->get_record('enrol', [
+            'courseid' => $course->id,
+            'enrol' => 'oneroster'
+        ]);
+
+        if (!$enrolinstance) {
+            return; // Skip if enrollment instance doesn't exist
+        }
+
+        // Check if enrollment already exists
+        $existing = $DB->get_record('user_enrolments', [
+            'userid' => $user->id,
+            'enrolid' => $enrolinstance->id
+        ]);
+
+        if (!$existing) {
+            $userenrolment = new stdClass();
+            $userenrolment->userid = $user->id;
+            $userenrolment->enrolid = $enrolinstance->id;
+            $userenrolment->status = 0; // Active
+            $userenrolment->timestart = time();
+            $userenrolment->timeend = 0;
+            $userenrolment->modifierid = 2; // Admin user
+            $userenrolment->timecreated = time();
+            $userenrolment->timemodified = time();
+
+            $DB->insert_record('user_enrolments', $userenrolment);
+        }
+    }
+
+    /**
+     * Ensure enrollment instance exists for a course.
+     */
+    private function ensure_enrollment_instance($courseid): void {
+        global $DB;
+
+        $enrolinstance = $DB->get_record('enrol', [
+            'courseid' => $courseid,
+            'enrol' => 'oneroster'
+        ]);
+
+        if (!$enrolinstance) {
+            $enrol = new stdClass();
+            $enrol->enrol = 'oneroster';
+            $enrol->courseid = $courseid;
+            $enrol->status = 0; // Enabled
+            $enrol->sortorder = 0;
+            $enrol->timecreated = time();
+            $enrol->timemodified = time();
+
+            $DB->insert_record('enrol', $enrol);
         }
     }
 }

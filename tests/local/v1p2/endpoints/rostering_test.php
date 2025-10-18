@@ -25,12 +25,9 @@
 namespace enrol_oneroster\local\v1p2\endpoints;
 
 
-require_once('/var/www/moodle/enrol/oneroster/tests/local/v1p2/oneroster_testcase.php');
+require_once(__DIR__ . '/../oneroster_testcase.php');
 use enrol_oneroster\tests\local\v1p2\oneroster_testcase;
-use advanced_testcase;
-use stdClass;
-use InvalidArgumentException;
-use ReflectionClass;
+use enrol_oneroster\local\interfaces\rostering_endpoint as rostering_endpoint_interface;
 
 /**
  * One Roster tests for filters.
@@ -43,5 +40,12 @@ use ReflectionClass;
  * @covers  \enrol_oneroster\local\v1p1\endpoints\rostering
  */
 class rostering_test extends oneroster_testcase {
-    // Insert new logic here.
+    /**
+     * Test that the rostering endpoint can be instantiated.
+     */
+    public function test_rostering_endpoint_instantiation() {
+        $container = $this->get_mocked_container();
+        $rostering = $container->get_rostering_endpoint();
+        $this->assertInstanceOf(rostering_endpoint_interface::class, $rostering);
+    }
 }

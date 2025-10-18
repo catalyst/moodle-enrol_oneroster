@@ -25,7 +25,7 @@
 namespace enrol_oneroster\tests\local\entities;
 
 defined('MOODLE_INTERNAL') || die;
-require_once('/var/www/moodle/enrol/oneroster/tests/local/v1p2/oneroster_testcase.php');
+require_once(__DIR__ . '/../v1p2/oneroster_testcase.php');
 use enrol_oneroster\tests\local\v1p2\oneroster_testcase;
 
 use enrol_oneroster\local\container;

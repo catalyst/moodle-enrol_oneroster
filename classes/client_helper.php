@@ -91,7 +91,7 @@ class client_helper {
         $version = get_config('enrol_oneroster', 'oneroster_version');
 
         if ($version == ' Version 1.2') return new \enrol_oneroster\local\v1p2\csv_client();
-        
+
         return new \enrol_oneroster\local\v1p1\csv_client();
     }
 }

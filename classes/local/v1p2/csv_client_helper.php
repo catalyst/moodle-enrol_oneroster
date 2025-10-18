@@ -15,28 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster\local\v1p2;
 
+require_once(__DIR__ . '/../v1p1/csv_client_helper.php');
+require_once(__DIR__ . '/csv_client_const_helper.php');
+
 use enrol_oneroster\local\v1p2\csv_client_const_helper;
 use enrol_oneroster\local\v1p1\csv_client_helper as csv_client_helper_version_one;
-use PHPUnit\Framework\Constraint\ArrayHasKey;
-
-use function PHPUnit\Framework\assertEquals;
 
 /**
  * Class csv_client_helper
  *
- * Helper class for OneRoster plugin
+ * Helper class for OneRoster v1p2 plugin
  *
  * @package    enrol_oneroster
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class csv_client_helper extends csv_client_helper_version_one{
-   /**
-     * Get the expected data types for each file.
-     *
-     * @return array An array containing the expected data types for each file.
-     */
-    public static function get_file_datatypes(): array {
+
+class csv_client_helper extends csv_client_helper_version_one {
+
+   public static function get_file_datatypes(): array {
         //call parent.
         $data = parent::get_file_datatypes();
         //var_dump($data);
@@ -410,16 +407,19 @@ class csv_client_helper extends csv_client_helper_version_one{
                 break;
             default:
                 break;
+
         }
 
-        if ($data!= []) {
+        if ($data != []) {
             return $data;
         }
+
         return parent::get_header($filename);
     }
 
     /**
-     * Function to validate CSV headers.
+     * Function to validate CSV headers for v1p2.
+     * This is a v1p2-specific implementation that validates against v1p2 header requirements.
      *
      * @param string $filepath Path to the CSV file.
      * @return bool True if the headers are valid, false otherwise.
@@ -427,12 +427,24 @@ class csv_client_helper extends csv_client_helper_version_one{
     public static function validate_csv_headers(string $filepath): bool {
         $cleanfilepath = clean_param($filepath, PARAM_PATH);
         $filename = basename($cleanfilepath);
-        $expectedheaders = self::get_header($filename);
-        if (($handle = fopen($cleanfilepath, 'r')) !== false) {
-            $headers = fgetcsv($handle, 0, ',');
-            fclose($handle);
-            return $headers === $expectedheaders;
+
+        // Check if this is a supported v1p2 file
+        if (!array_key_exists($filename, csv_client_const_helper::REQUIRED_FILES)) {
+            return false; // File not supported in v1p2
         }
+
+        // Get the expected headers for this v1p2 file
+        $expectedheaders = csv_client_const_helper::REQUIRED_FILES[$filename];
+
+        // Read and validate the actual headers
+        if (($handle = fopen($cleanfilepath, 'r')) !== false) {
+            $actualheaders = fgetcsv($handle, 0, ',');
+            fclose($handle);
+
+            // Compare headers exactly
+            return $actualheaders === $expectedheaders;
+        }
+
         return false;
     }
 
@@ -587,15 +599,6 @@ class csv_client_helper extends csv_client_helper_version_one{
     }
 
     /**
-     * Check if a value is of type role type enum.
-     *
-     * @param mixed $value The value to check.
-     * @return bool True if the value is of type role type enum, false otherwise.
-     */
-    public static function is_role_type_enum($value): bool {
-        return in_array(strtolower($value), csv_client_const_helper::VALID_ROLE_TYPE, true);
-    }
-    /**
      * Check if a value is of type role enum.
      *
      * @param mixed $value The value to check.
@@ -658,5 +661,25 @@ class csv_client_helper extends csv_client_helper_version_one{
             return true;
         }
         return false;
+    }
+
+    /**
+     * Check if the value is a valid role type enum.
+     *
+     * @param string $value The value to check.
+     * @return bool True if the value is a valid role type enum, false otherwise.
+     */
+    public static function is_role_type_enum(string $value): bool {
+        return in_array($value, csv_client_const_helper::VALID_ROLE_TYPE, true);
+    }
+
+    /**
+     * Check if the value is a valid role role enum.
+     *
+     * @param string $value The value to check.
+     * @return bool True if the value is a valid role role enum, false otherwise.
+     */
+    public static function is_role_role_enum(string $value): bool {
+        return in_array($value, csv_client_const_helper::VALID_ROLE_ROLES, true);
     }
 }

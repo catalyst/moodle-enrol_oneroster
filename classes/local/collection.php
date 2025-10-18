@@ -134,8 +134,6 @@ abstract class collection implements IteratorAggregate {
     public function refresh_data(): Iterable {
         $this->data = $this->container->get_rostering_endpoint()->execute_paginated_function(
             static::get_operation_id($this->container),
-            $this->get_filter(),
-            $this->get_params(),
             function($data) {
                 $data = static::parse_returned_row($this->container, $data);
                 if ($this->recordfilter && !call_user_func($this->recordfilter, $data)) {
@@ -143,7 +141,9 @@ abstract class collection implements IteratorAggregate {
                 }
 
                 return $data;
-            }
+            },
+            $this->get_filter(),
+            $this->get_params()
         );
 
         return $this->data;

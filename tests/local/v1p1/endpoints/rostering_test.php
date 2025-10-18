@@ -22,11 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\v1p1\endpoints;
+namespace enrol_oneroster\tests\local\v1p1\endpoints;
 
 defined('MOODLE_INTERNAL') || die;
 require_once(__DIR__ . '/../../oneroster_testcase.php');
-use enrol_oneroster\local\oneroster_testcase;
+use enrol_oneroster\tests\local\oneroster_testcase;
+use enrol_oneroster\local\v1p1\endpoints\rostering;
 
 use advanced_testcase;
 use enrol_oneroster\local\interfaces\coursecat_representation;
@@ -75,7 +76,7 @@ class rostering_test extends oneroster_testcase {
      *
      * @return  array
      */
-    public function get_url_for_command_provider(): array {
+    public static function get_url_for_command_provider(): array {
         return array_map(function($command) {
             return [
                 'https://example.com/ims/oneroster/v1p1',

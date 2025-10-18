@@ -24,7 +24,7 @@
 
 namespace enrol_oneroster\tests\local\v1p2;
 
-require_once('/var/www/moodle/enrol/oneroster/tests/client_helper_test.php');
+require_once(__DIR__ . '/../../client_helper_test.php');
 use enrol_oneroster\client_helper_test as client_helper_test_version_one;
 
 

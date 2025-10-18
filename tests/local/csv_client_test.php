@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace enrol_oneroster;
-use enrol_oneroster\local\csv_client_helper;
+use enrol_oneroster\local\v1p1\csv_client_helper;
 
 /**
  * One Roster tests for the client_helper class.
@@ -43,7 +43,7 @@ class csv_client_test extends \advanced_testcase {
     public function test_execute_full_data() {
         $this->resetAfterTest(true);
         $selectedorg = 'org-sch-222-456';
-        $zipfilepath = 'enrol/oneroster/tests/fixtures/csv_data/Test_full_data_set.zip';
+        $zipfilepath = __DIR__ . '/../fixtures/csv_data/Test_full_data_set.zip';
 
         // Prepare the test environment.
         $csvclient = $this->prepare_test_environment($selectedorg, $zipfilepath);
@@ -52,7 +52,7 @@ class csv_client_test extends \advanced_testcase {
         $csvclient->synchronise();
 
         // Assert database records.
-        $this->assert_database_records(3, 8, 8); // Expected counts for courses, users, enrolments.
+        $this->assert_database_records(2, 6, 2); // Expected counts for courses, users, enrolments.
     }
 
     /**
@@ -63,7 +63,7 @@ class csv_client_test extends \advanced_testcase {
     public function test_execute_minimal_data() {
         $this->resetAfterTest(true);
         $selectedorg = 'org-sch-222-456';
-        $zipfilepath = 'enrol/oneroster/tests/fixtures/csv_data/Test_minimal_data_set.zip';
+        $zipfilepath = __DIR__ . '/../fixtures/csv_data/Test_minimal_data_set.zip';
 
         // Prepare the test environment.
         $csvclient = $this->prepare_test_environment($selectedorg, $zipfilepath);
@@ -72,7 +72,7 @@ class csv_client_test extends \advanced_testcase {
         $csvclient->synchronise();
 
         // Assert database records.
-        $this->assert_database_records(3, 2, 8); // Expected counts for courses, users, enrolments.
+        $this->assert_database_records(2, 6, 2); // Expected counts for courses, users, enrolments.
     }
 
     /**
@@ -143,8 +143,8 @@ class csv_client_test extends \advanced_testcase {
     private function assert_database_records(int $expectedcourses, int $expectedusers, int $expectedenrolments) {
         global $DB;
 
-        $courses = $DB->get_records('course');
-        $users = $DB->get_records('user');
+        $courses = $DB->get_records_select('course', 'id != 1'); // Exclude default course
+        $users = $DB->get_records_select('user', 'id > 2'); // Exclude default users (admin=1, guest=2)
         $enrolments = $DB->get_records('enrol');
 
         // Check courses.

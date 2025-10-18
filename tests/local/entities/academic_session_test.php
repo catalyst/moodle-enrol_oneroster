@@ -26,7 +26,7 @@ namespace enrol_oneroster\tests\local\entities;
 
 defined('MOODLE_INTERNAL') || die;
 require_once(__DIR__ . '/entity_testcase.php');
-require_once('/var/www/moolde/enrol/oneroster/classes/local/entities/academic_session.php');
+require_once(__DIR__ . '/../../../classes/local/entities/academic_session.php');
 use enrol_oneroster\tests\local\entities\entity_testcase;
 use enrol_oneroster\local\entities\academic_session;
 use stdClass;

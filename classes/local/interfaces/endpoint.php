@@ -76,8 +76,8 @@ interface endpoint {
      */
     public function execute_paginated_function(
         string $method,
+        callable $callback,
         filter_interface $filter = null,
-        array $params = [],
-        callable $callback
+        array $params = []
     ): Iterable;
 }

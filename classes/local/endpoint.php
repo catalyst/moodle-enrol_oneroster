@@ -99,9 +99,9 @@ class endpoint implements endpoint_interface {
      */
     public function execute_paginated_function(
         string $method,
+        callable $callback,
         filter_interface $filter = null,
-        array $params = [],
-        callable $callback
+        array $params = []
     ): Iterable {
         if (!array_key_exists('offset', $params)) {
             $params['offset'] = 0;

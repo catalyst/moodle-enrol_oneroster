@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster\local\v1p2;
 
+require_once(__DIR__ . '/../v1p1/csv_client_const_helper.php');
 use enrol_oneroster\local\v1p1\csv_client_const_helper as csv_client_const_helper_version_one;
 
 /**
@@ -79,12 +80,14 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
      * @var array
      */
     const VALID_ROLE_TYPE =[ 'primary', 'secondary'];
+
     /**
      * Valid sexes.
      *
      * @var array
      */
     const VALID_DEMOGRAPHICS_SEX = ['male', 'female', 'unspecified', 'other'];
+
 
     /**
      * Valid demographic values.
@@ -94,6 +97,7 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
     const VALID_DEMOGRAPHICS_ENUM = ['true', 'false'];
 
     const DATATYPE_DEMOGRAPHIC_ENUM = 'enum_demographic';
+
 
     const DATATYPE_SEX = 'sex';
 
@@ -136,7 +140,7 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
    /**
     *  Preferred given name field for users.
     */
-   const HEADER_PREFERRED_GIVEN_NAME = 'preferredGiveName';
+   const HEADER_PREFERRED_GIVEN_NAME = 'preferredGivenName';
 
    /**
     *  Preferred middle name field for users.
@@ -158,6 +162,7 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
     */
    const HEADER_PRONOUNS = 'pronouns';
 
+
    /**
      * File name for courses.
      */
@@ -168,10 +173,12 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
     */
    const HEADER_SCHOOL_YEAR_SOURCED_ID = 'schoolYearSourcedId';
 
+
    /**
     *  Course Ccode field for courses.
     */
    const HEADER_COURSE_CODE = 'courseCode';
+
 
 
    /**
@@ -179,10 +186,12 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
    */
    const FILE_DEMOGRAPHICS = 'demographics.csv';
 
+
    /**
    * Sex field for demographics.
    */
    const HEADER_SEX = 'sex';
+
 
    /**
    * American Indian of Alaksa Native field for demographics.
@@ -199,10 +208,12 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
    */
    const HEADER_BLACK_OR_AFRICAN_AMERICAN = 'blackOrAfricanAmerican';
 
+
    /**
    * Native hawaiian or other pacific islander field for demographics.
    */
    const HEADER_NATIVE_HAWAIIAN_OR_OTHER_PACIFIC_ISLANDER = 'nativeHawaiianOrOtherPacificIslander';
+
 
    /**
    * White field for demographics.
@@ -228,6 +239,7 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
    */
    const HEADER_STATE_OF_BITH_ABBREVIATION = 'stateOfBirthAbbreviation';
 
+
    /**
    * City of birth field for demographics.
    */
@@ -238,10 +250,12 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
    */
    const HEADER_PUBLIC_SCHOOL_RESIDENCE_STATUS = 'publicSchoolResidenceStatus';
 
+
    /**
    * Birth Date field for demographics.
    */
    const HEADER_BIRTHDATE = 'birthDate';
+
 
     /**
      * Header fields for courses
@@ -355,6 +369,7 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
         self::HEADER_CITY_OF_BIRTH,
         self::HEADER_PUBLIC_SCHOOL_RESIDENCE_STATUS
     ];
+
    /**
      * Required files and their corresponding headers.
      *

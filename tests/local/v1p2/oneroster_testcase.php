@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die;
 require_once(__DIR__ . '/../oneroster_testcase.php');
 
 use enrol_oneroster\tests\local\oneroster_testcase as oneroster_testcase_version_one;
-use enrol_oneroster\local\v1p1\container;
+use enrol_oneroster\local\v1p2\container;
 use enrol_oneroster\local\interfaces\container as container_interface;
 use enrol_oneroster\local\interfaces\collection_factory as collection_factory_interface;
 use enrol_oneroster\local\interfaces\entity_factory as entity_factory_interface;
@@ -53,7 +53,12 @@ abstract class oneroster_testcase extends oneroster_testcase_version_one{
         $mock = $this->getMockBuilder(container::class)
             ->setConstructorArgs([$client])
             ->onlyMethods([
-            'get_client',
+                'get_client',
+                'get_rostering_endpoint',
+                'get_entity_factory',
+                'get_collection_factory',
+                'get_cache_factory',
+                'get_filter_instance',
             ])
             ->getMock();
 
@@ -64,15 +69,14 @@ abstract class oneroster_testcase extends oneroster_testcase_version_one{
      * Mock a rostering endpoint, returns it and adds it to mocked container
      *  @param container_interface $container is a mocked container
      *  @param array $mockedfunctions the rostering functions to me mocked
-     * @return rostering_endpoint_interface mocked rostering endpoint 
+     * @return rostering_endpoint_interface mocked rostering endpoint
      */
     protected function mock_rostering_endpoint(container_interface $container, array $mockfunctions): rostering_endpoint_interface {
-        $functions = array_merge($mockfunctions, ['get_rostering_endpoint']);
         $mock = $this->getMockBuilder(rostering_endpoint::class)
             ->setConstructorArgs([$container])
-            ->onlyMethods(array_values($functions))
+            ->onlyMethods($mockfunctions)
             ->getMock();
-    
+
         $container->method('get_rostering_endpoint')->willReturn($mock);
 
         return $mock;
@@ -81,7 +85,7 @@ abstract class oneroster_testcase extends oneroster_testcase_version_one{
      * Mock a entity factory, returns it and adds it to mocked container
      *  @param container_interface $container is a mocked container
      *  @param array $mockedfunctions the rostering functions to me mocked
-     * @return entity_factory_interface mocked entity factory 
+     * @return entity_factory_interface mocked entity factory
      */
     protected function mock_entity_factory(container_interface $container, array $mockfunctions): entity_factory_interface {
         $mock = $this->getMockBuilder(entity_factory::class)
@@ -93,12 +97,12 @@ abstract class oneroster_testcase extends oneroster_testcase_version_one{
 
         return $mock;
     }
-    
+
     /**
      * Mock a collection factory, returns it and adds it to mocked container
      *  @param container_interface $container is a mocked container
      *  @param array $mockedfunctions the rostering functions to me mocked
-     * @return entity_colection_interface mocked entity factory 
+     * @return entity_colection_interface mocked entity factory
      */
     protected function mock_collection_factory(container_interface $container, array $mockfunctions): collection_factory_interface {
         $mock = $this->getMockBuilder(collection_factory::class)

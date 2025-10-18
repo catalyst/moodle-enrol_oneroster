@@ -24,9 +24,8 @@
 
 namespace enrol_oneroster\tests\local\v1p2;
 
-
-require_once('/var/www/moodle/enrol/oneroster/tests/local/command_test.php');
-use enrol_oneroster\tests\local\command_test as command_test_version_one;
+use enrol_oneroster\local\command;
+use enrol_oneroster\local\endpoint;
 
 /**
  * One Roster tests for the `command` class.
@@ -37,7 +36,74 @@ use enrol_oneroster\tests\local\command_test as command_test_version_one;
  *
  * @covers  \enrol_oneroster\local\command
  */
-class command_test extends command_test_version_one{
+class command_test extends \basic_testcase {
+
+    /**
+     * Data provider for URL construction when valid parameters are provided.
+     */
+    public static function param_and_url_provider(): array {
+        return [
+            'URL without params' => [
+                '/someMethod',
+                [],
+                '/someMethod',
+                []
+            ],
+            'Normal params do not do anything to the URL' => [
+                '/someMethod',
+                ['param1' => 'value1'],
+                '/someMethod',
+                ['param1' => 'value1']
+            ],
+            'URL param gets replaced' => [
+                '/someMethod/:id',
+                [':id' => '123'],
+                '/someMethod/123',
+                []
+            ]
+        ];
+    }
+
+    /**
+     * Data provider for URL construction when invalid parameters are provided.
+     */
+    public static function invalid_param_and_url_provider(): array {
+        return [
+            'Value provided in params without a placeholder' => [
+                '/someMethod',
+                [':some_id' => 'someValue']
+            ],
+            'Placeholder without a param' => [
+                '/someMethod/:id',
+                []
+            ]
+        ];
+    }
+
+    /**
+     * Data provider for the `get_collection_names` function.
+     */
+    public static function get_collection_names_provider(): array {
+        return [
+            [null],
+            [['org']],
+            [['org', 'school']],
+            [['1', 2]]
+        ];
+    }
+
+    /**
+     * Data provider for the `is_collection` tests.
+     */
+    public static function is_collection_provider(): array {
+        return [
+            [null, false],
+            [[], false],
+            [[0], true],
+            [['org'], true]
+        ];
+    }
+
      /**
      * Test the URL construction via the constructor.
      *
@@ -48,14 +114,14 @@ class command_test extends command_test_version_one{
      * @param   array $finalparams
      */
     public function test_construct_url($url, $params, $expectedurl, array $finalparams): void {
-        $endpoint = $this->getMockBuilder(endpoint::class)
+        $endpoint = $this->getMockBuilder(\enrol_oneroster\local\v1p1\endpoints\rostering::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['get_url_for_command'])
             ->getMock();
 
         $endpoint
             ->method('get_url_for_command')
-            ->will($this->willReturnArgument(1));
+            ->willReturnArgument(1);
 
         $command = new command(
             $endpoint,
@@ -82,14 +148,14 @@ class command_test extends command_test_version_one{
      * @param   array|null $params
      */
     public function test_construct_url_invalid_params($url, $params): void {
-        $endpoint = $this->getMockBuilder(endpoint::class)
+        $endpoint = $this->getMockBuilder(\enrol_oneroster\local\v1p1\endpoints\rostering::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['get_url_for_command'])
             ->getMock();
 
         $endpoint
             ->method('get_url_for_command')
-            ->will($this->willReturnArgument(1));
+            ->willReturnArgument(1);
 
         $this->expectException(\OutOfRangeException::class);
         $command = new command(
@@ -111,7 +177,7 @@ class command_test extends command_test_version_one{
      * @param   array|null $collectionnames
      */
     public function test_get_collections(?array $collectionnames): void {
-        $endpoint = $this->getMockBuilder(endpoint::class)
+        $endpoint = $this->getMockBuilder(\enrol_oneroster\local\v1p1\endpoints\rostering::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -137,7 +203,7 @@ class command_test extends command_test_version_one{
      * @param   bool $iscollection
      */
     public function test_is_collection(?array $collectionnames, bool $iscollection): void {
-        $endpoint = $this->getMockBuilder(endpoint::class)
+        $endpoint = $this->getMockBuilder(\enrol_oneroster\local\v1p1\endpoints\rostering::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -159,7 +225,7 @@ class command_test extends command_test_version_one{
      * Tests for `get_method` function.
      */
     public function test_get_method(): void {
-        $endpoint = $this->getMockBuilder(endpoint::class)
+        $endpoint = $this->getMockBuilder(\enrol_oneroster\local\v1p1\endpoints\rostering::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -181,7 +247,7 @@ class command_test extends command_test_version_one{
      * Tests for `get_description` function.
      */
     public function test_get_description(): void {
-        $endpoint = $this->getMockBuilder(endpoint::class)
+        $endpoint = $this->getMockBuilder(\enrol_oneroster\local\v1p1\endpoints\rostering::class)
             ->disableOriginalConstructor()
             ->getMock();
 

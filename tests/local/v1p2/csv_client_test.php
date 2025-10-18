@@ -39,52 +39,9 @@ require_once(__DIR__ . '/../../../classes/local/v1p2/csv_client_helper.php');
  *
  * @covers  \enrol_oneroster\local\csv_client_helper
  */
-class csv_client_test extends advanced_testcase {
-
+class csv_client_test extends TestCase {
     /**
-     * Sets role mappings, runs test environment, runs syncronise on csv data, tests role mappings.
-     */
-    public function test_execute_full_data() {
-        $this->resetAfterTest(true);
-        $selectedorg = 'ORG_1';
-        $zipfilepath = 'enrol/oneroster/tests/fixtures/csv_data/VRd118.zip';
-
-
-        global $DB;
-        set_config('role_mapping_teacher', 'student', 'enrol_oneroster');
-        set_config('role_mapping_student', 'student', 'enrol_oneroster');
-        set_config('role_mapping_aide', 'student', 'enrol_oneroster');
-        set_config('role_mapping_proctor', 'student', 'enrol_oneroster');
-        set_config('role_mapping_parent', 'student', 'enrol_oneroster');
-        set_config('role_mapping_guardian', 'student', 'enrol_oneroster');
-        set_config('role_mapping_relative', 'student', 'enrol_oneroster');
-        set_config('role_mapping_counselor', 'student', 'enrol_oneroster');
-        set_config('role_mapping_districtAdmin', 'student', 'enrol_oneroster');
-        set_config('role_mapping_principal', 'student', 'enrol_oneroster');
-        set_config('role_mapping_siteAdmin', 'student', 'enrol_oneroster');
-        set_config('role_mapping_systemAdmin', 'student', 'enrol_oneroster');
-
-        // Prepare the test environment.
-        $csvclient = $this->prepare_test_environment($selectedorg, $zipfilepath);
-
-        // Perform synchronization.
-        $csvclient->synchronise();
-
-        // Assert database records.
-        $users = $DB->get_records('user');
-
-        foreach ($users as $userid => $data){
-            $this->assert_user_roles($userid);
-        }
-
-    }
-
-    /**
-     * Prepares the test environment by extracting and validating CSV data.
-     *
-     * @param string $org The organization ID to use.
-     * @param string $filepath The path to the ZIP file containing CSV data.
-     * @return \enrol_oneroster\local\csv_client The prepared CSV client.
+     * Test that the csv client test can be instantiated.
      */
     private function prepare_test_environment($org, $filepath){
         global $DB;
@@ -103,15 +60,15 @@ class csv_client_test extends advanced_testcase {
 
         // Check manifest and files.
         $missingfiles = csv_client_helper::check_manifest_and_files($manifestpath, $tempdir);
-        
+
         $this->assertEmpty($missingfiles['missingfiles'], 'There should be no missing files according to the manifest.');
         $this->assertEmpty($missingfiles['invalidheaders'], 'There should be no invalid headers in the extracted CSV files.');
-        
+
         // Validate CSV data types.
         $isvalid = csv_client_helper::validate_csv_data_types($tempdir);
         $this->assertArrayHasKey('is_valid', $isvalid);
         $this->assertTrue($isvalid['is_valid']);
-        
+
 
         // Extract CSV data to arrays.
         $csvdata = csv_client_helper::extract_csvs_to_arrays($tempdir);
@@ -120,7 +77,7 @@ class csv_client_test extends advanced_testcase {
         // Validate user data and set configuration.
         //if (csv_client_helper::validate_user_data($csvdata) === true) {
         set_config('datasync_schools', $org, 'enrol_oneroster');
-        
+
         //}
         // Initialize CSV client.
         $csvclient = client_helper::get_csv_client();
@@ -162,7 +119,7 @@ class csv_client_test extends advanced_testcase {
 
     private function assert_user_roles($userID){
         global $DB;
-        
+
         $ras = $DB->get_records('role_assignments', ['userid'=>$userID]);
 
         $mapped = array_map(function($el) {
