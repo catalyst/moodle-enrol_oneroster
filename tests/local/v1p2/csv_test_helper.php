@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster\tests\local\v1p2;
-require_once('/var/www/moodle/enrol/oneroster/classes/local/v1p2/csv_client_const_helper.php');
+require_once(__DIR__ . '/../../../classes/local/v1p2/csv_client_const_helper.php');
 use enrol_oneroster\local\v1p2\csv_client_const_helper;
 
 /**

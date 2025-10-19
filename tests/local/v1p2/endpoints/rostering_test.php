@@ -25,12 +25,8 @@
 namespace enrol_oneroster\local\v1p2\endpoints;
 
 
-require_once('/var/www/moodle/enrol/oneroster/tests/local/v1p2/oneroster_testcase.php');
+require_once(__DIR__ . '/../oneroster_testcase.php');
 use enrol_oneroster\tests\local\v1p2\oneroster_testcase;
-use advanced_testcase;
-use stdClass;
-use InvalidArgumentException;
-use ReflectionClass;
 
 /**
  * One Roster tests for filters.

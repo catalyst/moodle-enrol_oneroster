@@ -28,7 +28,7 @@ namespace enrol_oneroster\tests\local\v1p2\entities;
 use stdClass;
 use coding_exception;
 
-require_once('/var/www/moodle/enrol/oneroster/classes/local/v1p2/entities/userprofile.php');
+require_once(__DIR__ . '/../../../../classes/local/v1p2/entities/userprofile.php');
 require_once(__DIR__ . '/../oneroster_testcase.php');
 use enrol_oneroster\tests\local\v1p2\oneroster_testcase;
 use enrol_oneroster\classes\local\v1p2\entities\userprofile;
