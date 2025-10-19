@@ -43,7 +43,7 @@ class csv_client_test extends \advanced_testcase {
     public function test_execute_full_data() {
         $this->resetAfterTest(true);
         $selectedorg = 'org-sch-222-456';
-        $zipfilepath = 'enrol/oneroster/tests/fixtures/csv_data/Test_full_data_set.zip';
+        $zipfilepath = __DIR__ . '/../fixtures/csv_data/Test_full_data_set.zip';
 
         // Prepare the test environment.
         $csvclient = $this->prepare_test_environment($selectedorg, $zipfilepath);
@@ -63,7 +63,7 @@ class csv_client_test extends \advanced_testcase {
     public function test_execute_minimal_data() {
         $this->resetAfterTest(true);
         $selectedorg = 'org-sch-222-456';
-        $zipfilepath = 'enrol/oneroster/tests/fixtures/csv_data/Test_minimal_data_set.zip';
+        $zipfilepath = __DIR__ . '/../fixtures/csv_data/Test_minimal_data_set.zip';
 
         // Prepare the test environment.
         $csvclient = $this->prepare_test_environment($selectedorg, $zipfilepath);

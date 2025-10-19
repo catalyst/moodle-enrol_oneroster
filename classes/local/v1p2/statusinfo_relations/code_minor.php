@@ -64,8 +64,8 @@ class code_minor {
 
 class code_minor_field {
     public function __construct(
-        private string $fieldName = 'TargetEndSystem',
-        private code_minor_values $field_value
+        private code_minor_values $field_value,
+        private string $fieldName = 'TargetEndSystem'
     ) {
     }
 
