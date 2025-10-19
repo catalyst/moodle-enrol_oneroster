@@ -380,8 +380,8 @@ trait oneroster_client
 
         // Convert array to proper codeMinor object
         $code_minor_field = new \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_field(
-            $code_minor['imsx_codeMinorField'][0]['imsx_codeMinorFieldName'],
-            \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_values::from($code_minor['imsx_codeMinorField'][0]['imsx_codeMinorFieldValue'])
+            \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_values::from($code_minor['imsx_codeMinorField'][0]['imsx_codeMinorFieldValue']),
+            $code_minor['imsx_codeMinorField'][0]['imsx_codeMinorFieldName']
         );
 
         $code_minor_obj = new \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor($code_minor_field);

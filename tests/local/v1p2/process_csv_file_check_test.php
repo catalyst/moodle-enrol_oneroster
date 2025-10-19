@@ -33,6 +33,13 @@ use enrol_oneroster\tests\local\v1p2\csv_test_helper_v1p2;
  */
 class process_csv_file_check_test extends file_check_test_version_one {
     /**
+     * Path to the test directory.
+     *
+     * @var string
+     */
+    private $testdir;
+
+    /**
      * Set up the test environment.
      */
     protected function setUp(): void {
