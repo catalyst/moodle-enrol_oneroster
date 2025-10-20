@@ -167,8 +167,8 @@ class client_statusinfo_test extends \advanced_testcase {
         // Test failure factory method
         $code_minor = new \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor(
             new \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_field(
-                'TargetEndSystem',
-                \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_values::invaliddata
+                \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_values::invaliddata,
+                'TargetEndSystem'
             )
         );
 

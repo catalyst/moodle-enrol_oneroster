@@ -66,8 +66,8 @@ class status_info
 
     public function __construct(
         private code_major $code_major,
-        private ?code_minor $code_minor = null,
         private severity $severity,
+        private ?code_minor $code_minor = null,
         private ?string $description = null
     ) {}
 
@@ -120,8 +120,8 @@ class status_info
     public static function failure(severity $severity, code_minor $code_minor, ?string $description = null): self {
         return new self(
             code_major::failure,
-            $code_minor,
             $severity,
+            $code_minor,
             $description
         );
     }
@@ -135,8 +135,8 @@ class status_info
     public static function processing(?string $description = null): self {
         return new self(
             code_major::processing,
-            null,
             severity::status,
+            null,
             $description
         );
     }
@@ -150,8 +150,8 @@ class status_info
     public static function unsupported(?string $description = null): self {
         return new self(
             code_major::unsupported,
-            null,
             severity::warning,
+            null,
             $description
         );
     }

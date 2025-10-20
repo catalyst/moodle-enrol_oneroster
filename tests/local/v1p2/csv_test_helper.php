@@ -14,9 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster\tests\local\v1p2;
-require_once('/var/www/moodle/enrol/oneroster/tests/csv_test_helper.php');
-require_once('/var/www/moodle/enrol/oneroster/classes/local/v1p2/csv_client_const_helper.php');
-use enrol_oneroster\csv_test_helper as csv_test_helper_version_one;
+require_once(__DIR__ . '/../../../classes/local/v1p2/csv_client_const_helper.php');
 use enrol_oneroster\local\v1p2\csv_client_const_helper;
 
 /**
@@ -25,8 +23,22 @@ use enrol_oneroster\local\v1p2\csv_client_const_helper;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @package    enrol_oneroster
  */
-class csv_test_helper extends csv_test_helper_version_one {
-     /**
+class csv_test_helper_v1p2 {
+    /**
+     * Creates a CSV file with the given content.
+     *
+     * @param string $filepath The path where the CSV file will be created.
+     * @param array $content An array of arrays representing CSV rows.
+     */
+    public static function createcsvfiles(string $filepath, array $content): void {
+        $handle = fopen($filepath, 'w');
+        foreach ($content as $line) {
+            fputcsv($handle, $line);
+        }
+        fclose($handle);
+    }
+
+    /**
      * Sets up the test environment by creating necessary CSV files.
      *
      * @param string $testdir The directory where the CSV files will be created.

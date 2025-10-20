@@ -27,6 +27,8 @@ namespace enrol_oneroster\tests\local\entities;
 defined('MOODLE_INTERNAL') || die;
 require_once(__DIR__ . '/entity_testcase.php');
 use enrol_oneroster\tests\local\entities\entity_testcase;
+use enrol_oneroster\local\entities\course;
+use enrol_oneroster\local\entities\org;
 
 use stdClass;
 use OutOfRangeException;
@@ -167,7 +169,7 @@ class course_test extends entity_testcase {
      *
      * @return  array
      */
-    public function parent_provider(): array {
+    public static function parent_provider(): array {
         return [
             [(object) ['sourcedId' => 'other example']],
             [(object) ['sourcedId' => '0']],

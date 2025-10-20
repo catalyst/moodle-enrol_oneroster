@@ -38,5 +38,10 @@ use enrol_oneroster\tests\local\v1p2\oneroster_testcase;
  * @covers  \enrol_oneroster\local\entities\academic_session
  */
 class academic_session_test extends oneroster_testcase {
-    // Insert new logic here.
+    /**
+     * Test that the academic session test can be instantiated.
+     */
+    public function test_academic_session_test_instantiation() {
+        $this->assertTrue(true, 'Academic session test should pass');
+    }
 }

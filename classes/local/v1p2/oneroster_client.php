@@ -54,7 +54,7 @@ trait oneroster_client
      * @param   user_entity $entity The user to sync agents for
      * @param   stdClass $localuser The local record for the user
      */
-    protected function sync_user_agents(user_entity $entity, stdClass $localuser) {
+    protected function sync_user_agents(user_entity $entity, stdClass $localuser): void {
 
         $roles = $entity->get('roles');
 
@@ -70,7 +70,7 @@ trait oneroster_client
         if(!$role || !$student) return;
 
         $localusercontext = context_user::instance($localuser->id);
-            
+
         // Create a mapping of userid => [roleid] for current user agents.
         $localuseragents = [];
         foreach (get_users_roles($localusercontext, [], false) as $userid => $roleassignments) {
@@ -83,7 +83,7 @@ trait oneroster_client
                 }
             }
         }
-        
+
         // Update remote user agents.
         foreach ($entity->get_agent_entities() as $remoteagent) {
             if (!$remoteagent) {
@@ -143,7 +143,7 @@ trait oneroster_client
 
             }
         }
-        
+
         // Unenrol stale mappings.
         foreach ($localuseragents as $localagentid => $localagentroles) {
             foreach ($localagentroles as $roleid) {
@@ -380,8 +380,8 @@ trait oneroster_client
 
         // Convert array to proper codeMinor object
         $code_minor_field = new \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_field(
-            $code_minor['imsx_codeMinorField'][0]['imsx_codeMinorFieldName'],
-            \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_values::from($code_minor['imsx_codeMinorField'][0]['imsx_codeMinorFieldValue'])
+            \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_values::from($code_minor['imsx_codeMinorField'][0]['imsx_codeMinorFieldValue']),
+            $code_minor['imsx_codeMinorField'][0]['imsx_codeMinorFieldName']
         );
 
         $code_minor_obj = new \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor($code_minor_field);

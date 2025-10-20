@@ -48,7 +48,7 @@ class oauth2_client_test extends v1p1_testcase {
     public function test_get_rostering_endpoint(): void {
         $orclient = $this->getMockBuilder(oauth2_client::class)
             ->disableOriginalConstructor()
-            ->setMethods(null)
+            ->onlyMethods([])
             ->getMock();
 
         $endpoint = $orclient->get_rostering_endpoint();
@@ -61,7 +61,7 @@ class oauth2_client_test extends v1p1_testcase {
     public function test_get_container(): void {
         $orclient = $this->getMockBuilder(oauth2_client::class)
             ->disableOriginalConstructor()
-            ->setMethods(null)
+            ->onlyMethods([])
             ->getMock();
 
         $this->assertInstanceOf(container::class, $orclient->get_container());

@@ -59,7 +59,7 @@ class filter_test extends advanced_testcase {
      *
      * @return  array
      */
-    public function filter_constructor_data_provider(): array {
+    public static function filter_constructor_data_provider(): array {
         return [
             [
                 ['sourcedId', 'example'],
@@ -112,7 +112,7 @@ class filter_test extends advanced_testcase {
      *
      * @return  array
      */
-    public function add_filter_data_provider(): array {
+    public static function add_filter_data_provider(): array {
         return [
             [
                 [
@@ -174,7 +174,7 @@ class filter_test extends advanced_testcase {
      *
      * @return  array
      */
-    public function invalid_operator_provider(): array {
+    public static function invalid_operator_provider(): array {
         return [
             ['but'],
             ['not'],

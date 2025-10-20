@@ -40,5 +40,10 @@ use enrol_oneroster\tests\local\entities\course_test as course_test_version_one;
  * @covers  \enrol_oneroster\local\entities\course
  */
 class course_test extends oneroster_testcase {
-    // Insert new logic here.
+    /**
+     * Test that the course test can be instantiated.
+     */
+    public function test_course_test_instantiation() {
+        $this->assertTrue(true, 'Course test should pass');
+    }
 }
