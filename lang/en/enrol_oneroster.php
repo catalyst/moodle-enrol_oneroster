@@ -45,6 +45,7 @@ $string['settings_connection_settings'] = 'Connections settings';
 $string['settings_connection_token_url'] = 'Token URL';
 $string['settings_connection_token_url_desc'] = 'The OAuth URL used to fetch an authentication token.';
 $string['settings_connection_v1p1'] = 'Version 1.1';
+$string['settings_connection_v1p2'] = 'Version 1.2';
 $string['settings_datasync'] = 'Data synchronisation';
 $string['settings_datasync_schools'] = 'Schools to sync';
 $string['settings_datasync_schools_desc'] = 'One Roster implementation often cover a number of Organisations, Districts, and Schools. You can choose which schools you choose to synchronise.';

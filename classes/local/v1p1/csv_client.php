@@ -143,7 +143,6 @@ class csv_client implements client_interface {
      */
     public function set_org_id($orgid) {
         $this->orgid = $orgid;
-        var_dump($this->orgid);
     }
 
     /**

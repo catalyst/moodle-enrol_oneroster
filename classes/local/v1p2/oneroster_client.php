@@ -336,6 +336,7 @@ trait oneroster_client
     /**
      * Sync the roster.
      *
+     * From v1p1.
      * @param   int $onlysincetime
      */
     public function sync_roster(?int $onlysincetime = null): void {
@@ -578,6 +579,7 @@ trait oneroster_client
 
     /**
      * Update or create a Moodle User based on an entity representing a user.
+     * From v1p1.
      *
      * @param   user_representation $entity An entity representing a user category
      * @return  stdClass
