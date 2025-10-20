@@ -872,7 +872,6 @@ EOF;
      */
     protected function get_role_mapping(string $rolename, int $intendedcontextlevel): ?int {
         $roleid = $this->get_config_setting("role_mapping_{$rolename}");
-        var_dump($roleid);
         if (empty($roleid)) {
             // This is user is not configured.
             return null;

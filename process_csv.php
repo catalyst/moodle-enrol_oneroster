@@ -186,8 +186,14 @@ function process_selected_organization(string $selectedorgsourcedid, string $tem
     }
 
 
+    $version = get_config('enrol_oneroster', 'oneroster_version');
+    if ($version == ' Version 1.2'){
+        $csvclient->versioned_set_data($manifest, $users, $classes, $courses, $orgs, $enrollments, $academicsessions, $roles, $demographics, $userprofiles);
+    }
+    else{
+        $csvclient->set_data($manifest,$users,$classes,$orgs,$enrollments,$academicsessions);
+    }
 
-    $csvclient->versioned_set_data($manifest, $users, $classes, $courses, $orgs, $enrollments, $academicsessions, $roles, $demographics, $userprofiles);
 
     try {
         $csvclient->synchronise();

@@ -59,6 +59,8 @@ if ($ADMIN->fulltree) {
         enrol_oneroster\client_helper::VERSION_V1P1,
         [
             enrol_oneroster\client_helper::VERSION_V1P1 => get_string('settings_connection_v1p1', 'enrol_oneroster'),
+            enrol_oneroster\client_helper::VERSION_V1P2 => get_string('settings_connection_v1p2', 'enrol_oneroster'),
+            
         ]
     ));
 
