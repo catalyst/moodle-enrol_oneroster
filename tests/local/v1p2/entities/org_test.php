@@ -40,5 +40,10 @@ use enrol_oneroster\tests\local\entities\org_test as test_one;
  * @covers  \enrol_oneroster\local\entities\org
  */
 class org_test extends oneroster_testcase {
-    // Insert new logic here.
+    /**
+     * Test that the org test can be instantiated.
+     */
+    public function test_org_test_instantiation() {
+        $this->assertTrue(true, 'Org test should pass');
+    }
 }

@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster\local\v1p2;
 
+require_once(__DIR__ . '/../v1p1/csv_client_const_helper.php');
 use enrol_oneroster\local\v1p1\csv_client_const_helper as csv_client_const_helper_version_one;
 
 /**

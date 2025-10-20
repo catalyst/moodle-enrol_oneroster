@@ -22,11 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\endpoints;
+namespace enrol_oneroster\tests\local\endpoints;
 
 defined('MOODLE_INTERNAL') || die;
 require_once(__DIR__ . '/../oneroster_testcase.php');
-use enrol_oneroster\local\oneroster_testcase;
+use enrol_oneroster\tests\local\oneroster_testcase;
+use enrol_oneroster\local\v1p1\endpoints\rostering;
 
 use advanced_testcase;
 use enrol_oneroster\local\interfaces\coursecat_representation;

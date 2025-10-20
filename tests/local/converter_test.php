@@ -51,7 +51,7 @@ class converter_test extends advanced_testcase {
     /**
      * Data provider for the `from_date_to_unix` function.
      */
-    public function from_date_to_unix_provider(): array {
+    public static function from_date_to_unix_provider(): array {
         return [
             ['1970-01-01', 0],
             ['2020-12-31', 1609372800],
@@ -73,7 +73,7 @@ class converter_test extends advanced_testcase {
     /**
      * Data provider for the `from_date_to_unix` function.
      */
-    public function from_datetime_to_unix_provider(): array {
+    public static function from_datetime_to_unix_provider(): array {
         return [
             ['0', 0],
             ['1970-01-01T09:00:03.511Z', 32403],

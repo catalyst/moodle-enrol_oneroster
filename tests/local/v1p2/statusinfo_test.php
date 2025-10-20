@@ -31,14 +31,13 @@ use enrol_oneroster\local\v1p2\statusinfo_relations\code_minor;
 use enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_field;
 use enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_values;
 
-class statusinfo_test extends \advanced_testcase
-{
+class statusinfo_test extends \advanced_testcase {
     /**
      * Method that tests the creation of a failure statusInfo object type.
      */
     public function test_statusinfo_failure_creation() {
         $code_minor = new code_minor(
-            new code_minor_field('TargetEndSystem', code_minor_values::forbidden)
+            new code_minor_field(code_minor_values::forbidden, 'TargetEndSystem')
         );
 
         $status_info = status_info::failure(severity::error, $code_minor, 'Access denied');
@@ -54,7 +53,7 @@ class statusinfo_test extends \advanced_testcase
      */
     public function test_statusinfo_failure_to_array() {
         $code_minor = new code_minor(
-            new code_minor_field('TargetEndSystem', code_minor_values::forbidden)
+            new code_minor_field(code_minor_values::forbidden, 'TargetEndSystem')
         );
 
         $status_info = status_info::failure(severity::error, $code_minor, 'Access denied');

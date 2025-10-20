@@ -15,31 +15,49 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster\local\v1p2;
 
+
 use enrol_oneroster\local\v1p2\csv_client_const_helper;
 use enrol_oneroster\local\v1p1\csv_client_helper as csv_client_helper_version_one;
 use PHPUnit\Framework\Constraint\ArrayHasKey;
 
 use function PHPUnit\Framework\assertEquals;
 
+require_once(__DIR__ . '/../v1p1/csv_client_helper.php');
+require_once(__DIR__ . '/csv_client_const_helper.php');
+use enrol_oneroster\local\v1p1\csv_client_helper as csv_client_helper_version_one;
+
 /**
  * Class csv_client_helper
  *
- * Helper class for OneRoster plugin
+ * Helper class for OneRoster v1p2 plugin
  *
  * @package    enrol_oneroster
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class csv_client_helper extends csv_client_helper_version_one{
+
+class csv_client_helper extends csv_client_helper_version_one {
+
     /**
-     * Get the expected data types for each file.
+     * Function to get the header for a given file.
      *
-     * @return array An array containing the expected data types for each file.
+     * @param string $filename The name of the file.
+     * @return array The header for the given file.
      */
-    public static function get_file_datatypes(): array {
+    public static function get_header(string $filename): array {
+        switch ($filename) {
+            case csv_client_const_helper::FILE_USERPROFILES:
+                return csv_client_const_helper::HEADER_USERPROFILES;
+            case csv_client_const_helper::FILE_ROLES:
+                return csv_client_const_helper::HEADER_ROLES;
+            default:
+                return parent::get_header($filename);
+        }
+    }
+
+   public static function get_file_datatypes(): array {
         //call parent.
         $data = parent::get_file_datatypes();
-        //var_dump($data);
         //Remove v1p1 users.
         unset($data[csv_client_const_helper::FILE_USERS]);
 
@@ -615,8 +633,6 @@ class csv_client_helper extends csv_client_helper_version_one{
         return in_array(strtolower($value), csv_client_const_helper::VALID_ORG_TYPES, true);
     }
 
-  
-
     /**
      * Check if a value is of type role user enum.
      *
@@ -658,5 +674,32 @@ class csv_client_helper extends csv_client_helper_version_one{
             return true;
         }
         return false;
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+            ],
+        ];
+
+        return array_merge($parent_datatypes, $v1p2_datatypes);
+    }
+
+
+    /**
+     * Check if the value is a valid role type enum.
+     *
+     * @param string $value The value to check.
+     * @return bool True if the value is a valid role type enum, false otherwise.
+     */
+    public static function is_role_type_enum(string $value): bool {
+        return in_array($value, csv_client_const_helper::VALID_ROLE_TYPE, true);
+    }
+
+    /**
+     * Check if the value is a valid role role enum.
+     *
+     * @param string $value The value to check.
+     * @return bool True if the value is a valid role role enum, false otherwise.
+     */
+    public static function is_role_role_enum(string $value): bool {
+        return in_array($value, csv_client_const_helper::VALID_ROLE_ROLES, true);
     }
 }

@@ -63,7 +63,7 @@ class client_helper_test extends advanced_testcase {
      *
      * @return array
      */
-    public function get_client_provider(): array {
+    public static function get_client_provider(): array {
         return [
             [
                 client_helper::OAUTH_10,
@@ -103,7 +103,7 @@ class client_helper_test extends advanced_testcase {
      *
      * @return  arrayt
      */
-    public function get_invalid_client_provider(): array {
+    public static function get_invalid_client_provider(): array {
         return [
             'Invalid oauth version' => [
                 client_helper::OAUTH_20 . '.0',

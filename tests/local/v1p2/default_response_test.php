@@ -34,11 +34,10 @@ use enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_values;
 // Ensure all the statusinfo_relations classes and enums are loaded
 require_once(__DIR__ . '/../../../classes/local/v1p2/statusinfo_relations/status_info.php');
 
-class default_response_test extends \advanced_testcase
-{
+class default_response_test extends \advanced_testcase {
     public function test_default_response_failure() {
         $code_minor = new code_minor(
-            new code_minor_field('TargetEndSystem', code_minor_values::forbidden)
+            new code_minor_field(code_minor_values::forbidden, 'TargetEndSystem')
         );
         $default_response = default_response::failure(severity::error, $code_minor, 'Test failure');
         $this->assertEquals(code_major::failure, $default_response->get_status_info()->get_code_major());
