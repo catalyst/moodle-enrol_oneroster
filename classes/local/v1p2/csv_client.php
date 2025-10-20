@@ -37,7 +37,10 @@ use DateTime;
  */
 class csv_client extends csv_client_version_one{
     use versioned_oneroster_client;
+    
+    // Basepath for roles data.
     const BASEPATH_ROLES = 'roles';
+    
     protected $data;
 
    /**
@@ -46,9 +49,12 @@ class csv_client extends csv_client_version_one{
      * @param array $manifest The manifest data.
      * @param array $users The users data.
      * @param array $classes The classes data.
+     * @param array $courses The courses data.
      * @param array $orgs The orgs data.
      * @param array $enrollments The enrollments data.
      * @param array $academicsessions The academic sessions data.
+     * @param array $roles The roles data.
+     * @param array $userprofiles The roles. 
      */
     public function versioned_set_data(
         array $manifest,
@@ -77,8 +83,14 @@ class csv_client extends csv_client_version_one{
     }
    
    
-   
-   public function execute(command $command, ?filter $filter = null): stdClass {
+    /**
+        * Execute the supplied command.
+        *
+        * @param   command $command The command to execute.
+        * @param   filter $filter
+        * @return  stdClass
+    */
+    public function execute(command $command, ?filter $filter = null): stdClass {
         //same 
       $url = $command->get_url('');
         // Split the URL into tokens using '/' as the delimiter (e.g., /schools/org-sch-222-456/terms).
