@@ -60,7 +60,7 @@ class status_info
     const valid_code_minors = ['fullsuccess', 'invalid_filter_field', 'invalid_selection_field', 'invaliddata', 'unauthorisedrequest', 'forbidden', 'server_busy', 'unknownobject', 'internal_server_error'];
     const invalid_code_major_message = 'INVALID STRUCTURE: Invalid code major value found in the response, values must be either success, failure, processing, or unsupported';
     const invalid_severity_message = 'INVALID STRUCTURE: Invalid severity value found in the response, values must be either status, warning, or error';
-    const no_code_minor_meesage = 'INVALID STRUCTURE: Failure status info must have a code minor';
+    const no_code_minor_message = 'INVALID STRUCTURE: Failure status info must have a code minor';
     const invalid_code_minor_structure_message = 'INVALID STRUCTURE: Invalid code minor structure found in the response';
     const invalid_code_minor_message = 'INVALID STRUCTURE: Invalid code minor value found in the response, values must be either fullsuccess, invalid_filter_field, invalid_selection_field, invaliddata, unauthorisedrequest, forbidden, server_busy, unknownobject, or internal_server_error';
 
@@ -71,18 +71,38 @@ class status_info
         private ?string $description = null
     ) {}
 
+    /**
+     * Method that returns the code major of the status info object type.
+     *
+     * @return code_major The code major of the status info object type.
+     */
     public function get_code_major(): code_major {
         return $this->code_major;
     }
 
+    /**
+     * Method that returns the code minor of the status info object type.
+     *
+     * @return code_minor The code minor of the status info object type.
+     */
     public function get_code_minor(): ?code_minor {
         return $this->code_minor;
     }
 
+    /**
+     * Method that returns the severity of the status info object type.
+     *
+     * @return severity The severity of the status info object type.
+     */
     public function get_severity(): severity {
         return $this->severity;
     }
 
+    /**
+     * Method that returns the description of the status info object type.
+     *
+     * @return string|null The description of the status info object type.
+     */
     public function get_description(): ?string {
         return $this->description;
     }
@@ -109,50 +129,4 @@ class status_info
         return $result;
     }
 
-    /**
-     * Method that creates a failure status info object type.
-     *
-     * @param severity The severity of the status info object type.
-     * @param codeMinor The code minor of the status info object type.
-     * @param string|null The description of the status info object type.
-     * @return status_info The failure status info object type.
-     */
-    public static function failure(severity $severity, code_minor $code_minor, ?string $description = null): self {
-        return new self(
-            code_major::failure,
-            $severity,
-            $code_minor,
-            $description
-        );
-    }
-
-    /**
-     * Method that creates a processing status info object type.
-     *
-     * @param string|null $description The description of the status info object type.
-     * @return status_info The processing status info object type.
-     */
-    public static function processing(?string $description = null): self {
-        return new self(
-            code_major::processing,
-            severity::status,
-            null,
-            $description
-        );
-    }
-
-    /**
-     * Method that creates a unsupported status info object type.
-     *
-     * @param string|null $description The description of the status info object type.
-     * @return status_info The unsupported status info object type.
-     */
-    public static function unsupported(?string $description = null): self {
-        return new self(
-            code_major::unsupported,
-            severity::warning,
-            null,
-            $description
-        );
-    }
 }

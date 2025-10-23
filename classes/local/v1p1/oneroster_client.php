@@ -268,7 +268,7 @@ EOF;
      * @param   int[] $schoolids
      * @param   DateTime|null $onlysince Only sync users which have been remotely modified since the specified date
      */
-    public function sync_users_in_schools (array $schoolids, ?DateTime $onlysince = null): void {
+    public function sync_users_in_schools(array $schoolids, ?DateTime $onlysince = null): void {
         $filter = null;
         if ($onlysince) {
             // Only fetch users last modified in the onlysince period.

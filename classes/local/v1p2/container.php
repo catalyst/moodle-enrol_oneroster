@@ -36,10 +36,10 @@ use enrol_oneroster\local\v1p2\factories\collection_factory;
 use enrol_oneroster\local\v1p2\factories\entity_factory;
 
 /**
- * One Roster 1.1 Factory Manager.
+ * One Roster 1.2 Factory Manager.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class container extends abstract_container implements container_interface {
@@ -66,7 +66,6 @@ class container extends abstract_container implements container_interface {
         }
 
         return $this->rostering;
-
     }
 
     /**

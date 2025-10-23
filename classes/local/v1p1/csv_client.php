@@ -17,6 +17,7 @@
 namespace enrol_oneroster\local\v1p1;
 
 use enrol_oneroster\local\interfaces\client as client_interface;
+use enrol_oneroster\local\interfaces\rostering_client as rostering_client_interface;
 use enrol_oneroster\local\oneroster_client as root_oneroster_client;
 use enrol_oneroster\local\command;
 use enrol_oneroster\local\interfaces\filter;
@@ -33,7 +34,7 @@ use enrol_oneroster\local\v1p1\oneroster_client as versioned_client;
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class csv_client implements client_interface {
+class csv_client implements client_interface, rostering_client_interface {
     use root_oneroster_client;
     use versioned_client;
 
@@ -155,7 +156,7 @@ class csv_client implements client_interface {
      * @param array $academicsessions The academic sessions data.
      * @param array $roles The roles data.
      * @param array $demographics The demographics data.
-     * @param array $userprofiles The user profiles data.
+     * @param array|null $userprofiles The user profiles data (optional).
      */
     public function versioned_set_data(
         array $manifest,
@@ -167,7 +168,7 @@ class csv_client implements client_interface {
         array $academicsessions,
         array $roles,
         array $demographics,
-        array $userprofiles
+        ?array $userprofiles = null
     ): void {
         $this->data = [
             'manifest' => $manifest,
@@ -179,7 +180,7 @@ class csv_client implements client_interface {
             'academicSessions' => $academicsessions,
             'roles' => $roles,
             'demographics' => $demographics,
-            'userProfiles' => $userprofiles,
+            'userProfiles' => $userprofiles ?? [],
         ];
     }
 
@@ -463,16 +464,18 @@ class csv_client implements client_interface {
     }
 
     /**
-     * Synchronise CSV data with Moodle.
-     * This is a simplified version for CSV data that doesn't use the full entity system.
+     * Sync roster data from CSV files.
+     * This method processes CSV data using the standard OneRoster synchronization pattern.
      *
      * @param int|null $onlysincetime Only sync data modified after this time
      */
-    public function synchronise(?int $onlysincetime = null): void {
-        global $DB;
+    public function sync_roster(?int $onlysincetime = null): void {
+
+        $this->get_trace()->output("Starting CSV roster synchronization");
 
         // Process courses first
         if (isset($this->data['classes'])) {
+            $this->get_trace()->output("Processing classes/courses", 1);
             foreach ($this->data['classes'] as $class) {
                 $this->create_or_update_course($class);
             }
@@ -480,6 +483,7 @@ class csv_client implements client_interface {
 
         // Process users
         if (isset($this->data['users'])) {
+            $this->get_trace()->output("Processing users", 1);
             foreach ($this->data['users'] as $user) {
                 $this->create_or_update_user($user);
             }
@@ -487,14 +491,19 @@ class csv_client implements client_interface {
 
         // Process enrollments
         if (isset($this->data['enrollments'])) {
+            $this->get_trace()->output("Processing enrollments", 1);
             foreach ($this->data['enrollments'] as $enrollment) {
                 $this->create_or_update_enrollment($enrollment);
             }
         }
+
+        $this->get_trace()->output("Completed CSV roster synchronization");
     }
 
     /**
      * Create or update a course from CSV data.
+     *
+     * @param array $class The class data.
      */
     private function create_or_update_course($class): void {
         global $DB;
@@ -521,6 +530,8 @@ class csv_client implements client_interface {
 
     /**
      * Create or update a user from CSV data.
+     *
+     * @param array $user The user data.
      */
     private function create_or_update_user($user): void {
         global $DB;
@@ -545,6 +556,8 @@ class csv_client implements client_interface {
 
     /**
      * Create or update an enrollment from CSV data.
+     *
+     * @param array $enrollment The enrollment data.
      */
     private function create_or_update_enrollment($enrollment): void {
         global $DB;
@@ -594,6 +607,8 @@ class csv_client implements client_interface {
 
     /**
      * Ensure enrollment instance exists for a course.
+     *
+     * @param int $courseid The course ID.
      */
     private function ensure_enrollment_instance($courseid): void {
         global $DB;

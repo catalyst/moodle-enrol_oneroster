@@ -25,7 +25,6 @@
 
 namespace enrol_oneroster\local\v1p2\statusinfo_relations;
 
-
 class code_minor {
     private array $code_minor_fields = [];
 

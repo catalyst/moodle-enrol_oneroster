@@ -18,7 +18,7 @@
  * One Roster Enrolment Client.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -27,17 +27,7 @@ namespace enrol_oneroster\local\v1p2\collections;
 use enrol_oneroster\local\interfaces\container as container_interface;
 use enrol_oneroster\local\v1p1\endpoints\rostering as rostering_endpoint;
 use enrol_oneroster\local\collections\classes as classes_collection;
-
-/**
- * One Roster Courses collection.
- *
- * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-class classes_for_user extends classes_collection
-{
-
+class classes_for_user extends classes_collection {
     /**
      * Get the operation ID for the endpoint, otherwise known as the name of the endpoint.
      *

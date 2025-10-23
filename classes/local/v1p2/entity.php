@@ -8,7 +8,7 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS for a PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
@@ -18,20 +18,22 @@
  * One Roster Enrolment Client.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace enrol_oneroster\local\v1p2;
 
-use enrol_oneroster\local\v1p1\entity as entity_version_one;
+use enrol_oneroster\local\entity as entity_base;
+use enrol_oneroster\local\interfaces\entity_factory as entity_factory_interface;
+use enrol_oneroster\local\v1p2\factories\entity_factory as entity_factory_instance;
 
 /**
  * One Roster v1p2 Entity.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class entity extends entity_version_one {
+abstract class entity extends entity_base {
 }

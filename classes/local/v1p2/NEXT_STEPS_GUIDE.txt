@@ -2,47 +2,47 @@
 
 
 ----Data relationships
-User mapping in 1.1 mapped the “org” element of a 1.1 user to the selected org of the import, in 1.2 this element is removed. 
-Instead, users can have a ‘primaryOrg’ however these two elements do not exactly line up. 
+User mapping in 1.1 mapped the “org” element of a 1.1 user to the selected org of the import, in 1.2 this element is removed.
+Instead, users can have a ‘primaryOrg’ however these two elements do not exactly line up.
 
-In 1.2 a user’s main relationship to the selected org is based on the ‘org’ element of whatever Roles are associated with the user. 
-When imported by csv, this is how the csv_client filters which users to bring over and which to leave, if they don’t have a 
-role belonging to the right org, the user does not get created. 
+In 1.2 a user’s main relationship to the selected org is based on the ‘org’ element of whatever Roles are associated with the user.
+When imported by csv, this is how the csv_client filters which users to bring over and which to leave, if they don’t have a
+role belonging to the right org, the user does not get created.
 
 In a REST operation, this is not inherently the case, a user with no suitable org may be received, this must be kept in mind for future implementation.
 
 ----Current Implementation
 
-Role mapping: 
-	The additional options present in 1.2 for roles have been implemented to the UI and configs, 
+Role mapping:
+	The additional options present in 1.2 for roles have been implemented to the UI and configs,
 	it was originally expected that extending these arrays would slot straight into the existing functionality,
-	which in a continued implementation would be the case.	
+	which in a continued implementation would be the case.
 
-	When roles assignment occurs in the program, each role object is handled to inspect their ‘role’ element, 
-	which is compared to the mapping present in config, and a moodle role assignment is created appropriately. 
+	When roles assignment occurs in the program, each role object is handled to inspect their ‘role’ element,
+	which is compared to the mapping present in config, and a moodle role assignment is created appropriately.
 
-	This is not functional, as the get_role_mapping function in the original implementation attempts to pass a 
-	string into is_role_available_for_contextlevel which requires an integer causing it to fail. This is commented as if 
+	This is not functional, as the get_role_mapping function in the original implementation attempts to pass a
+	string into is_role_available_for_contextlevel which requires an integer causing it to fail. This is commented as if
 	intended and presumably, the plugin previously worked with this being the case (madness).
 
-User mapping: 
-	A new v1p2 User entity has been created to facilitate the creation of a new ‘orgs’ list based on the org elements 
+User mapping:
+	A new v1p2 User entity has been created to facilitate the creation of a new ‘orgs’ list based on the org elements
 	present in the user’s roles.
 
-	The functionality for creating new users or updating existing ones has been moved into the 
+	The functionality for creating new users or updating existing ones has been moved into the
 	new oneroster_client mostly unchanged.
 
 Testing Suite:
-	Issues remain with the csv data validation tests. Most likely bad namespacing due to a merge error, 
+	Issues remain with the csv data validation tests. Most likely bad namespacing due to a merge error,
 	needs investigation.
 
 ----Suggestions
-1.	If feasible, the primaryOrg could be used as a secondary verifier to check if a user is associated with the selected org, 
-	say the user has no roles, but they are intended to be ingested, this is not currently implemented. 
+1.	If feasible, the primaryOrg could be used as a secondary verifier to check if a user is associated with the selected org,
+	say the user has no roles, but they are intended to be ingested, this is not currently implemented.
 	This would need be implemented in the get_orgs() function in v1p2/user.php.
 
-2.	Include a check in sync_user_agents that checks the ‘org’ of each role before applying it, 
+2.	Include a check in sync_user_agents that checks the ‘org’ of each role before applying it,
 	to make the function compatible with a REST ingestion.
-	
-3.	A small testing suite would be greatly helpful for further development of user mapping functionality. 
+
+3.	A small testing suite would be greatly helpful for further development of user mapping functionality.
 	There is a test present in csv_client_test.php that assert’s role assignment.

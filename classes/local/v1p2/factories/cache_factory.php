@@ -8,7 +8,7 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS for a PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
@@ -18,22 +18,75 @@
  * One Roster Enrolment Client.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace enrol_oneroster\local\v1p2\factories;
 
 use cache;
-use enrol_oneroster\local\v1p1\factories\cache_factory as cache_factory_version_one;
+use enrol_oneroster\local\factories\cache_factory as parent_cache_factory;
 
 /**
  * One Roster 1.2 Cache Factory.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cache_factory extends cache_factory_version_one{
-    // Insert new logic here.
+class cache_factory extends parent_cache_factory {
+
+    /**
+     * Get the organisation entity cache.
+     *
+     * @return  cache
+     */
+    public function get_org_cache(): cache {
+        return cache::make('enrol_oneroster', 'v1p2_remote_orgs');
+    }
+
+    /**
+     * Get the academicSession entity cache.
+     *
+     * @return  cache
+     */
+    public function get_academic_session_cache(): cache {
+        return cache::make('enrol_oneroster', 'v1p2_remote_academic_sessions');
+    }
+
+    /**
+     * Get the class entity cache.
+     *
+     * @return  cache
+     */
+    public function get_class_cache(): cache {
+        return cache::make('enrol_oneroster', 'v1p2_remote_classes');
+    }
+
+    /**
+     * Get the course entity cache.
+     *
+     * @return  cache
+     */
+    public function get_course_cache(): cache {
+        return cache::make('enrol_oneroster', 'v1p2_remote_courses');
+    }
+
+    /**
+     * Get the user entity cache.
+     *
+     * @return  cache
+     */
+    public function get_user_cache(): cache {
+        return cache::make('enrol_oneroster', 'v1p2_remote_users');
+    }
+
+    /**
+     * Get the enrollment entity cache.
+     *
+     * @return  cache
+     */
+    public function get_enrolment_cache(): cache {
+        return cache::make('enrol_oneroster', 'v1p2_remote_enrolments');
+    }
 }

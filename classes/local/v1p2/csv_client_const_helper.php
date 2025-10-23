@@ -256,7 +256,6 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
    */
    const HEADER_BIRTHDATE = 'birthDate';
 
-
     /**
      * Header fields for courses
      *

@@ -27,7 +27,6 @@ namespace enrol_oneroster;
 use enrol_oneroster\form\oneroster_org_selection_form;
 use enrol_oneroster\form\oneroster_csv_form;
 use enrol_oneroster\local\v1p1\csv_client_helper;
-use enrol_oneroster\classes\local\v1p2\csv_client_helper as versioned_csv_client_helper;
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
@@ -187,7 +186,7 @@ function process_selected_organization(string $selectedorgsourcedid, string $tem
 
 
     $version = get_config('enrol_oneroster', 'oneroster_version');
-    if ($version == ' Version 1.2'){
+    if ($version === 'Version 1.2'){
         $csvclient->versioned_set_data($manifest, $users, $classes, $courses, $orgs, $enrollments, $academicsessions, $roles, $demographics, $userprofiles);
     }
     else{

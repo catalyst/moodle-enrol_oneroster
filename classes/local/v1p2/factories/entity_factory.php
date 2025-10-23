@@ -8,7 +8,7 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS for a PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
@@ -24,7 +24,7 @@
 
 namespace enrol_oneroster\local\v1p2\factories;
 
-use enrol_oneroster\local\v1p1\factories\entity_factory as entity_factory_version_one;
+use enrol_oneroster\local\factories\entity_factory as parent_entity_factory;
 
 /**
  * One Roster v1p2 entity factory.
@@ -33,6 +33,5 @@ use enrol_oneroster\local\v1p1\factories\entity_factory as entity_factory_versio
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Khushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entity_factory extends entity_factory_version_one {
-    // Insert new logic here.
+class entity_factory extends parent_entity_factory {
 }

@@ -19,20 +19,20 @@ use enrol_oneroster\local\v1p2\entity;
 use enrol_oneroster\local\interfaces\container as container_interface;
 use enrol_oneroster\local\interfaces\user_representation;
 use enrol_oneroster\local\entities\org;
-use PhpParser\Node\Stmt\Else_;
 use stdClass;
 
 /**
- * User profile entity. Currently not an official moodle object as there is no moodle representation.
+ * User entity. Currently not an official moodle object as there is no moodle representation.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhin
+ * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class user extends entity implements user_representation {
     /**
      * Get the operation ID for the endpoint, otherwise known as the name of the endpoint.
      *
-     * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+     * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
      * @param   container_interface $container
      * @return  string
      */
@@ -46,7 +46,7 @@ class user extends entity implements user_representation {
      * For example a school is a subtype of the organisation object. You can fetch a school from the organisatino
      * endpoint, but you cannot fetch an organisation from the school endpoint.
      *
-     * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+      * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
      * @param   container_interface $container
      * @return  string
      */
@@ -56,8 +56,8 @@ class user extends entity implements user_representation {
 
     /**
      * Parse the data returned from the One Roster Endpoint.
-     * 
-     * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+     *
+     * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
      * @param   container_interface $container The container for this client
      * @param   stdClass $data The raw data returned from the endpoint
      * @return  stdClass The parsed data
@@ -71,8 +71,8 @@ class user extends entity implements user_representation {
 
     /**
      * Get the data which represents this One Roster Object as a Moodle User.
-     * 
-     * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+     *
+     * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
      * @return  stdClass
      */
     public function get_user_data(): stdClass {
@@ -89,12 +89,12 @@ class user extends entity implements user_representation {
     /**
      * Get the user that this class belongs to.
      *
+     * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
      * @return  org The owner organisation
      */
     public function get_orgs(): org {
         // Fetch the user details.
         $roles = $this->data->get('roles');
-        $roleids = [];
 
         foreach ($roles as $role) {
             $orgid = $role->orgSourcedId;

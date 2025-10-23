@@ -91,12 +91,10 @@ class enrollment extends entity implements enrollment_representation {
         // Fetch the user details.
         $userref = $this->get('user');
 
-        // Handle both API format (object with sourcedId) and CSV format (direct string)
+        // Handle both API format (object with sourcedId) and CSV format (object with sourcedId from CSV processing)
         $userid = null;
         if (is_object($userref) && property_exists($userref, 'sourcedId')) {
             $userid = $userref->sourcedId;
-        } elseif (is_string($userref)) {
-            $userid = $userref;
         } else {
             return null;
         }

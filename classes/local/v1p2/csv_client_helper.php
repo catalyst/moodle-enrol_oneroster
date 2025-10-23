@@ -34,13 +34,13 @@ use enrol_oneroster\local\v1p1\csv_client_helper as csv_client_helper_version_on
 class csv_client_helper extends csv_client_helper_version_one {
 
    public static function get_file_datatypes(): array {
-        //call parent.
+        // call parent.
         $data = parent::get_file_datatypes();
         //var_dump($data);
         //Remove v1p1 users.
         unset($data[csv_client_const_helper::FILE_USERS]);
 
-        //Add new Users.
+        // Add new Users.
         $users = [
             csv_client_const_helper::FILE_USERS => [
                 csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
@@ -223,37 +223,36 @@ class csv_client_helper extends csv_client_helper_version_one {
             ]
         ];
 
-        // add userprofiles.
+        // Add userprofiles.
         $userprofiledata = [
-        csv_client_const_helper::FILE_USERPROFILES => [
-           csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
-           csv_client_const_helper::HEADER_STATUS => [
-               csv_client_const_helper::DATATYPE_ENUM_STATUS,
-               csv_client_const_helper::DATATYPE_NULL
-           ],
-           csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
-               csv_client_const_helper::DATATYPE_DATETIME,
-               csv_client_const_helper::DATATYPE_NULL
-           ],
-           csv_client_const_helper::HEADER_USER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
-           csv_client_const_helper::HEADER_PROFILE_TYPE => csv_client_const_helper::DATATYPE_STRING,
-           csv_client_const_helper::HEADER_VENDOR_ID => csv_client_const_helper::DATATYPE_STRING,
-           csv_client_const_helper::HEADER_APPLICATION_ID => [
-            csv_client_const_helper::DATATYPE_STRING,
-            csv_client_const_helper::DATATYPE_NULL],
-           csv_client_const_helper::HEADER_DESCRIPTION => [
-            csv_client_const_helper::DATATYPE_STRING,
-            csv_client_const_helper::DATATYPE_NULL],
-           csv_client_const_helper::HEADER_CREDENTIAL_TYPE => csv_client_const_helper::DATATYPE_STRING,
-           csv_client_const_helper::HEADER_USERNAME => csv_client_const_helper::DATATYPE_STRING,
-           csv_client_const_helper::HEADER_PASSWORD => [
-             csv_client_const_helper::DATATYPE_STRING,
-             csv_client_const_helper::DATATYPE_NULL]
-        ]
+            csv_client_const_helper::FILE_USERPROFILES => [
+                csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_STATUS => [
+                    csv_client_const_helper::DATATYPE_ENUM_STATUS,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_DATE_LAST_MODIFIED => [
+                    csv_client_const_helper::DATATYPE_DATETIME,
+                    csv_client_const_helper::DATATYPE_NULL
+                ],
+                csv_client_const_helper::HEADER_USER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
+                csv_client_const_helper::HEADER_PROFILE_TYPE => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_VENDOR_ID => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_APPLICATION_ID => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL],
+                csv_client_const_helper::HEADER_DESCRIPTION => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL],
+                csv_client_const_helper::HEADER_CREDENTIAL_TYPE => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_USERNAME => csv_client_const_helper::DATATYPE_STRING,
+                csv_client_const_helper::HEADER_PASSWORD => [
+                    csv_client_const_helper::DATATYPE_STRING,
+                    csv_client_const_helper::DATATYPE_NULL]
+                ]
      ];
-      //add roles
-      $roles=
-         [
+      //Add roles.
+      $roles = [
             csv_client_const_helper::FILE_ROLES => [
                 csv_client_const_helper::HEADER_SOURCEDID => csv_client_const_helper::DATATYPE_GUID,
                 csv_client_const_helper::HEADER_STATUS => [
@@ -486,9 +485,24 @@ class csv_client_helper extends csv_client_helper_version_one {
             'invalidheaders' => $invalidheaders
         ];
     }
+
+    /**
+     * Get the data types for a given file.
+     *
+     * @param string $filename The name of the file.
+     * @return array The data types for the given file.
+     */
+
     public static function get_data_types(string $filename): array {
         return self::get_file_datatypes()[$filename] ?? [];
     }
+
+    /**
+     * Validate the data types of the CSV files.
+     *
+     * @param string $directory The directory containing the CSV files.
+     * @return array An array containing the validity of the files, the invalid files, and error messages.
+     */
     public static function validate_csv_data_types(string $directory): array {
         $isvalid = true;
         $invalidfiles = [];
@@ -505,7 +519,6 @@ class csv_client_helper extends csv_client_helper_version_one {
 
             $cleanfilepath = clean_param($directory . '/' . $file, PARAM_PATH);
             $expecteddatatypes = self::get_data_types($file);
-            //var_dump($expecteddatatypes);
             $detecteddatatypes = [];
 
             if (($handle = fopen($cleanfilepath, 'r')) !== false) {

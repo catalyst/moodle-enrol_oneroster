@@ -24,23 +24,10 @@
 
 namespace enrol_oneroster\local\v1p2;
 
-// Entities which represent Moodle objects.
-use enrol_oneroster\local\interfaces\course_representation;
-use enrol_oneroster\local\interfaces\coursecat_representation;
 use enrol_oneroster\local\interfaces\user_representation;
-use enrol_oneroster\local\interfaces\enrollment_representation;
-
-use enrol_oneroster\local\collections\orgs as orgs_collection;
-use enrol_oneroster\local\collections\schools as schools_collection;
-use enrol_oneroster\local\collections\terms as terms_collection;
-use enrol_oneroster\local\v1p1\endpoints\rostering as rostering_endpoint;
-use enrol_oneroster\local\entities\org as org_entity;
 use enrol_oneroster\local\entities\school as school_entity;
 use enrol_oneroster\local\v1p2\entities\user as user_entity;
 use enrol_oneroster\local\entities\user as root_user_entity;
-
-
-
 use enrol_oneroster\local\v1p1\oneroster_client as client_version_one;
 use enrol_oneroster\local\v1p2\responses\default_response;
 use enrol_oneroster\local\v1p2\statusinfo_relations\status_info;
@@ -61,8 +48,7 @@ use DateTime;
  * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-trait oneroster_client
-{
+trait oneroster_client {
     use client_version_one;
 
     /**
@@ -158,12 +144,9 @@ trait oneroster_client
                 'response' => $response,
             ];
         } catch (\Exception $error) {
-            // Create error status info for any exceptions
-            $error_response = $this->create_error_response_with_status_info($error);
-            return (object) [
-                'info' => $this->get_request_info(),
-                'response' => $error_response,
-            ];
+            // Log the error and re-throw as a Moodle exception
+            $this->get_trace()->output("OneRoster API call failed: " . $error->getMessage(), 1);
+            throw new moodle_exception("OneRoster API call failed: " . $error->getMessage());
         }
     }
 
@@ -241,7 +224,7 @@ trait oneroster_client
         if ($status_info['imsx_codeMajor'] === 'failure') {
             // If code major is failure, checking if the code minor section is present.
             if (!isset($status_info['imsx_CodeMinor'])) {
-                throw new moodle_exception(status_info::no_code_minor_meesage);
+                throw new moodle_exception(status_info::no_code_minor_message);
             }
 
             // Convert to array if it's an object (from JSON response)
@@ -273,65 +256,6 @@ trait oneroster_client
         return true;
     }
 
-    /**
-     * Function that creates an error response with status info using the default_response class.
-     * @param error The exception that occurred
-     * @param command The command that was executed
-     * @return stdClass The error response with status info
-     */
-    private function create_error_response_with_status_info(\Exception $error): stdClass {
-        $status_code = $error->getCode();
-        $code_minor = $this->get_code_minor_for_status($status_code);
-
-        // Convert array to proper codeMinor object
-        $code_minor_field = new \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_field(
-            \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor_values::from($code_minor['imsx_codeMinorField'][0]['imsx_codeMinorFieldValue']),
-            $code_minor['imsx_codeMinorField'][0]['imsx_codeMinorFieldName']
-        );
-
-        $code_minor_obj = new \enrol_oneroster\local\v1p2\statusinfo_relations\code_minor($code_minor_field);
-
-        // Create a failure response with status info
-        $default_response = default_response::failure(
-            \enrol_oneroster\local\v1p2\statusinfo_relations\severity::error,
-            $code_minor_obj,
-            $error->getMessage()
-        );
-
-        // Convert the response to an object to maintain consistency
-        return (object) $default_response->to_array();
-    }
-
-    /**
-     * Function that creates a specific code minor based on the http status code.
-     * @param statusCode The http status code
-     * @return array The code minor information array
-     */
-    private function get_code_minor_for_status(int $status_code): array {
-        return match ($status_code) {
-            400 => ['imsx_codeMinorField' => [
-                ['imsx_codeMinorFieldName' => 'TargetEndSystem', 'imsx_codeMinorFieldValue' => 'invaliddata']
-            ]],
-            401 => ['imsx_codeMinorField' => [
-                ['imsx_codeMinorFieldName' => 'TargetEndSystem', 'imsx_codeMinorFieldValue' => 'unauthorisedrequest']
-            ]],
-            403 => ['imsx_codeMinorField' => [
-                ['imsx_codeMinorFieldName' => 'TargetEndSystem', 'imsx_codeMinorFieldValue' => 'forbidden']
-            ]],
-            404 => ['imsx_codeMinorField' => [
-                ['imsx_codeMinorFieldName' => 'TargetEndSystem', 'imsx_codeMinorFieldValue' => 'unknownobject']
-            ]],
-            429 => ['imsx_codeMinorField' => [
-                ['imsx_codeMinorFieldName' => 'TargetEndSystem', 'imsx_codeMinorFieldValue' => 'server_busy']
-            ]],
-            500 => ['imsx_codeMinorField' => [
-                ['imsx_codeMinorFieldName' => 'TargetEndSystem', 'imsx_codeMinorFieldValue' => 'internal_server_error']
-            ]],
-            default => ['imsx_codeMinorField' => [
-                ['imsx_codeMinorFieldName' => 'TargetEndSystem', 'imsx_codeMinorFieldValue' => 'internal_server_error']
-            ]]
-        };
-    }
 
     /**
      * Sync the roster.
@@ -364,7 +288,36 @@ trait oneroster_client
 
         // Only fetch users last modified in the past day.
         // All timezones in One Roster are Zulu.
-        $this->sync_users_in_schools($schoolidstosync, $onlysince);
+        $filter = null;
+        if ($onlysince) {
+            // Only fetch users last modified in the onlysince period.
+            $filter = new filter('dateLastModified',  $onlysince->format('o-m-d'), '>');
+        }
+        // Note: Some Endpoints do not sort properly on Array properties.
+        $users = $this->get_container()->get_collection_factory()->get_users(
+            [],
+            $filter,
+            function($data) use ($schoolidstosync) {
+                $roles = $data->get('roles');
+                $roleids = [];
+
+                foreach ($roles as $role) {
+                    $orgid = $role->orgSourcedId;
+                    if (!empty($orgid)) {
+                        $roleids[] = $orgid;
+                    }
+                }
+
+            $foundids = array_unique($roleids);
+            return !!count(array_intersect($schoolidstosync, $foundids));
+            }
+        );
+        $usercount = 0;
+        foreach ($users as $user) {
+            $this->update_or_create_user($user);
+            $usercount++;
+        }
+        $this->get_trace()->output("Finished processing users. Processed {$usercount} users", 3);
 
         // Fetch the details of all enrolment instances before running the sync.
         $this->cache_enrolment_instances();
@@ -538,44 +491,6 @@ trait oneroster_client
         }
     }
 
-    /**
-     * Synchronise all users in the Schools.
-     *
-     * @param   int[] $schoolids
-     * @param   DateTime|null $onlysince Only sync users which have been remotely modified since the specified date
-     */
-    public function sync_users_in_schools(array $schoolids, ?DateTime $onlysince = null): void {
-        $filter = null;
-        if ($onlysince) {
-            // Only fetch users last modified in the onlysince period.
-            $filter = new filter('dateLastModified',  $onlysince->format('o-m-d'), '>');
-        }
-        // Note: Some Endpoints do not sort properly on Array properties.
-        $users = $this->get_container()->get_collection_factory()->get_users(
-            [],
-            $filter,
-            function($data) use ($schoolids) {
-                $roles = $data->get('roles');
-                $roleids = [];
-
-                foreach ($roles as $role) {
-                    $orgid = $role->orgSourcedId;
-                    if (!empty($orgid)) {
-                        $roleids[] = $orgid;
-                    }
-                }
-
-            $foundids = array_unique($roleids);
-            return !!count(array_intersect($schoolids, $foundids));
-            }
-        );
-        $usercount = 0;
-        foreach ($users as $user) {
-            $this->update_or_create_user($user);
-            $usercount++;
-        }
-        $this->get_trace()->output("Finished processing users. Processed {$usercount} users", 3);
-    }
 
     /**
      * Update or create a Moodle User based on an entity representing a user.
