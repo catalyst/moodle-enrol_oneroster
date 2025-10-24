@@ -18,49 +18,33 @@
  * One Roster Enrolment Client Unit tests.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
+ * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace enrol_oneroster\tests\local\v1p2;
-
-use advanced_testcase;
-use enrol_oneroster\local\v1p2\csv_client_helper;
+use enrol_oneroster\local\v1p1\csv_client_helper;
 use enrol_oneroster\client_helper;
-
-require_once(__DIR__ . '/../../../classes/local/v1p2/csv_client_helper.php');
-
 
 /**
  * One Roster tests for the client_helper class.
  *
  * @package    enrol_oneroster
- * @copyright  QUT Capstone Team - Abhinav Gandham, Harrison Dyba, Jonathon Foo, Kushi Patel
+ * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * @covers  \enrol_oneroster\local\csv_client_helper
  */
-class csv_client_test extends TestCase {
+class csv_client_test extends \advanced_testcase {
+
     /**
-     * Sets role mappings, runs test environment, runs syncronise on csv data, tests role mappings.
+     * Test the synchronise method with the full data set.
+     *
+     * @covers \enrol_oneroster\local\csv_client
      */
     public function test_execute_full_data() {
         $this->resetAfterTest(true);
-        $selectedorg = 'ORG_1';
-        $zipfilepath = __DIR__ . '/../../fixtures/csv_data/oneroster_test_data.zip';
-        global $DB;
-
-        set_config('role_mapping_teacher', 'student', 'enrol_oneroster');
-        set_config('role_mapping_student', 'student', 'enrol_oneroster');
-        set_config('role_mapping_aide', 'student', 'enrol_oneroster');
-        set_config('role_mapping_proctor', 'student', 'enrol_oneroster');
-        set_config('role_mapping_parent', 'student', 'enrol_oneroster');
-        set_config('role_mapping_guardian', 'student', 'enrol_oneroster');
-        set_config('role_mapping_relative', 'student', 'enrol_oneroster');
-        set_config('role_mapping_counselor', 'student', 'enrol_oneroster');
-        set_config('role_mapping_districtAdmin', 'student', 'enrol_oneroster');
-        set_config('role_mapping_principal', 'student', 'enrol_oneroster');
-        set_config('role_mapping_siteAdmin', 'student', 'enrol_oneroster');
-        set_config('role_mapping_systemAdmin', 'student', 'enrol_oneroster');
+        $selectedorg = 'org-sch-222-456';
+        $zipfilepath = __DIR__ . '/../../fixtures/csv_data/Test_full_data_set.zip';
 
         // Prepare the test environment.
         $csvclient = $this->prepare_test_environment($selectedorg, $zipfilepath);
@@ -69,22 +53,37 @@ class csv_client_test extends TestCase {
         $csvclient->synchronise();
 
         // Assert database records.
-        $users = $DB->get_records('user');
+        $this->assert_database_records(2, 6, 2); // Expected counts for courses, users, enrolments.
+    }
 
-        foreach ($users as $userid => $data){
-            $this->assert_user_roles($userid);
-        }
+    /**
+     * Test the synchronise method with the minimal data set.
+     *
+     * @covers \enrol_oneroster\local\csv_client
+     */
+    public function test_execute_minimal_data() {
+        $this->resetAfterTest(true);
+        $selectedorg = 'org-sch-222-456';
+        $zipfilepath = __DIR__ . '/../../fixtures/csv_data/Test_minimal_data_set.zip';
 
+        // Prepare the test environment.
+        $csvclient = $this->prepare_test_environment($selectedorg, $zipfilepath);
+
+        // Perform synchronization.
+        $csvclient->synchronise();
+
+        // Assert database records.
+        $this->assert_database_records(2, 6, 2); // Expected counts for courses, users, enrolments.
     }
 
     /**
      * Prepares the test environment by extracting and validating CSV data.
      *
-     * @param string $org The organization ID to use.
-     * @param string $filepath The path to the ZIP file containing CSV data.
+     * @param string $selectedorg The organization ID to use.
+     * @param string $zipfilepath The path to the ZIP file containing CSV data.
      * @return \enrol_oneroster\local\csv_client The prepared CSV client.
      */
-    private function prepare_test_environment($org, $filepath){
+    private function prepare_test_environment(string $selectedorg, string $zipfilepath) {
         global $DB;
 
         $uniqueid = uniqid();
@@ -92,7 +91,7 @@ class csv_client_test extends TestCase {
 
         // Extract ZIP file.
         $zip = new \ZipArchive();
-        $res = $zip->open($filepath);
+        $res = $zip->open($zipfilepath);
         $this->assertTrue($res === true, 'The ZIP file should open successfully.');
         $zip->extractTo($tempdir);
         $zip->close();
@@ -101,7 +100,6 @@ class csv_client_test extends TestCase {
 
         // Check manifest and files.
         $missingfiles = csv_client_helper::check_manifest_and_files($manifestpath, $tempdir);
-
         $this->assertEmpty($missingfiles['missingfiles'], 'There should be no missing files according to the manifest.');
         $this->assertEmpty($missingfiles['invalidheaders'], 'There should be no invalid headers in the extracted CSV files.');
 
@@ -110,64 +108,71 @@ class csv_client_test extends TestCase {
         $this->assertArrayHasKey('is_valid', $isvalid);
         $this->assertTrue($isvalid['is_valid']);
 
-
         // Extract CSV data to arrays.
         $csvdata = csv_client_helper::extract_csvs_to_arrays($tempdir);
         $this->assertNotEmpty($csvdata, 'The extracted CSV data should not be empty.');
 
-        set_config('datasync_schools', $org, 'enrol_oneroster');
+        // Validate user data and set configuration.
+        if (csv_client_helper::validate_user_data($csvdata) === true) {
+            set_config('datasync_schools', $selectedorg, 'enrol_oneroster');
+        }
 
         // Initialize CSV client.
         $csvclient = client_helper::get_csv_client();
-        $csvclient->set_org_id($org);
+        $csvclient->set_org_id($selectedorg);
+
         // Set CSV data.
         $manifest = $csvdata['manifest'] ?? [];
         $users = $csvdata['users'] ?? [];
         $classes = $csvdata['classes'] ?? [];
-        $courses = $csvdata['courses'] ?? [];
         $orgs = $csvdata['orgs'] ?? [];
         $enrollments = $csvdata['enrollments'] ?? [];
         $academicsessions = $csvdata['academicSessions'] ?? [];
-        $roles = $csvdata['roles'] ?? [];
-        $demographics = $csvdata['demographics'] ?? [];
-        $userprofiles = $csvdata['userProfiles'] ?? [];
 
-        $csvclient->versioned_set_data($manifest, $users, $classes, $courses, $orgs, $enrollments, $academicsessions, $roles, $demographics, $userprofiles);
+        $csvclient->set_data($manifest, $users, $classes, $orgs, $enrollments, $academicsessions);
+
         return $csvclient;
     }
 
     /**
-     * check's that agents have been associated to a student
+     * Asserts the database records after synchronization.
      *
-     * @param string $studentId the student to check
-     * @param array $the ID's of the agents associated with user
+     * @param int $expectedcourses The expected number of courses.
+     * @param int $expectedusers The expected number of users.
+     * @param int $expectedenrolments The expected number of enrolments.
      */
-    private function assert_user_agents($studentId, $agentIDs,){
-        global $DB;
-        $users = $DB->get_records('user', ['userid' => $studentId]);
-
-    }
-
-    /**
-     * check's that agents have been associated to a student
-     *
-     * @param string $userID the user to check
-     * @param array $roles that should be associated with user
-     */
-    private function assert_user_roles($userID){
+    private function assert_database_records(int $expectedcourses, int $expectedusers, int $expectedenrolments) {
         global $DB;
 
-        $ras = $DB->get_records('role_assignments', ['userid'=>$userID]);
+        $courses = $DB->get_records_select('course', 'id != 1'); // Exclude default course
+        $users = $DB->get_records_select('user', 'id > 2'); // Exclude default users (admin=1, guest=2)
+        $enrolments = $DB->get_records('enrol');
 
-        $mapped = array_map(function($el) {
-            global $DB;
-            $role = $DB->get_record('roles', ['id' => $el->roleid]);
-            return $role->shortname;
-        }, $ras);
+        // Check courses.
+        foreach ($courses as $course) {
+            $this->assertArrayHasKey('id', (array)$course);
+            $this->assertArrayHasKey('fullname', (array)$course);
+            $this->assertIsString($course->fullname, 'Course fullname should be a string.');
+        }
 
-        //assert the oneroster roles to find which moodle keys you're looking to assert
-        if (!empty($mapped)){
-            $this->assertArrayHasKey('student', $mapped);
-        };
+        // Check users.
+        foreach ($users as $user) {
+            $this->assertArrayHasKey('id', (array)$user);
+            $this->assertArrayHasKey('username', (array)$user);
+            $this->assertIsString($user->username, 'Username should be a string.');
+        }
+
+        // Check enrolments.
+        foreach ($enrolments as $enrol) {
+            $this->assertArrayHasKey('courseid', (array)$enrol);
+            $this->assertArrayHasKey('enrol', (array)$enrol);
+            $courseid = (int)$enrol->courseid;
+            $this->assertIsInt($courseid, 'Course ID should be an integer.');
+        }
+
+        // Assertions for record counts.
+        $this->assertCount($expectedcourses, $courses, "There should be exactly {$expectedcourses} course records.");
+        $this->assertCount($expectedusers, $users, "There should be exactly {$expectedusers} user records.");
+        $this->assertCount($expectedenrolments, $enrolments, "There should be exactly {$expectedenrolments} enrolment records.");
     }
 }

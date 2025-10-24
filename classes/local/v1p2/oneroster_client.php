@@ -29,7 +29,6 @@ use enrol_oneroster\local\entities\school as school_entity;
 use enrol_oneroster\local\v1p2\entities\user as user_entity;
 use enrol_oneroster\local\entities\user as root_user_entity;
 use enrol_oneroster\local\v1p1\oneroster_client as client_version_one;
-use enrol_oneroster\local\v1p2\responses\default_response;
 use enrol_oneroster\local\v1p2\statusinfo_relations\status_info;
 use enrol_oneroster\local\command;
 use enrol_oneroster\local\interfaces\filter;

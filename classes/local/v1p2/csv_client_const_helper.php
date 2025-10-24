@@ -28,7 +28,6 @@ use enrol_oneroster\local\v1p1\csv_client_const_helper as csv_client_const_helpe
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class csv_client_const_helper extends csv_client_const_helper_version_one{
-   // Insert new header constands here.
    /**
      * Header field for the user sourced ID.
      */
@@ -65,7 +64,8 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
      * @var array
      */
     const VALID_ENROLLMENT_ROLES = ['administrator', 'proctor', 'student', 'teacher'];
-     /**
+
+    /**
      * Valid roles for Role.
      *
      * @var array
@@ -88,7 +88,6 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
      */
     const VALID_DEMOGRAPHICS_SEX = ['male', 'female', 'unspecified', 'other'];
 
-
     /**
      * Valid demographic values.
      *
@@ -98,9 +97,7 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
 
     const DATATYPE_DEMOGRAPHIC_ENUM = 'enum_demographic';
 
-
     const DATATYPE_SEX = 'sex';
-
 
     /**
    * Id field for the vendor id.
@@ -162,7 +159,6 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
     */
    const HEADER_PRONOUNS = 'pronouns';
 
-
    /**
      * File name for courses.
      */
@@ -173,12 +169,10 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
     */
    const HEADER_SCHOOL_YEAR_SOURCED_ID = 'schoolYearSourcedId';
 
-
    /**
     *  Course Ccode field for courses.
     */
    const HEADER_COURSE_CODE = 'courseCode';
-
 
 
    /**
@@ -186,12 +180,10 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
    */
    const FILE_DEMOGRAPHICS = 'demographics.csv';
 
-
    /**
    * Sex field for demographics.
    */
    const HEADER_SEX = 'sex';
-
 
    /**
    * American Indian of Alaksa Native field for demographics.
@@ -208,12 +200,10 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
    */
    const HEADER_BLACK_OR_AFRICAN_AMERICAN = 'blackOrAfricanAmerican';
 
-
    /**
    * Native hawaiian or other pacific islander field for demographics.
    */
    const HEADER_NATIVE_HAWAIIAN_OR_OTHER_PACIFIC_ISLANDER = 'nativeHawaiianOrOtherPacificIslander';
-
 
    /**
    * White field for demographics.
@@ -239,7 +229,6 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
    */
    const HEADER_STATE_OF_BITH_ABBREVIATION = 'stateOfBirthAbbreviation';
 
-
    /**
    * City of birth field for demographics.
    */
@@ -249,7 +238,6 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
    * Public school residence status field for demographics.
    */
    const HEADER_PUBLIC_SCHOOL_RESIDENCE_STATUS = 'publicSchoolResidenceStatus';
-
 
    /**
    * Birth Date field for demographics.
@@ -274,6 +262,26 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
       self::HEADER_SUBJECTS,
       self::HEADER_SUBJECT_CODES,
 
+   ];
+
+   /**
+     * Header fields for user profiles
+     *
+     *
+     * @var array
+     */
+    const HEADER_USERPROFILES = [
+      self::HEADER_SOURCEDID,
+      self::HEADER_STATUS,
+      self::HEADER_DATE_LAST_MODIFIED,
+      self::HEADER_USER_SOURCEDID,
+      self::HEADER_PROFILE_TYPE,
+      self::HEADER_VENDOR_ID,
+      self::HEADER_APPLICATION_ID,
+      self::HEADER_DESCRIPTION,
+      self::HEADER_CREDENTIAL_TYPE,
+      self::HEADER_USERNAME,
+      self::HEADER_PASSWORD
    ];
 
    /**
@@ -307,7 +315,7 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
       self::HEADER_PRONOUNS
    ];
 
-    /**
+   /**
      * Header fields for the roles file.
      *
      * @var array
@@ -324,26 +332,6 @@ class csv_client_const_helper extends csv_client_const_helper_version_one{
         self::HEADER_ORG_SOURCEDID,
         self::HEADER_USERPROFILE_SOURCEDID
     ];
-
-    /**
-     * Header fields for user profiles
-     *
-     *
-     * @var array
-     */
-    const HEADER_USERPROFILES = [
-        self::HEADER_SOURCEDID,
-        self::HEADER_STATUS,
-        self::HEADER_DATE_LAST_MODIFIED,
-        self::HEADER_USER_SOURCEDID,
-        self::HEADER_PROFILE_TYPE,
-        self::HEADER_VENDOR_ID,
-        self::HEADER_APPLICATION_ID,
-        self::HEADER_DESCRIPTION,
-        self::HEADER_CREDENTIAL_TYPE,
-        self::HEADER_USERNAME,
-        self::HEADER_PASSWORD
-     ];
 
    /**
      * Header fields for the demographics file.
