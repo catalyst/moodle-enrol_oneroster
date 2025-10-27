@@ -22,11 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\entities;
+namespace enrol_oneroster\tests\local\entities;
 
 defined('MOODLE_INTERNAL') || die;
-require_once(__DIR__ . '/../oneroster_testcase.php');
-use enrol_oneroster\local\oneroster_testcase;
+require_once(__DIR__ . '/../v1p2/oneroster_testcase.php');
+use enrol_oneroster\tests\local\v1p2\oneroster_testcase;
 
 use enrol_oneroster\local\container;
 use enrol_oneroster\local\interfaces\container as container_interface;

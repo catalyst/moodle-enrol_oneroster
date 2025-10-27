@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local;
+namespace enrol_oneroster\tests\local;
 
 use advanced_testcase;
 use enrol_oneroster\local\interfaces\client as client_interface;
@@ -36,6 +36,7 @@ use enrol_oneroster\local\oneroster_client as root_oneroster_client;
 use enrol_oneroster\local\endpoints\rostering as rostering_endpoint;
 use enrol_oneroster\local\factories\collection_factory;
 use enrol_oneroster\local\factories\entity_factory;
+use enrol_oneroster\local\container;
 
 /**
  * One Roster Entity tests.
@@ -54,7 +55,7 @@ abstract class oneroster_testcase extends advanced_testcase {
         $client = $this->mock_client();
         $mock = $this->getMockBuilder(container::class)
             ->setConstructorArgs([$client])
-            ->setMethods([
+            ->onlyMethods([
                 '__construct',
                 'get_client',
                 'get_rostering_endpoint',
@@ -77,7 +78,7 @@ abstract class oneroster_testcase extends advanced_testcase {
      * @return filter_interface
      */
     protected function mock_filter(): filter_interface {
-        return $this->createMock(abstract_filter::class);
+        return $this->getMockBuilder(abstract_filter::class)->getMock();
     }
 
     /**
@@ -86,8 +87,8 @@ abstract class oneroster_testcase extends advanced_testcase {
      * @return  client_interface
      */
     protected function mock_client(): client_interface {
-        require_once(__DIR__ . '/../fixtures/oneroster_client.php');
-        return $this->createMock(\enrol_oneroster\tests\fixtures\local\oneroster_client::class);
+        require_once(__DIR__ . '/test_client.php');
+        return new \enrol_oneroster\tests\local\test_client();
     }
 
     /**
@@ -100,7 +101,7 @@ abstract class oneroster_testcase extends advanced_testcase {
     protected function mock_rostering_endpoint(container_interface $container, array $mockfunctions): rostering_endpoint_interface {
         $mock = $this->getMockBuilder(rostering_endpoint::class)
             ->setConstructorArgs([$container])
-            ->setMethods(array_values($mockfunctions))
+            ->onlyMethods(array_values($mockfunctions))
             ->getMock();
 
         $container->method('get_rostering_endpoint')->willReturn($mock);
@@ -118,7 +119,7 @@ abstract class oneroster_testcase extends advanced_testcase {
     protected function mock_entity_factory(container_interface $container, array $mockfunctions): entity_factory_interface {
         $mock = $this->getMockBuilder(entity_factory::class)
             ->setConstructorArgs([$container])
-            ->setMethods(array_values($mockfunctions))
+            ->onlyMethods(array_values($mockfunctions))
             ->getMock();
 
         $container->method('get_entity_factory')->willReturn($mock);
@@ -136,7 +137,7 @@ abstract class oneroster_testcase extends advanced_testcase {
     protected function mock_collection_factory(container_interface $container, array $mockfunctions): collection_factory_interface {
         $mock = $this->getMockBuilder(collection_factory::class)
             ->setConstructorArgs([$container])
-            ->setMethods(array_values($mockfunctions))
+            ->onlyMethods(array_values($mockfunctions))
             ->getMock();
 
         $container->method('get_collection_factory')->willReturn($mock);

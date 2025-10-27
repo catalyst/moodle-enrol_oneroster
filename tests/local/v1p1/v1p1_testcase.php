@@ -26,7 +26,7 @@ namespace enrol_oneroster\local\v1p1;
 
 defined('MOODLE_INTERNAL') || die;
 require_once(__DIR__ . '/../oneroster_testcase.php');
-use enrol_oneroster\local\oneroster_testcase;
+use enrol_oneroster\tests\local\oneroster_testcase;
 
 use enrol_oneroster\local\v1p1\container;
 use enrol_oneroster\local\interfaces\container as container_interface;
@@ -53,7 +53,7 @@ abstract class v1p1_testcase extends oneroster_testcase {
         $client = $this->mock_client();
         $mock = $this->getMockBuilder(container::class)
             ->setConstructorArgs([$client])
-            ->setMethods([
+            ->onlyMethods([
                 '__construct',
                 'get_client',
                 'get_rostering_endpoint',

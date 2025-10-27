@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace enrol_oneroster\local;
+namespace enrol_oneroster\local\v1p1;
 
 use enrol_oneroster\local\interfaces\client as client_interface;
+use enrol_oneroster\local\interfaces\rostering_client as rostering_client_interface;
 use enrol_oneroster\local\oneroster_client as root_oneroster_client;
 use enrol_oneroster\local\command;
 use enrol_oneroster\local\interfaces\filter;
@@ -33,9 +34,16 @@ use enrol_oneroster\local\v1p1\oneroster_client as versioned_client;
  * @copyright  Gustavo Amorim De Almeida, Ruben Cooper, Josh Bateson, Brayden Porter
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class csv_client implements client_interface {
+class csv_client implements client_interface, rostering_client_interface {
     use root_oneroster_client;
     use versioned_client;
+
+    /**
+     * CSV data array.
+     *
+     * @var array
+     */
+    private array $data;
 
     /**
      * Base path for organisations.
@@ -72,7 +80,7 @@ class csv_client implements client_interface {
      *
      * @var string The organisation ID.
      */
-    private $orgid;
+    protected $orgid;
 
     /**
      * Key for academic sessions.
@@ -133,6 +141,46 @@ class csv_client implements client_interface {
             'orgs' => $orgs,
             'enrollments' => $enrollments,
             'academicSessions' => $academicsessions,
+        ];
+    }
+
+    /**
+     * Set the CSV data for synchronization with v1p2 additional fields.
+     *
+     * @param array $manifest The manifest data.
+     * @param array $users The users data.
+     * @param array $classes The classes data.
+     * @param array $courses The courses data.
+     * @param array $orgs The orgs data.
+     * @param array $enrollments The enrollments data.
+     * @param array $academicsessions The academic sessions data.
+     * @param array $roles The roles data.
+     * @param array $demographics The demographics data.
+     * @param array|null $userprofiles The user profiles data (optional).
+     */
+    public function versioned_set_data(
+        array $manifest,
+        array $users,
+        array $classes,
+        array $courses,
+        array $orgs,
+        array $enrollments,
+        array $academicsessions,
+        array $roles,
+        array $demographics,
+        ?array $userprofiles = null
+    ): void {
+        $this->data = [
+            'manifest' => $manifest,
+            'users' => $users,
+            'classes' => $classes,
+            'courses' => $courses,
+            'orgs' => $orgs,
+            'enrollments' => $enrollments,
+            'academicSessions' => $academicsessions,
+            'roles' => $roles,
+            'demographics' => $demographics,
+            'userProfiles' => $userprofiles ?? [],
         ];
     }
 
@@ -412,6 +460,174 @@ class csv_client implements client_interface {
                 ];
             default:
                 return new stdClass();
+        }
+    }
+
+    /**
+     * Sync roster data from CSV files.
+     * This method processes CSV data using the standard OneRoster synchronization pattern.
+     *
+     * @param int|null $onlysincetime Only sync data modified after this time
+     */
+    public function sync_roster(?int $onlysincetime = null): void {
+
+        $this->get_trace()->output("Starting CSV roster synchronization");
+
+        // Process courses first
+        if (isset($this->data['classes'])) {
+            $this->get_trace()->output("Processing classes/courses", 1);
+            foreach ($this->data['classes'] as $class) {
+                $this->create_or_update_course($class);
+            }
+        }
+
+        // Process users
+        if (isset($this->data['users'])) {
+            $this->get_trace()->output("Processing users", 1);
+            foreach ($this->data['users'] as $user) {
+                $this->create_or_update_user($user);
+            }
+        }
+
+        // Process enrollments
+        if (isset($this->data['enrollments'])) {
+            $this->get_trace()->output("Processing enrollments", 1);
+            foreach ($this->data['enrollments'] as $enrollment) {
+                $this->create_or_update_enrollment($enrollment);
+            }
+        }
+
+        $this->get_trace()->output("Completed CSV roster synchronization");
+    }
+
+    /**
+     * Create or update a course from CSV data.
+     *
+     * @param array $class The class data.
+     */
+    private function create_or_update_course($class): void {
+        global $DB;
+
+        $course = new stdClass();
+        $course->fullname = $class['title'] ?? 'Untitled Course';
+        $course->shortname = !empty($class['classCode']) ? $class['classCode'] : $class['sourcedId'];
+        $course->category = 1; // Default category
+        $course->visible = 1;
+        $course->startdate = time();
+
+        // Check if course already exists
+        $existing = $DB->get_record('course', ['shortname' => $course->shortname]);
+        if ($existing) {
+            $course->id = $existing->id;
+            $DB->update_record('course', $course);
+        } else {
+            $course->id = $DB->insert_record('course', $course);
+        }
+
+        // Ensure enrollment instance exists
+        $this->ensure_enrollment_instance($course->id);
+    }
+
+    /**
+     * Create or update a user from CSV data.
+     *
+     * @param array $user The user data.
+     */
+    private function create_or_update_user($user): void {
+        global $DB;
+
+        $userobj = new stdClass();
+        $userobj->username = $user['username'] ?? 'user' . time();
+        $userobj->firstname = $user['givenName'] ?? '';
+        $userobj->lastname = $user['familyName'] ?? '';
+        $userobj->email = $user['email'] ?? $userobj->username . '@example.com';
+        $userobj->confirmed = 1;
+        $userobj->mnethostid = 1;
+
+        // Check if user already exists
+        $existing = $DB->get_record('user', ['username' => $userobj->username]);
+        if ($existing) {
+            $userobj->id = $existing->id;
+            $DB->update_record('user', $userobj);
+        } else {
+            $userobj->id = $DB->insert_record('user', $userobj);
+        }
+    }
+
+    /**
+     * Create or update an enrollment from CSV data.
+     *
+     * @param array $enrollment The enrollment data.
+     */
+    private function create_or_update_enrollment($enrollment): void {
+        global $DB;
+
+        // Get the course by sourcedId
+        $course = $DB->get_record('course', ['shortname' => $enrollment['classSourcedId'] ?? '']);
+        if (!$course) {
+            return; // Skip if course doesn't exist
+        }
+
+        // Get the user by sourcedId
+        $user = $DB->get_record('user', ['username' => $enrollment['userSourcedId'] ?? '']);
+        if (!$user) {
+            return; // Skip if user doesn't exist
+        }
+
+        // Get the enrollment instance
+        $enrolinstance = $DB->get_record('enrol', [
+            'courseid' => $course->id,
+            'enrol' => 'oneroster'
+        ]);
+
+        if (!$enrolinstance) {
+            return; // Skip if enrollment instance doesn't exist
+        }
+
+        // Check if enrollment already exists
+        $existing = $DB->get_record('user_enrolments', [
+            'userid' => $user->id,
+            'enrolid' => $enrolinstance->id
+        ]);
+
+        if (!$existing) {
+            $userenrolment = new stdClass();
+            $userenrolment->userid = $user->id;
+            $userenrolment->enrolid = $enrolinstance->id;
+            $userenrolment->status = 0; // Active
+            $userenrolment->timestart = time();
+            $userenrolment->timeend = 0;
+            $userenrolment->modifierid = 2; // Admin user
+            $userenrolment->timecreated = time();
+            $userenrolment->timemodified = time();
+
+            $DB->insert_record('user_enrolments', $userenrolment);
+        }
+    }
+
+    /**
+     * Ensure enrollment instance exists for a course.
+     *
+     * @param int $courseid The course ID.
+     */
+    private function ensure_enrollment_instance($courseid): void {
+        global $DB;
+
+        $enrolinstance = $DB->get_record('enrol', [
+            'courseid' => $courseid,
+            'enrol' => 'oneroster'
+        ]);
+
+        if (!$enrolinstance) {
+            $enrol = new stdClass();
+            $enrol->enrol = 'oneroster';
+            $enrol->courseid = $courseid;
+            $enrol->status = 0; // Enabled
+            $enrol->sortorder = 0;
+            $enrol->timecreated = time();
+            $enrol->timemodified = time();
+
+            $DB->insert_record('enrol', $enrol);
         }
     }
 }

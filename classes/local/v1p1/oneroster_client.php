@@ -147,7 +147,6 @@ trait oneroster_client {
 
         $schoolidstosync = explode(',', get_config('enrol_oneroster', 'datasync_schools'));
         $countofschools = count($schoolidstosync);
-
         $this->get_trace()->output("Processing {$countofschools} schools");
 
         $onlysince = null;
@@ -275,7 +274,6 @@ EOF;
             // Only fetch users last modified in the onlysince period.
             $filter = new filter('dateLastModified',  $onlysince->format('o-m-d'), '>');
         }
-
         // Note: Some Endpoints do not sort properly on Array properties.
         $users = $this->get_container()->get_collection_factory()->get_users(
             [],
@@ -288,7 +286,6 @@ EOF;
                 return !!count(array_intersect($schoolids, $foundids));
             }
         );
-
         $usercount = 0;
         foreach ($users as $user) {
             $this->update_or_create_user($user);
@@ -575,7 +572,6 @@ EOF;
             $remoteuser->username,
             $remoteuser->idnumber
         ), 4);
-
         $localuserid = user_create_user($remoteuser);
         $this->add_metric('user', 'create');
 
@@ -876,7 +872,6 @@ EOF;
      */
     protected function get_role_mapping(string $rolename, int $intendedcontextlevel): ?int {
         $roleid = $this->get_config_setting("role_mapping_{$rolename}");
-
         if (empty($roleid)) {
             // This is user is not configured.
             return null;

@@ -22,11 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local;
+namespace enrol_oneroster\tests\local;
 
 defined('MOODLE_INTERNAL') || die;
 require_once(__DIR__ . '/oneroster_testcase.php');
-use enrol_oneroster\local\oneroster_testcase;
+use enrol_oneroster\tests\local\oneroster_testcase;
+use enrol_oneroster\local\oauth2_client;
 
 /**
  * One Roster tests for OAuth2 Client.
@@ -44,13 +45,15 @@ class oauth2_client_test extends oneroster_testcase {
      *
      * @return  container
      */
-    public function test_auth_url_is_unused(): container {
-        $client = $this->getMockBuilder(oauth2_client::class)
-            ->disableOriginalConstructor()
-            ->setMethods([])
-            ->getMock();
+    public function test_auth_url_is_unused(): void {
+        $client = new \enrol_oneroster\local\v1p1\oauth2_client(
+            'https://example.org/token',
+            'https://example.org',
+            'clientid',
+            'clientsecret'
+        );
 
-        $rc = new \ReflectionClass(oauth2_client::class);
+        $rc = new \ReflectionClass(\enrol_oneroster\local\v1p1\oauth2_client::class);
         $rcm = $rc->getMethod('auth_url');
         $rcm->setAccessible(true);
 
@@ -74,10 +77,13 @@ class oauth2_client_test extends oneroster_testcase {
                 $clientid,
                 $clientsecret
             ])
-            ->setMethodsExcept([
+            ->onlyMethods([
                 'authenticate',
-            ])
-            ->getMock();
+                'get_all_scopes',
+                'post',
+                'get_request_info',
+                'get_base_url',
+            ])->getMock();
 
         $scopes = [
             'https://example.org/spec/example/v1p1/scope/example.dosoemthing',

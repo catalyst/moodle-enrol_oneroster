@@ -14,7 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace enrol_oneroster;
-use \enrol_oneroster\local\csv_client_const_helper;
+use \enrol_oneroster\local\v1p1\csv_client_const_helper;
+use \enrol_oneroster\local\v1p2\csv_client_const_helper as csv_client_const_helper_v1p2;
 
 /**
  * Helper class for tests that involve CSV files.

@@ -22,11 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local;
+namespace enrol_oneroster\tests\local;
 
 defined('MOODLE_INTERNAL') || die;
-require_once(__DIR__ . '/oneroster_testcase.php');
-use enrol_oneroster\local\oneroster_testcase;
+require_once(__DIR__ . '/v1p2/oneroster_testcase.php');
+use enrol_oneroster\tests\local\v1p2\oneroster_testcase;
+use enrol_oneroster\local\v1p1\container;
+use enrol_oneroster\local\service;
 
 use enrol_oneroster\local\interfaces\client as client_interface;
 
@@ -56,7 +58,7 @@ class container_test extends oneroster_testcase {
 
         return $this->getMockBuilder(container::class)
             ->setConstructorArgs([$client])
-            ->setMethods([
+            ->onlyMethods([
                 'get_filter_instance',
                 'get_cache_factory',
                 'get_collection_factory',

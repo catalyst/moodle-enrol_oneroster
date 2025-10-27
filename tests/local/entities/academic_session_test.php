@@ -22,12 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_oneroster\local\entities;
+namespace enrol_oneroster\tests\local\entities;
 
 defined('MOODLE_INTERNAL') || die;
 require_once(__DIR__ . '/entity_testcase.php');
-use enrol_oneroster\local\entities\entity_testcase;
-
+require_once(__DIR__ . '/../../../classes/local/entities/academic_session.php');
+use enrol_oneroster\tests\local\entities\entity_testcase;
+use enrol_oneroster\local\entities\academic_session;
 use stdClass;
 use OutOfRangeException;
 

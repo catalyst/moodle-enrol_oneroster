@@ -18,7 +18,7 @@
  * Strings for component 'enrol_oneroster', language 'en'.
  *
  * @package    enrol_oneroster
- * @copyright  Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -45,6 +45,7 @@ $string['settings_connection_settings'] = 'Connections settings';
 $string['settings_connection_token_url'] = 'Token URL';
 $string['settings_connection_token_url_desc'] = 'The OAuth URL used to fetch an authentication token.';
 $string['settings_connection_v1p1'] = 'Version 1.1';
+$string['settings_connection_v1p2'] = 'Version 1.2';
 $string['settings_datasync'] = 'Data synchronisation';
 $string['settings_datasync_schools'] = 'Schools to sync';
 $string['settings_datasync_schools_desc'] = 'One Roster implementation often cover a number of Organisations, Districts, and Schools. You can choose which schools you choose to synchronise.';
@@ -62,13 +63,23 @@ $string['settings_rolemapping_guardian_desc'] = 'Guardian of the user and NOT th
 $string['settings_rolemapping_parent'] = 'One Roster Parent';
 $string['settings_rolemapping_parent_desc'] = 'Mother or father of the user.';
 $string['settings_rolemapping_proctor'] = 'Proctor';
-$string['settings_rolemapping_proctor_desc'] = 'Exam proctor.';
+$string['settings_rolemapping_proctor_desc'] = 'Exam proctor. May be used for enrollment.';
 $string['settings_rolemapping_relative'] = 'One Roster Relative';
 $string['settings_rolemapping_relative_desc'] = 'A relative of the user and NOT the mother or Father. May also be a Guardian.';
 $string['settings_rolemapping_student'] = 'One Roster Student';
-$string['settings_rolemapping_student_desc'] = 'A student at a organization.';
+$string['settings_rolemapping_student_desc'] = 'A student at a organization e.g. School. May be used for enrollment.';
 $string['settings_rolemapping_teacher'] = 'One Roster Teacher';
-$string['settings_rolemapping_teacher_desc'] = 'A Teacher at organization.';
+$string['settings_rolemapping_teacher_desc'] = 'A Teacher at organizatione.g. School. May be used for enrollment.';
+$string['settings_rolemapping_counselor'] = 'One Roster Counselor';
+$string['settings_rolemapping_counselor_desc'] = 'Someone who has care/pastoral supervision responsibility for one or more people.';
+$string['settings_rolemapping_districtAdmin'] = 'One Roster District Administrator';
+$string['settings_rolemapping_districtAdmin_desc'] = 'The district administrator will have responsibility for systems within the district sites and/or for systems that are accessed by the schools in the district.';
+$string['settings_rolemapping_principal'] = 'One Roster Principal';
+$string['settings_rolemapping_principal_desc'] = 'The schools Principal or other very senior academic administrator in the School. The principal will have access to confidential/private data about teachers, etc.  This is also meant to account for senior leadership in non-US locales such as a Headmaster.';
+$string['settings_rolemapping_siteAdmin'] = 'One Roster Site Administrator';
+$string['settings_rolemapping_siteAdmin_desc'] = 'Site administrator in the organization e.g. School. The site administrator will have responsibility for all of the systems at the site.';
+$string['settings_rolemapping_systemAdmin'] = 'One Roster System Administrator';
+$string['settings_rolemapping_systemAdmin_desc'] = 'System administrator in the organization e.g. School. The system administrator will have responsibility for one of more systems at the site.';
 $string['settings_testconnection'] = 'Test connection';
 $string['settings_testconnection_detail'] = 'You should test your settings to ensure that the connection to the server works as expected.
 This is also used to fetch the list of available schools that should be synchronised.';

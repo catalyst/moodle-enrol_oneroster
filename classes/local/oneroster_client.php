@@ -50,7 +50,8 @@ use stdClass;
  * @copyright  Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-trait oneroster_client {
+trait oneroster_client
+{
     /** @var progress_trace The logging system */
     protected $trace;
 
@@ -65,7 +66,8 @@ trait oneroster_client {
      *
      * @return  enrol_oneroster_plugin
      */
-    protected function get_plugin_instance(): enrol_oneroster_plugin {
+    protected function get_plugin_instance(): enrol_oneroster_plugin
+    {
         if ($this->instance === null) {
             $this->instance = new enrol_oneroster_plugin();
         }
@@ -78,7 +80,8 @@ trait oneroster_client {
      *
      * @param progress_trace $trace
      */
-    public function set_trace(progress_trace $trace): void {
+    public function set_trace(progress_trace $trace): void
+    {
         $this->trace = $trace;
     }
 
@@ -87,13 +90,15 @@ trait oneroster_client {
      *
      * @return progress_trace
      */
-    public function get_trace(): progress_trace {
+    public function get_trace(): progress_trace
+    {
         if ($this->trace === null) {
             return new null_progress_trace();
         }
 
         return $this->trace;
     }
+
 
     /**
      * Execute the supplied command.
@@ -102,7 +107,8 @@ trait oneroster_client {
      * @param   filter $filter
      * @return  stdClass
      */
-    public function execute(command $command, filter $filter = null): stdClass {
+    public function execute(command $command, filter $filter = null): stdClass
+    {
         $url = new moodle_url($command->get_url($this->baseurl));
         $params = $command->get_params();
         $method = $command->get_method();
@@ -141,7 +147,7 @@ trait oneroster_client {
         if (!empty($params) && $method !== client_helper::POST) {
             throw new BadMethodCallException(sprintf(
                 'The http method called for %s is %s but it has to be POST' .
-                ' if you want to pass the JSON params %s',
+               ' if you want to pass the JSON params %s',
                 $url,
                 $method,
                 json_encode($params)
@@ -189,7 +195,8 @@ trait oneroster_client {
      *
      * @param   int $onlysincetime
      */
-    public function synchronise(?int $onlysincetime = null): void {
+    public function synchronise(?int $onlysincetime = null): void
+    {
         if (class_implements($this, rostering_client::class)) {
             $this->sync_roster($onlysincetime);
         }
